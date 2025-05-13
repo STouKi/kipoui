@@ -1,26 +1,35 @@
 <script setup lang="ts">
 const route = useRoute()
 
-const items = computed(() => [{
-  label: 'Docs',
-  to: '/docs',
-  active: route.path.startsWith('/docs')
-}, {
-  label: 'Pricing',
-  to: '/pricing'
-}, {
-  label: 'Blog',
-  to: '/blog'
-}])
+const items = computed(() => [
+  {
+    label: 'À propos',
+    to: '/a-propos',
+    active: route.path.startsWith('/a-propos')
+  },
+  {
+    label: 'Tarifs',
+    to: '/tarifs',
+    active: route.path.startsWith('/tarifs')
+  },
+  {
+    label: 'Blog',
+    to: '/blog',
+    active: route.path.startsWith('/blog')
+  }
+])
 </script>
 
 <template>
   <UHeader>
     <template #left>
       <NuxtLink to="/">
-        <LogoPro class="w-auto h-6 shrink-0" />
+        <NuxtImg
+          src="/logo/logo.png"
+          alt="Kipoui"
+          width="60"
+        />
       </NuxtLink>
-      <TemplateMenu />
     </template>
 
     <UNavigationMenu
@@ -35,24 +44,24 @@ const items = computed(() => [{
         icon="i-lucide-log-in"
         color="neutral"
         variant="ghost"
-        to="/login"
+        to="/connexion"
         class="lg:hidden"
       />
 
       <UButton
-        label="Sign in"
+        label="Se connecter"
         color="neutral"
         variant="outline"
-        to="/login"
+        to="/connexion"
         class="hidden lg:inline-flex"
       />
 
       <UButton
-        label="Sign up"
+        label="S'inscrire"
         color="neutral"
         trailing-icon="i-lucide-arrow-right"
         class="hidden lg:inline-flex"
-        to="/signup"
+        to="/inscription"
       />
     </template>
 
@@ -66,7 +75,7 @@ const items = computed(() => [{
       <USeparator class="my-6" />
 
       <UButton
-        label="Sign in"
+        label="Se connecter"
         color="neutral"
         variant="subtle"
         to="/login"
@@ -74,7 +83,7 @@ const items = computed(() => [{
         class="mb-3"
       />
       <UButton
-        label="Sign up"
+        label="S'inscrire"
         color="neutral"
         to="/signup"
         block

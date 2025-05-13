@@ -15,10 +15,6 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  routeRules: {
-    '/docs': { redirect: '/docs/getting-started', prerender: false }
-  },
-
   future: {
     compatibilityVersion: 4
   },
@@ -41,5 +37,9 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  image: {
+    dir: 'assets/images'
   }
 })

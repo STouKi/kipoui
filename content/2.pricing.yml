@@ -1,83 +1,76 @@
-title: A plan for every need
-description: Our plans are designed to meet the requirements of both beginners and players. Get the right plan that suits you.
+title: Des formules pour chaque besoin
+
+description: Choisissez l'accompagnement qui vous convient le mieux. Que vous ayez besoin d'un simple coup de pouce ou d'un suivi approfondi, Kipoui s'adapte à vous.
+
 seo:
-  title: Pricing
-  description: Choose the plan that's right for you.
+  title: Tarifs - Kipoui
+  description: Comparez nos formules d'accompagnement nutritionnel et motivationnel personnalisé.
+
 navigation.icon: i-lucide-credit-card
+
 plans:
-  - title: Basic
-    description: A basic plan for individuals.
+  - title: Découverte
+    description: Pour commencer en douceur avec un coach personnalisé.
     price:
-      month: $9.9
-      year: $99.9
+      month: 9.9 €
+      year: 99 €
     button:
-      label: Get Started
+      label: Commencer
       color: neutral
       variant: subtle
     features:
-      - 1 GB Storage
-      - 1 Email Account
-      - 1 Domain
-      - 1 Website
-      - 1 Database
-      - 1 SSL Certificate
-      - 1 Support Ticket
-  - title: Standard
-    description: A standard plan for small teams.
+      - Assistant nutrition 24/7
+      - Plan repas hebdomadaire personnalisé
+      - Conseils motivation
+      - Accès au chat de base
+      - Espace personnel
+
+  - title: Essentiel
+    description: L'équilibre entre accompagnement et autonomie.
     price:
-      month: $19.9
-      year: $199.9
+      month: 19.9 €
+      year: 199 €
     highlight: true
     scale: true
     button:
-      label: Get Started
+      label: Choisir
     features:
-      - 10 GB Storage
-      - 10 Email Accounts
-      - 10 Domains
-      - 10 Websites
-      - 10 Databases
-      - 10 SSL Certificates
-      - 10 Support Tickets
+      - Tout du plan Découverte
+      - Suivi hebdomadaire adapté
+      - Objectifs personnalisés
+      - Rappels et motivation
+      - Recettes adaptées
+
   - title: Premium
-    description: A premium plan for large teams.
+    description: Un suivi complet avec accompagnement renforcé.
     price:
-      month: $29.9
-      year: $299.9
+      month: 29.9 €
+      year: 299 €
     button:
-      label: Get Started
+      label: S'abonner
       color: neutral
       variant: subtle
     features:
-      - 100 GB Storage
-      - 100 Email Accounts
-      - 100 Domains
-      - 100 Websites
-      - 100 Databases
-      - 100 SSL Certificates
-      - 100 Support Tickets
-logos:
-  title: Trusted by the world's best
-  icons:
-    - i-simple-icons-amazonaws
-    - i-simple-icons-heroku
-    - i-simple-icons-netlify
-    - i-simple-icons-vercel
-    - i-simple-icons-cloudflare
+      - Tout du plan Essentiel
+      - Bilan mensuel avec coach
+      - Accès prioritaire
+      - Analyse de progression
+      - Conseils personnalisés évolutifs
+
 faq:
-  title: Frequently asked questions
-  description: Culpa consectetur dolor pariatur commodo aliqua amet tempor nisi enim deserunt elit cillum.
+  title: Questions fréquentes
+  description: Voici les réponses aux questions les plus courantes sur l'accompagnement Kipoui.
   items:
-    - label: Is this a secure service?
-      content: Qui sunt nostrud aliquip reprehenderit enim proident veniam magna aliquip velit occaecat eiusmod nisi deserunt sunt.
+    - label: Est-ce que le service est sécurisé ?
+      content: Oui, toutes vos données personnelles sont stockées de manière sécurisée et conforme au RGPD.
       defaultOpen: true
-    - label: How can I cancel my subscription?
-      content: Consectetur irure Lorem nostrud adipisicing aliqua mollit Lorem sit officia magna eiusmod cupidatat.
-    - label: How does the free trial work?
-      content: Quis officia commodo magna eu qui aliquip duis.
-    - label: Can I switch plans later?
-      content: Dolore irure ullamco dolore eu occaecat magna eiusmod dolor aliqua culpa labore.
-    - label: Do you offer refunds?
-      content: Duis mollit nostrud voluptate mollit Lorem dolore commodo veniam incididunt eiusmod.
-    - label: Do you offer support?
-      content: Aliqua sit nisi consequat pariatur Lorem minim irure qui.
+    - label: Puis-je annuler mon abonnement à tout moment ?
+      content: Bien sûr. Vous pouvez gérer votre abonnement depuis votre espace personnel.
+    - label: Comment fonctionne l'essai gratuit ?
+      content: Nous proposons un premier contact et un chatbot démo pour tester l'expérience.
+    - label: Puis-je changer de formule plus tard ?
+      content: Oui, vous pouvez passer à un plan supérieur ou inférieur selon vos besoins.
+    - label: Proposez-vous des remboursements ?
+      content: Nous remboursons au prorata en cas de problème technique ou de demande justifiée.
+    - label: Est-ce que j'ai accès à un vrai coach ?
+      content: Oui, selon la formule choisie, un coach humain peut compléter votre accompagnement IA.

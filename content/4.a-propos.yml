@@ -1,0 +1,36 @@
+seo:
+  title: Kipoui - Votre coach nutrition personnalisé
+  description: Une application bienveillante qui combine nutrition, motivation et intelligence artificielle pour un accompagnement sur mesure.
+navigation: false
+text:
+  title: À propos de Kipoui
+  description: Kipoui, c’est bien plus qu’un simple chatbot. C’est une aventure humaine, née d’un vécu, d’un besoin, et surtout d’une transformation.
+  orientation: horizontal
+  image: professional-card.svg
+
+sections:
+  - title: À propos de Kipoui
+    description: Kipoui, c’est bien plus qu’un simple chatbot. C’est une aventure humaine, née d’un vécu, d’un besoin, et surtout d’une transformation.
+    orientation: horizontal
+    image: before-after.png
+    features:
+      - description: Je m’appelle Camille et il y a quelque temps, j’ai réussi à perdre 11 kilos en seulement 3 mois, sans régime miracle et sans pression extérieure. Juste avec un accompagnement intelligent, bienveillant et parfaitement adapté à moi.
+      - description: Ce compagnon, je l’ai conçu pour me motiver, me conseiller et me soutenir jour après jour. Il m’a aidée à tenir bon même dans les moments de doute et à retrouver le corps que j’avais mis de côté depuis ma première grossesse, il y a 6 ans.
+      - description: "Aujourd’hui, je transforme cette expérience en une solution accessible à toutes et tous : Kipoui, un assistant personnel qui t’accompagne dans ta prise de poids, ta perte de poids, ta stabilisation ou tout simplement ton envie de te sentir mieux dans ton corps."
+  - title: Ce que propose Kipoui
+    description: Une méthode douce et personnalisée pour prendre soin de vous.
+    orientation: horizontal
+    reverse: true
+    image: ai-agent.svg
+    features:
+      - description: Un chatbot intelligent et personnalisé, à ton rythme, sans pression.
+        icon: i-lucide-brain
+      - description: Un suivi nutritionnel adapté à tes objectifs,
+        icon: i-lucide-utensils
+      - description: Du coaching motivationnel 24/7
+        icon: i-lucide-laugh
+      - description: Un premier rendez-vous individuel (visio, téléphone)
+        icon: i-lucide-phone
+      - description: Et surtout, un accompagnement bienveillant et sur-mesure, pensé rien que pour toi
+        icon: i-lucide-heart
+

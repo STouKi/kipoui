@@ -33,7 +33,6 @@ defineOgImageComponent('Saas')
           :title="post.title"
           :description="post.description"
           :image="post.image"
-          :date="new Date(post.date).toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' })"
           :authors="post.authors"
           :badge="post.badge"
           :orientation="index === 0 ? 'horizontal' : 'vertical'"
@@ -42,7 +41,11 @@ defineOgImageComponent('Saas')
           :ui="{
             description: 'line-clamp-2'
           }"
-        />
+        >
+          <template #date>
+            <time>{{ new Date(post.date).toLocaleDateString('fr', { year: 'numeric', month: 'numeric', day: 'numeric' }) }}</time>
+          </template>
+        </UBlogPost>
       </UBlogPosts>
     </UPageBody>
   </UContainer>

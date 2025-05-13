@@ -45,7 +45,7 @@ if (post.value.image?.src) {
           variant="subtle"
         />
         <span class="text-muted">&middot;</span>
-        <time class="text-muted">{{ new Date(post.date).toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' }) }}</time>
+        <time class="text-muted">{{ new Date(post.date).toLocaleDateString('fr', { year: 'numeric', month: 'numeric', day: 'numeric' }) }}</time>
       </template>
 
       <div class="flex flex-wrap items-center gap-3 mt-4">
@@ -60,7 +60,7 @@ if (post.value.image?.src) {
         >
           <UAvatar
             v-bind="author.avatar"
-            alt="Author avatar"
+            alt="Avatar de l'auteur"
             size="2xs"
           />
 

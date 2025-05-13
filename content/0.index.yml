@@ -1,150 +1,105 @@
-title: Build your SaaS with Nuxt UI Pro
-description: Nuxt UI Pro is a collection of premium Vue components built on top of Nuxt UI to create beautiful & responsive Nuxt applications in minutes. It includes all primitives to build landing pages, documentations, blogs, dashboards or entire SaaS products.
+title: Bienvenue sur Kipoui
+description: Kipoui est votre coach nutrition 100% personnalisé, disponible 24h/24. Créez un lien unique avec votre alimentation, retrouvez énergie, équilibre et motivation.
 seo:
-  title: Nuxt UI Pro - SaaS template
-  description: Nuxt UI Pro is a collection of premium Vue components built on top of Nuxt UI to create beautiful & responsive Nuxt applications in minutes.
+  title: Kipoui - Votre coach nutrition personnalisé
+  description: Une application bienveillante qui combine nutrition, motivation et intelligence artificielle pour un accompagnement sur mesure.
 navigation: false
 hero:
   links:
-    - label: Get started
+    - label: Démarrer maintenant
       icon: i-lucide-arrow-right
       trailing: true
-      to: https://ui.nuxt.com/getting-started/installation/pro/nuxt
-      target: _blank
+      to: /inscription
       size: xl
-    - label: Use this template
-      icon: i-simple-icons-github
+    - label: En savoir plus
+      icon: i-lucide-info
       size: xl
       color: neutral
       variant: subtle
-      to: https://github.com/nuxt-ui-pro/saas
-      target: _blank
+      to: /a-propos
 sections:
-  - title: Enterprise-Grade Solutions
-    description: Transform your business with our comprehensive suite of tools. Built for scale, security, and seamless integration, our platform empowers teams to achieve more while maintaining complete control.
-    id: features
+  - title: Un coach qui vous comprend
+    description: "Kipoui n'est pas une simple appli : c'est un véritable compagnon de route. Avec un profil personnalisé et un chatbot à votre écoute, vous êtes accompagné de façon unique, bienveillante et motivante."
     orientation: horizontal
+    image: professional-card
     features:
-      - name: Developer-First
-        description: Built by developers for developers, with extensive API documentation and flexible integration options.
-        icon: i-lucide-cog
-      - name: 99.9% Uptime
-        description: Enterprise-grade infrastructure with guaranteed reliability and automatic failover protection.
-        icon: i-lucide-check
-      - name: Bank-Level Security
-        description: SOC 2 Type II certified with end-to-end encryption and advanced threat detection.
-        icon: i-lucide-lock
-  - title: Optimized for Growth
-    description: Scale your business confidently with our enterprise-ready platform. From startups to Fortune 500 companies, we provide the tools and support you need to succeed.
+      - name: 100% Personnalisé
+        description: Votre accompagnement s'adapte à votre mode de vie, vos objectifs, vos contraintes (régime, allergies, etc).
+        icon: i-lucide-user
+      - name: Disponible 24/7
+        description: Un assistant toujours présent, même quand la motivation baisse ou que les questions surgissent.
+        icon: i-lucide-clock
+      - name: Motivation & bien-être
+        description: Des messages positifs, des rappels doux, et un soutien mental tout au long du parcours.
+        icon: i-lucide-heart
+  - title: Pensé pour votre transformation
+    description: "Notre mission : vous aider à retrouver la confiance, à mieux manger et à rester motivé sans pression ni dogmes."
     orientation: horizontal
     reverse: true
+    image: nature-benefits
     features:
-      - name: Lightning Fast
-        description: Global CDN with sub-100ms latency and automatic performance optimization.
-        icon: i-lucide-rocket
-      - name: Predictable Pricing
-        description: Transparent, usage-based pricing with no hidden fees and volume discounts.
-        icon: i-lucide-circle-dollar-sign
-      - name: Infinite Scale
-        description: Auto-scaling architecture handles millions of requests without breaking a sweat.
-        icon: i-lucide-chart-bar
+      - name: Suivi intelligent
+        description: Un historique et des recommandations adaptées à vos évolutions.
+        icon: i-lucide-activity
+      - name: Flexible
+        description: Accessible via mobile, tablette ou ordi, sans installation.
+        icon: i-lucide-tablet-smartphone
+      - name: Sans jugement
+        description: Vous avancez à votre rythme, avec bienveillance et sérénité.
+        icon: i-lucide-leaf
 features:
-  title: Features That Set Us Apart
-  description: Our platform combines enterprise-grade reliability with developer-friendly features, providing everything you need to build and scale your applications.
+  title: Ce que Kipoui vous apporte
+  description: Bien plus qu'une app, Kipoui vous offre un cadre sécurisant et motivant pour changer durablement.
   items:
-    - title: Developer Experience
-      description: Comprehensive documentation, powerful CLI tools, and intuitive APIs that make development a joy.
-      icon: i-lucide-cog
-    - title: Enterprise Ready
-      description: SOC 2 Type II certified, GDPR compliant, with 24/7 enterprise support and dedicated success managers.
-      icon: i-lucide-check
-    - title: Advanced Security
-      description: Multi-factor authentication, role-based access control, and audit logs keep your data protected.
+    - title: Approche holistique
+      description: "Nutrition, motivation, écoute : tout est pris en compte pour un changement profond."
+      icon: i-lucide-heart
+    - title: Accès instantané
+      description: "Connectez-vous et discutez avec votre assistant sans attendre."
+      icon: i-lucide-zap
+    - title: Données protégées
+      description: Vos infos personnelles sont stockées de façon sécurisée, conformément au RGPD.
       icon: i-lucide-lock
-    - title: Global Performance
-      description: Edge computing network spans 200+ locations ensuring lightning-fast response times worldwide.
-      icon: i-lucide-rocket
-    - title: Flexible Pricing
-      description: Pay only for what you use with transparent pricing and no long-term commitments required.
+    - title: Support humain
+      description: Vous pouvez échanger avec un coach réel pour compléter l'accompagnement IA.
+      icon: i-lucide-users
+    - title: Interface claire
+      description: Une navigation simple et agréable, pensée pour le confort quotidien.
+      icon: i-lucide-layout-dashboard
+    - title: Tarif doux
+      description: Des formules accessibles, sans engagement ni frais cachés.
       icon: i-lucide-circle-dollar-sign
-    - title: Infinite Scalability
-      description: Built on cloud-native architecture that automatically scales to meet any demand.
-      icon: i-lucide-chart-bar
 testimonials:
-  headline: Customer Success Stories
-  title: Trusted by Industry Leaders
-  description: Join thousands of companies worldwide who have transformed their digital presence with our platform.
+  headline: Ils ont testé Kipoui
+  title: Des utilisateurs conquis
+  description: Voici ce que disent les premières personnes accompagnées par Kipoui.
   items:
-    - quote: The developer experience is unmatched. We migrated our entire infrastructure in weeks instead of months, and our team's productivity has increased dramatically. The TypeScript support and component library saved us months of development time.
+    - quote: J'avais perdu confiance après plusieurs régimes. Kipoui m'a redonné un cadre motivant et bienveillant, sans pression.
       user:
-        name: Sarah Chen
-        description: CTO at TechScale Solutions
+        name: Aline M.
+        description: 42 ans, Toulouse
         avatar:
-          src: https://i.pravatar.cc/120?img=1
-    - quote: After implementing the edge computing features, our global application response times dropped by 70%. Our European and Asian markets saw immediate improvements in user engagement and conversion rates.
+          src: https://i.pravatar.cc/120?img=30
+    - quote: J'aime pouvoir discuter avec mon coach perso quand je veux. Les conseils sont adaptés à moi, pas génériques.
       user:
-        name: Marcus Rodriguez
-        description: VP of Engineering at DataFlow
+        name: Julien T.
+        description: 37 ans, Marseille
         avatar:
-          src: https://i.pravatar.cc/120?img=7
-    - quote: The platform's security features gave us peace of mind during our SOC 2 certification. The built-in compliance tools and audit logs made the process seamless.
+          src: https://i.pravatar.cc/120?img=35
+    - quote: En quelques semaines, j'ai retrouvé l'énergie, le plaisir de manger, et j'ai perdu 3 kg sans m'en rendre compte.
       user:
-        name: David Kumar
-        description: Security Director at SecureStack
+        name: Fatou D.
+        description: 29 ans, Bordeaux
         avatar:
-          src: https://i.pravatar.cc/120?img=3
-    - quote: During our Black Friday sale, we handled 15x our normal traffic without a hitch. The auto-scaling features worked flawlessly, and our monitoring dashboard gave us real-time insights throughout the event.
-      user:
-        name: Emily Zhang
-        description: Lead Architect at ScaleForce
-        avatar:
-          src: https://i.pravatar.cc/120?img=5
-    - quote: The support team goes above and beyond. They helped us optimize our CI/CD pipeline and suggested performance improvements that reduced our build times by 45%.
-      user:
-        name: James Wilson
-        description: DevOps Lead at CloudPro
-        avatar:
-          src: https://i.pravatar.cc/120?img=8
-    - quote: Switching to this platform reduced our infrastructure costs by 40% while improving performance. The cost savings alone paid for the investment within the first quarter.
-      user:
-        name: Lisa Patel
-        description: CEO at AutoScale
-        avatar:
-          src: https://i.pravatar.cc/120?img=9
-    - quote: The accessibility features and responsive components helped us achieve WCAG 2.1 compliance with minimal custom development. Our site now scores 100 on Lighthouse accessibility metrics.
-      user:
-        name: Michael Torres
-        description: Frontend Lead at AccessFirst
-        avatar:
-          src: https://i.pravatar.cc/120?img=11
-    - quote: We serve millions of API requests daily, and the real-time analytics and monitoring tools have been invaluable for optimizing our performance and identifying bottlenecks.
-      user:
-        name: Rachel Kim
-        description: Performance Engineer at APIHub
-        avatar:
-          src: https://i.pravatar.cc/120?img=10
-    - quote: The component library and design system tools helped us maintain consistency across our 20+ micro-frontends. Our development velocity has never been better.
-      user:
-        name: Thomas Weber
-        description: UI Architecture Lead at DesignScale
-        avatar:
-          src: https://i.pravatar.cc/120?img=12
-    - quote: Integration with our existing tools was seamless. The webhooks and API documentation made it easy to automate our workflows and enhance our development pipeline.
-      user:
-        name: Sophia Martinez
-        description: Integration Specialist at TechFlow
-        avatar:
-          src: https://i.pravatar.cc/120?img=14
+          src: https://i.pravatar.cc/120?img=45
 cta:
-  title: Start with Nuxt UI Pro today!
-  description: Nuxt UI Pro is free in development, but you need a license to use it in production.
+  title: Lancez votre accompagnement Kipoui maintenant !
+  description: Profitez d'un premier contact gratuit et d'un assistant personnalisé créé pour vous.
   links:
-    - label: Buy now
-      to: https://ui.nuxt.com/pro/purchase
-      target: _blank
-      icon: i-lucide-shopping-cart
-    - label: License
-      to: https://ui.nuxt.com/getting-started/license
+    - label: Créer mon profil
+      to: /inscription
+      icon: i-lucide-user-plus
+    - label: En savoir plus
+      to: /a-propos
       trailingIcon: i-lucide-circle-help
-      target: _blank
       variant: subtle

@@ -128,5 +128,19 @@ export const collections = {
   blog: defineCollection({
     source: '3.blog.yml',
     type: 'page'
+  }),
+  aPropos: defineCollection({
+    source: '4.a-propos.yml',
+    type: 'page',
+    schema: z.object({
+      sections: z.array(
+        createBaseSchema().extend({
+          id: z.string().nonempty(),
+          orientation: orientationEnum.optional(),
+          reverse: z.boolean().optional(),
+          features: z.array(createFeatureItemSchema())
+        })
+      )
+    })
   })
 }

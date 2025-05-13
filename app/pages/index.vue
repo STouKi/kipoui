@@ -5,7 +5,7 @@ const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
 
 useSeoMeta({
-  titleTemplate: '',
+  titleTemplate: 'Kipoui - Accueil',
   title,
   ogTitle: title,
   description,
@@ -14,7 +14,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <div v-if="page">
+  <div
+    v-if="page"
+    class="relative"
+  >
     <UPageHero
       :title="page.title"
       :description="page.description"
@@ -26,7 +29,7 @@ useSeoMeta({
         <LazyStarsBg />
       </template>
 
-      <PromotionalVideo />
+      <!-- <PromotionalVideo /> -->
     </UPageHero>
 
     <UPageSection
@@ -38,7 +41,10 @@ useSeoMeta({
       :reverse="section.reverse"
       :features="section.features"
     >
-      <ImagePlaceholder />
+      <NuxtImg
+        :src="`/${section.image}.svg`"
+        class="w-full h-full object-contain"
+      />
     </UPageSection>
 
     <UPageSection
@@ -55,7 +61,16 @@ useSeoMeta({
       </UPageGrid>
     </UPageSection>
 
-    <UPageSection
+    <!-- <UPageSection
+      title="Votre compte"
+      description="Gérez votre profil et vos informations personnelles"
+    >
+      <div class="max-w-3xl mx-auto w-full">
+        <AuthUserInfo />
+      </div>
+    </UPageSection> -->
+
+    <!-- <UPageSection
       id="testimonials"
       :headline="page.testimonials.headline"
       :title="page.testimonials.title"
@@ -77,7 +92,7 @@ useSeoMeta({
           </template>
         </UPageCard>
       </UPageColumns>
-    </UPageSection>
+    </UPageSection> -->
 
     <USeparator />
 

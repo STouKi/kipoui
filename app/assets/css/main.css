@@ -4,19 +4,19 @@
 @source "../../../content/**/*";
 
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  --font-sans: 'Fredoka One', sans-serif;
 
-  --color-green-50: #EFFDF5;
-  --color-green-100: #D9FBE8;
-  --color-green-200: #B3F5D1;
-  --color-green-300: #75EDAE;
-  --color-green-400: #00DC82;
-  --color-green-500: #00C16A;
-  --color-green-600: #00A155;
-  --color-green-700: #007F45;
-  --color-green-800: #016538;
-  --color-green-900: #0A5331;
-  --color-green-950: #052E16;
+  --color-yellowgreen-50: #F7FAEB;
+  --color-yellowgreen-100: #EEF6D7;
+  --color-yellowgreen-200: #DFEDB0;
+  --color-yellowgreen-300: #C9E17F;
+  --color-yellowgreen-400: #B2D64E;
+  --color-yellowgreen-500: #9ACD32;
+  --color-yellowgreen-600: #7BA428;
+  --color-yellowgreen-700: #5D7B1E;
+  --color-yellowgreen-800: #3F5214;
+  --color-yellowgreen-900: #21290A;
+  --color-yellowgreen-950: #101405;
 }
 
 .dark {

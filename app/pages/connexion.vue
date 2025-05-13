@@ -7,8 +7,8 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Login',
-  description: 'Login to your account to continue'
+  title: 'Connexion',
+  description: 'Se connecter pour continuer'
 })
 
 const toast = useToast()
@@ -17,16 +17,16 @@ const fields = [{
   name: 'email',
   type: 'text' as const,
   label: 'Email',
-  placeholder: 'Enter your email',
+  placeholder: 'Entrez votre email',
   required: true
 }, {
   name: 'password',
-  label: 'Password',
+  label: 'Mot de passe',
   type: 'password' as const,
-  placeholder: 'Enter your password'
+  placeholder: 'Entrez votre mot de passe'
 }, {
   name: 'remember',
-  label: 'Remember me',
+  label: 'Se souvenir de moi',
   type: 'checkbox' as const
 }]
 
@@ -34,19 +34,13 @@ const providers = [{
   label: 'Google',
   icon: 'i-simple-icons-google',
   onClick: () => {
-    toast.add({ title: 'Google', description: 'Login with Google' })
-  }
-}, {
-  label: 'GitHub',
-  icon: 'i-simple-icons-github',
-  onClick: () => {
-    toast.add({ title: 'GitHub', description: 'Login with GitHub' })
+    toast.add({ title: 'Google', description: 'Se connecter avec Google' })
   }
 }]
 
 const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Must be at least 8 characters')
+  email: z.string().email('Email invalide'),
+  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères')
 })
 
 type Schema = z.output<typeof schema>
@@ -61,15 +55,16 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
     :fields="fields"
     :schema="schema"
     :providers="providers"
-    title="Welcome back"
-    icon="i-lucide-lock"
+    title="Bon retour parmi nous"
+    icon="i-lucide-user"
+    separator="ou"
     @submit="onSubmit"
   >
     <template #description>
-      Don't have an account? <ULink
-        to="/signup"
+      Vous n'avez pas de compte ? <ULink
+        to="/inscription"
         class="text-primary font-medium"
-      >Sign up</ULink>.
+      >S'inscrire</ULink>.
     </template>
 
     <template #password-hint>
@@ -77,14 +72,14 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
         to="/"
         class="text-primary font-medium"
         tabindex="-1"
-      >Forgot password?</ULink>
+      >Mot de passe oublié ?</ULink>
     </template>
 
     <template #footer>
-      By signing in, you agree to our <ULink
+      En vous connectant, vous acceptez nos <ULink
         to="/"
         class="text-primary font-medium"
-      >Terms of Service</ULink>.
+      >Conditions d'utilisation</ULink>.
     </template>
   </UAuthForm>
 </template>

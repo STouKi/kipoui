@@ -7,8 +7,8 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Sign up',
-  description: 'Create an account to get started'
+  title: 'Inscription',
+  description: 'Créer un compte pour commencer'
 })
 
 const toast = useToast()
@@ -16,38 +16,32 @@ const toast = useToast()
 const fields = [{
   name: 'name',
   type: 'text' as const,
-  label: 'Name',
-  placeholder: 'Enter your name'
+  label: 'Nom',
+  placeholder: 'Entrez votre nom'
 }, {
   name: 'email',
   type: 'text' as const,
   label: 'Email',
-  placeholder: 'Enter your email'
+  placeholder: 'Entrez votre email'
 }, {
   name: 'password',
-  label: 'Password',
+  label: 'Mot de passe',
   type: 'password' as const,
-  placeholder: 'Enter your password'
+  placeholder: 'Entrez votre mot de passe'
 }]
 
 const providers = [{
   label: 'Google',
   icon: 'i-simple-icons-google',
   onClick: () => {
-    toast.add({ title: 'Google', description: 'Login with Google' })
-  }
-}, {
-  label: 'GitHub',
-  icon: 'i-simple-icons-github',
-  onClick: () => {
-    toast.add({ title: 'GitHub', description: 'Login with GitHub' })
+    toast.add({ title: 'Google', description: 'Se connecter avec Google' })
   }
 }]
 
 const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Must be at least 8 characters')
+  name: z.string().min(1, 'Le nom est requis'),
+  email: z.string().email('Email invalide'),
+  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères')
 })
 
 type Schema = z.output<typeof schema>
@@ -62,22 +56,24 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
     :fields="fields"
     :schema="schema"
     :providers="providers"
-    title="Create an account"
-    :submit="{ label: 'Create account' }"
+    title="Inscription"
+    icon="i-lucide-lock"
+    :submit="{ label: 'Créer mon compte' }"
+    separator="ou"
     @submit="onSubmit"
   >
     <template #description>
-      Already have an account? <ULink
-        to="/login"
+      Déjà inscrit ? <ULink
+        to="/connexion"
         class="text-primary font-medium"
-      >Login</ULink>.
+      >Se connecter</ULink>.
     </template>
 
     <template #footer>
-      By signing up, you agree to our <ULink
+      En vous inscrivant, vous acceptez nos <ULink
         to="/"
         class="text-primary font-medium"
-      >Terms of Service</ULink>.
+      >Conditions d'utilisation</ULink>.
     </template>
   </UAuthForm>
 </template>
