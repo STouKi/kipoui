@@ -2,6 +2,9 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
+const supabase = useSupabaseClient()
+const toast = useToast()
+
 definePageMeta({
   layout: 'auth'
 })
@@ -10,8 +13,6 @@ useSeoMeta({
   title: 'Connexion',
   description: 'Se connecter pour continuer'
 })
-
-const toast = useToast()
 
 const fields = [{
   name: 'email',
@@ -30,14 +31,6 @@ const fields = [{
   type: 'checkbox' as const
 }]
 
-const providers = [{
-  label: 'Google',
-  icon: 'i-simple-icons-google',
-  onClick: () => {
-    toast.add({ title: 'Google', description: 'Se connecter avec Google' })
-  }
-}]
-
 const schema = z.object({
   email: z.string().email('Email invalide'),
   password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères')
@@ -45,8 +38,33 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log('Submitted', payload)
+async function onSubmit(payload: FormSubmitEvent<Schema>) {
+  const { email, password } = payload.data
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if (error) {
+    toast.add({
+      title: 'Erreur',
+      description: error.message,
+      color: 'error',
+      icon: 'i-lucide-alert-circle'
+    })
+
+    return
+  }
+
+  toast.add({
+    title: 'Succès',
+    description: 'Connexion effectuée avec succès',
+    color: 'success',
+    icon: 'i-lucide-check-circle'
+  })
+
+  navigateTo('/tableau-de-bord')
 }
 </script>
 
@@ -54,10 +72,10 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
   <UAuthForm
     :fields="fields"
     :schema="schema"
-    :providers="providers"
     title="Bon retour parmi nous"
     icon="i-lucide-user"
     separator="ou"
+    :submit="{ label: 'Se connecter' }"
     @submit="onSubmit"
   >
     <template #description>
@@ -69,7 +87,7 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     <template #password-hint>
       <ULink
-        to="/"
+        to="/mot-de-passe-oublie"
         class="text-primary font-medium"
         tabindex="-1"
       >Mot de passe oublié ?</ULink>

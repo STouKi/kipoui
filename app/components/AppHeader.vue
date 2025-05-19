@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const user = useSupabaseUser()
+
 const route = useRoute()
 
 const items = computed(() => [
@@ -21,7 +23,7 @@ const items = computed(() => [
 </script>
 
 <template>
-  <UHeader>
+  <UHeader mode="drawer">
     <template #left>
       <NuxtLink to="/">
         <NuxtImg
@@ -38,31 +40,37 @@ const items = computed(() => [
     />
 
     <template #right>
-      <UColorModeButton />
+      <template v-if="!user">
+        <UColorModeButton />
 
-      <UButton
-        icon="i-lucide-log-in"
-        color="neutral"
-        variant="ghost"
-        to="/connexion"
-        class="lg:hidden"
-      />
+        <UButton
+          icon="i-lucide-log-in"
+          color="neutral"
+          variant="ghost"
+          to="/connexion"
+          class="lg:hidden"
+        />
 
-      <UButton
-        label="Se connecter"
-        color="neutral"
-        variant="outline"
-        to="/connexion"
-        class="hidden lg:inline-flex"
-      />
+        <UButton
+          label="Se connecter"
+          color="neutral"
+          variant="outline"
+          to="/connexion"
+          class="hidden lg:inline-flex"
+        />
 
-      <UButton
-        label="S'inscrire"
-        color="neutral"
-        trailing-icon="i-lucide-arrow-right"
-        class="hidden lg:inline-flex"
-        to="/inscription"
-      />
+        <UButton
+          label="S'inscrire"
+          color="neutral"
+          trailing-icon="i-lucide-arrow-right"
+          class="hidden lg:inline-flex"
+          to="/inscription"
+        />
+      </template>
+
+      <template v-else>
+        <UserMenu />
+      </template>
     </template>
 
     <template #body>
@@ -72,22 +80,24 @@ const items = computed(() => [
         class="-mx-2.5"
       />
 
-      <USeparator class="my-6" />
+      <template v-if="!user">
+        <USeparator class="my-6" />
 
-      <UButton
-        label="Se connecter"
-        color="neutral"
-        variant="subtle"
-        to="/login"
-        block
-        class="mb-3"
-      />
-      <UButton
-        label="S'inscrire"
-        color="neutral"
-        to="/signup"
-        block
-      />
+        <UButton
+          label="Se connecter"
+          color="neutral"
+          variant="subtle"
+          to="/connexion"
+          block
+          class="mb-3"
+        />
+        <UButton
+          label="S'inscrire"
+          color="neutral"
+          to="/inscription"
+          block
+        />
+      </template>
     </template>
   </UHeader>
 </template>

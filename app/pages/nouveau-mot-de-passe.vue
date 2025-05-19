@@ -3,24 +3,18 @@ import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 const supabase = useSupabaseClient()
+const toast = useToast()
 
 definePageMeta({
   layout: 'auth'
 })
 
 useSeoMeta({
-  title: 'Inscription',
-  description: 'Créer un compte pour commencer'
+  title: 'Nouveau mot de passe',
+  description: 'Mettez à jour votre mot de passe'
 })
 
-const toast = useToast()
-
 const fields = [{
-  name: 'email',
-  type: 'text' as const,
-  label: 'Email',
-  placeholder: 'Entrez votre email'
-}, {
   name: 'password',
   label: 'Mot de passe',
   type: 'password' as const,
@@ -28,21 +22,16 @@ const fields = [{
 }]
 
 const schema = z.object({
-  email: z.string().email('Email invalide'),
   password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères')
 })
 
 type Schema = z.output<typeof schema>
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  const { email, password } = payload.data
+  const { password } = payload.data
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${useRequestURL().origin}/tableau-de-bord`
-    }
+  const { error } = await supabase.auth.updateUser({
+    password
   })
 
   if (error) {
@@ -58,10 +47,12 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
   toast.add({
     title: 'Succès',
-    description: 'Inscription effectuée avec succès',
+    description: 'Votre mot de passe a été mis à jour',
     color: 'success',
     icon: 'i-lucide-check-circle'
   })
+
+  navigateTo('/connexion')
 }
 </script>
 
@@ -69,24 +60,10 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   <UAuthForm
     :fields="fields"
     :schema="schema"
-    title="Inscription"
+    title="Nouveau mot de passe"
     icon="i-lucide-lock"
     separator="ou"
-    :submit="{ label: 'Créer mon compte' }"
+    :submit="{ label: 'Mettre à jour' }"
     @submit="onSubmit"
-  >
-    <template #description>
-      Déjà inscrit ? <ULink
-        to="/connexion"
-        class="text-primary font-medium"
-      >Se connecter</ULink>.
-    </template>
-
-    <template #footer>
-      En vous inscrivant, vous acceptez nos <ULink
-        to="/"
-        class="text-primary font-medium"
-      >Conditions d'utilisation</ULink>.
-    </template>
-  </UAuthForm>
+  />
 </template>

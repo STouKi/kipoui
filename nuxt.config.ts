@@ -6,7 +6,8 @@ export default defineNuxtConfig({
     '@nuxt/ui-pro',
     '@nuxt/content',
     '@vueuse/nuxt',
-    'nuxt-og-image'
+    'nuxt-og-image',
+    '@nuxtjs/supabase'
   ],
 
   devtools: {
@@ -41,5 +42,13 @@ export default defineNuxtConfig({
 
   image: {
     dir: 'assets/images'
+  },
+
+  supabase: {
+    redirectOptions: {
+      login: '/connexion',
+      callback: '/confirm',
+      exclude: ['/', '/tarifs', '/blog', '/a-propos', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
+    }
   }
 })
