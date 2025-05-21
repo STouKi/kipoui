@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@vueuse/nuxt',
     'nuxt-og-image',
-    '@nuxtjs/supabase'
+    '@nuxtjs/supabase',
+    '@nuxthub/core'
   ],
 
   devtools: {
@@ -29,6 +30,10 @@ export default defineNuxtConfig({
       ],
       crawlLinks: true
     }
+  },
+
+  hub: {
+    ai: true
   },
 
   eslint: {
