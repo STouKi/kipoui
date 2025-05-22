@@ -13,6 +13,10 @@ const toast = useToast()
 const clipboard = useClipboard()
 const { model } = useLLM()
 
+definePageMeta({
+  layout: 'chat'
+})
+
 const { data: chat } = await useFetch(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
