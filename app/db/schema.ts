@@ -47,7 +47,7 @@ export const physicalData = pgTable('physical_data', {
   heightCm: integer('height_cm'),
   weightKg: integer('weight_kg'),
 
-  profileId: uuid('profile_id').references(() => profiles.id)
+  profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'cascade' })
 })
 
 export const goals = pgTable('goals', {
@@ -56,7 +56,7 @@ export const goals = pgTable('goals', {
   targetWeight: integer('target_weight'),
   deadline: timestamp(),
 
-  profileId: uuid('profile_id').references(() => profiles.id)
+  profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'cascade' })
 })
 
 export const habits = pgTable('habits', {
@@ -67,7 +67,7 @@ export const habits = pgTable('habits', {
   diet: dietEnum(),
   religiousRegime: religiousRegimeEnum('religious_regime'),
 
-  profileId: uuid('profile_id').references(() => profiles.id)
+  profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'cascade' })
 })
 
 export const medicalData = pgTable('medical_data', {
@@ -77,7 +77,7 @@ export const medicalData = pgTable('medical_data', {
   allergies: allergyEnum().array(),
   eatingDisorders: eatingDisordersEnum('eating_disorders').array(),
 
-  profileId: uuid('profile_id').references(() => profiles.id)
+  profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'cascade' })
 })
 
 export const preferences = pgTable('preferences', {
@@ -85,7 +85,7 @@ export const preferences = pgTable('preferences', {
 
   dislikes: text().array(),
 
-  profileId: uuid('profile_id').references(() => profiles.id)
+  profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'cascade' })
 })
 
 export const chats = pgTable('chats', {
@@ -94,7 +94,7 @@ export const chats = pgTable('chats', {
 
   title: text(),
 
-  profileId: uuid('profile_id').references(() => profiles.id)
+  profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'cascade' })
 })
 
 export const messages = pgTable('messages', {
@@ -104,7 +104,7 @@ export const messages = pgTable('messages', {
   role: roleEnum(),
   content: text(),
 
-  chatId: integer('chat_id').references(() => chats.id)
+  chatId: integer('chat_id').references(() => chats.id, { onDelete: 'cascade' })
 })
 
 export const profilesRelations = relations(profiles, ({ one, many }) => ({
