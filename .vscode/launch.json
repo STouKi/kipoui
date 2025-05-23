@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Nuxt: Debug Server",
+      "outputCapture": "std",
+      "runtimeExecutable": "bun",
+      "args": [
+        "dev"
+      ],
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${workspaceFolder}/src/*",
+        "webpack:///server/*": "${workspaceFolder}/server/*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug API Routes",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeExecutable": "bun",
+      "args": [
+        "dev"
+      ],
+      "outputCapture": "std",
+      "console": "integratedTerminal",
+      "restart": true
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Nuxt: Debug Client",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Nuxt: Full Stack",
+      "configurations": [
+        "Nuxt: Debug Server",
+        "Nuxt: Debug Client"
+      ]
+    }
+  ]
+}
