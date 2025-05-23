@@ -18,7 +18,7 @@ const deleteModal = overlay.create(LazyModalConfirm, {
 const { data: chats, refresh: refreshChats } = await useFetch('/api/chats', {
   key: 'chats',
   transform: data => data.map(chat => ({
-    id: chat.id,
+    id: chat.id.toString(),
     label: chat.title || 'Untitled',
     to: `/chat/${chat.id}`,
     icon: 'i-lucide-message-circle',
@@ -165,7 +165,7 @@ defineShortcuts({
         id: 'links',
         items: [{
           label: 'Nouveau chat',
-          to: '/',
+          to: '/chat',
           icon: 'i-lucide-square-pen'
         }]
       }, ...groups]"
