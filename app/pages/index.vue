@@ -5,7 +5,7 @@ const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
 
 useSeoMeta({
-  titleTemplate: 'Kipoui - Accueil',
+  titleTemplate: 'Kipoui - Votre coach nutrition personnalisé',
   title,
   ogTitle: title,
   description,

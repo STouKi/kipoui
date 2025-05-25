@@ -10,6 +10,7 @@ definePageMeta({
 })
 
 useSeoMeta({
+  titleTemplate: 'Kipoui - Mot de passe oublié',
   title: 'Mot de passe oublié',
   description: 'Réinitialisez votre mot de passe'
 })

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
+  titleTemplate: 'Kipoui - Tableau de bord',
   title: 'Tableau de bord',
   description: 'Gérez votre compte et vos préférences'
 })

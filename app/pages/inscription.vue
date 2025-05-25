@@ -2,18 +2,19 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-const supabase = useSupabaseClient()
+// const supabase = useSupabaseClient()
 
 definePageMeta({
   layout: 'auth'
 })
 
 useSeoMeta({
+  titleTemplate: 'Kipoui - %s',
   title: 'Inscription',
   description: 'Créer un compte pour commencer'
 })
 
-const toast = useToast()
+// const toast = useToast()
 
 const fields = [{
   name: 'email',
@@ -35,7 +36,8 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  const { email, password } = payload.data
+  console.log(payload)
+  /* const { email, password } = payload.data
 
   const { error } = await supabase.auth.signUp({
     email,
@@ -61,7 +63,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     description: 'Inscription effectuée avec succès',
     color: 'success',
     icon: 'i-lucide-check-circle'
-  })
+  }) */
 }
 </script>
 
@@ -84,9 +86,9 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     <template #footer>
       En vous inscrivant, vous acceptez nos <ULink
-        to="/"
+        to="/conditions-utilisation"
         class="text-primary font-medium"
-      >Conditions d'utilisation</ULink>.
+      >Conditions Générales d'Utilisation</ULink>.
     </template>
   </UAuthForm>
 </template>

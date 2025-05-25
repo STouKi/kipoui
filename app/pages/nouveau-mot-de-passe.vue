@@ -10,6 +10,7 @@ definePageMeta({
 })
 
 useSeoMeta({
+  titleTemplate: 'Kipoui - Nouveau mot de passe',
   title: 'Nouveau mot de passe',
   description: 'Mettez à jour votre mot de passe'
 })
