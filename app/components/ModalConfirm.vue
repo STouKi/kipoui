@@ -18,7 +18,10 @@ const emit = defineEmits<{ close: [boolean] }>()
     :dismissible="false"
   >
     <template #footer>
-      <UButton label="Supprimer" @click="emit('close', true)" />
+      <UButton
+        label="Supprimer"
+        @click="emit('close', true)"
+      />
       <UButton
         color="neutral"
         variant="ghost"

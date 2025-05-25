@@ -63,7 +63,7 @@ export function useChats(chats: Ref<Chat[] | undefined>) {
     if (today.length) {
       formattedGroups.push({
         id: 'today',
-        label: 'Today',
+        label: 'Aujourd\'hui',
         items: today
       })
     }
@@ -71,7 +71,7 @@ export function useChats(chats: Ref<Chat[] | undefined>) {
     if (yesterday.length) {
       formattedGroups.push({
         id: 'yesterday',
-        label: 'Yesterday',
+        label: 'Hier',
         items: yesterday
       })
     }
@@ -79,7 +79,7 @@ export function useChats(chats: Ref<Chat[] | undefined>) {
     if (lastWeek.length) {
       formattedGroups.push({
         id: 'last-week',
-        label: 'Last week',
+        label: 'La semaine dernière',
         items: lastWeek
       })
     }
@@ -87,7 +87,7 @@ export function useChats(chats: Ref<Chat[] | undefined>) {
     if (lastMonth.length) {
       formattedGroups.push({
         id: 'last-month',
-        label: 'Last month',
+        label: 'Le mois dernier',
         items: lastMonth
       })
     }
