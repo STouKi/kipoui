@@ -2,8 +2,6 @@
 const input = ref('')
 const loading = ref(false)
 
-const { model } = useLLM()
-
 useSeoMeta({
   titleTemplate: 'Kipoui - Chat',
   title: 'Kipoui - Chat',
@@ -80,10 +78,6 @@ const quickChats = [
           @submit="onSubmit"
         >
           <UChatPromptSubmit color="neutral" />
-
-          <template #footer>
-            <ModelSelect v-model="model" />
-          </template>
         </UChatPrompt>
 
         <div class="flex flex-wrap gap-2">

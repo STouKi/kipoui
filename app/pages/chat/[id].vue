@@ -11,7 +11,6 @@ const components = {
 const route = useRoute()
 const toast = useToast()
 const clipboard = useClipboard()
-const { model } = useLLM()
 
 definePageMeta({
   layout: 'chat'
@@ -32,9 +31,6 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
     content: message.content!,
     role: message.role!
   })),
-  body: {
-    model: model.value
-  },
   onResponse(response) {
     if (response.headers.get('X-Chat-Title')) {
       refreshNuxtData('chats')
@@ -85,7 +81,7 @@ onMounted(() => {
         <UChatMessages
           :messages="messages"
           :status="status"
-          :assistant="{ actions: [{ label: 'Copy', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] }"
+          :assistant="{ actions: [{ label: 'Copier', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
@@ -113,10 +109,6 @@ onMounted(() => {
             @stop="stop"
             @reload="reload"
           />
-
-          <template #footer>
-            <ModelSelect v-model="model" />
-          </template>
         </UChatPrompt>
       </UContainer>
     </template>
