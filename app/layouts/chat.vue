@@ -66,13 +66,13 @@ async function deleteChat(id: string) {
   refreshChats()
 
   if (route.params.id === id) {
-    navigateTo('/')
+    navigateTo('/chat')
   }
 }
 
 defineShortcuts({
   c: () => {
-    navigateTo('/')
+    navigateTo('/chat')
   }
 })
 </script>
@@ -89,7 +89,7 @@ defineShortcuts({
     >
       <template #header="{ collapsed }">
         <NuxtLink
-          to="/"
+          to="/chat"
           class="flex items-center gap-1"
         >
           <NuxtImg
@@ -118,7 +118,7 @@ defineShortcuts({
             v-bind="collapsed ? { icon: 'i-lucide-plus' } : { label: 'Nouveau chat' }"
             variant="soft"
             block
-            to="/"
+            to="/chat"
             @click="open = false"
           />
 

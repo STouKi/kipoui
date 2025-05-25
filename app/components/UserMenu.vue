@@ -49,6 +49,10 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   label: 'Profil',
   icon: 'i-lucide-user',
   to: '/tableau-de-bord'
+}, {
+  label: 'Chat',
+  icon: 'i-lucide-message-square-text',
+  to: '/chat'
 }], [{
   label: 'Se déconnecter',
   icon: 'i-lucide-log-out',
