@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/ui-pro',
     '@nuxt/content',
+    '@nuxtjs/mdc',
     '@vueuse/nuxt',
     'nuxt-og-image',
     '@nuxtjs/supabase',
@@ -16,6 +17,12 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
+
+  mdc: {
+    highlight: {
+      shikiEngine: 'javascript'
+    }
+  },
 
   future: {
     compatibilityVersion: 4
@@ -53,7 +60,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/connexion',
       callback: '/confirm',
-      exclude: ['/', '/tarifs', '/blog', '/a-propos', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
+      exclude: ['/', '/tarifs', '/blog', '/a-propos', '/conditions-utilisation', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
     }
   }
 })
