@@ -10,6 +10,7 @@ definePageMeta({
 })
 
 useSeoMeta({
+  titleTemplate: 'Kipoui - Connexion',
   title: 'Connexion',
   description: 'Se connecter pour continuer'
 })
@@ -95,9 +96,9 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     <template #footer>
       En vous connectant, vous acceptez nos <ULink
-        to="/"
+        to="/conditions-utilisation"
         class="text-primary font-medium"
-      >Conditions d'utilisation</ULink>.
+      >Conditions Générales d'Utilisation</ULink>.
     </template>
   </UAuthForm>
 </template>

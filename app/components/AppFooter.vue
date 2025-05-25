@@ -1,21 +1,27 @@
 <script setup lang="ts">
-const columns = [
-  {
-    label: 'Entreprise',
-    children: [
-      {
-        label: 'À propos',
-        to: '/a-propos'
-      },
-      {
-        label: 'Tarifs',
-        to: '/tarifs'
-      }, {
-        label: 'Blog',
-        to: '/blog'
-      }
-    ]
-  }
+const columns = [{
+  label: 'Ressources',
+  children: [{
+    label: 'CGU',
+    to: '/conditions-utilisation'
+  }]
+}, {
+  label: 'Entreprise',
+  children: [
+    {
+      label: 'À propos',
+      to: '/a-propos'
+    },
+    {
+      label: 'Tarifs',
+      to: '/tarifs'
+    },
+    {
+      label: 'Blog',
+      to: '/blog'
+    }
+  ]
+}
 ]
 </script>
 
