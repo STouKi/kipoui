@@ -36,7 +36,9 @@ export const profiles = pgTable('profiles', {
 
   username: text(),
   fullName: text('full_name'),
-  avatarUrl: text('avatar_url')
+  avatarUrl: text('avatar_url'),
+
+  profileDetail: text('profile_detail')
 })
 
 export const physicalData = pgTable('physical_data', {
@@ -63,7 +65,7 @@ export const habits = pgTable('habits', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
 
   sportWeekFrequency: integer('sport_week_frequency'),
-  compulsivesHabits: boolean('compulsive_habits'),
+  compulsivesHabits: boolean('compulsive_habits').notNull().default(false),
   diet: dietEnum(),
   religiousRegime: religiousRegimeEnum('religious_regime'),
 
