@@ -52,10 +52,6 @@ export default defineNuxtConfig({
     }
   },
 
-  image: {
-    dir: 'assets/images'
-  },
-
   supabase: {
     redirectOptions: {
       login: '/connexion',

@@ -65,7 +65,8 @@ export const collections = {
           id: z.string().nonempty(),
           orientation: orientationEnum.optional(),
           reverse: z.boolean().optional(),
-          features: z.array(createFeatureItemSchema())
+          features: z.array(createFeatureItemSchema()),
+          image: z.string()
         })
       ),
       features: createBaseSchema().extend({

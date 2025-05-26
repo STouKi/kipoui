@@ -28,7 +28,7 @@ const columns = [{
 <template>
   <USeparator
     :avatar="{
-      src: '/logo/logo-whithout-text.png'
+      src: '/images/logo/logo-whithout-text.png'
     }"
   />
 
@@ -38,7 +38,7 @@ const columns = [{
         <UFooterColumns :columns="columns">
           <template #right>
             <NuxtImg
-              src="/logo/logo.png"
+              src="/images/logo/logo.png"
               alt="Kipoui"
               width="200"
             />

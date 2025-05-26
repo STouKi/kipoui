@@ -42,7 +42,7 @@ useSeoMeta({
       :features="section.features"
     >
       <NuxtImg
-        :src="`/${section.image}.svg`"
+        :src="`/images/${section.image}.svg`"
         class="w-full h-full object-contain"
       />
     </UPageSection>

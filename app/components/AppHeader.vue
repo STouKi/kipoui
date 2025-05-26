@@ -27,7 +27,7 @@ const items = computed(() => [
     <template #left>
       <NuxtLink to="/">
         <NuxtImg
-          src="/logo/logo.png"
+          src="/images/logo/logo.png"
           alt="Kipoui"
           width="60"
         />

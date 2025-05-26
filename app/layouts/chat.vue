@@ -93,7 +93,7 @@ defineShortcuts({
           class="flex items-center gap-1"
         >
           <NuxtImg
-            src="/logo/logo-whithout-text.png"
+            src="/images/logo/logo-whithout-text.png"
             alt="Kipoui"
             width="30"
           />
