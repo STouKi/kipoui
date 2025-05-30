@@ -1,6 +1,9 @@
 name: Deploy to NuxtHub
 on: push
 
+env:
+  NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
+
 jobs:
   deploy:
     name: "Deploy to NuxtHub"
