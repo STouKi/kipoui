@@ -1,11 +1,6 @@
 name: Deploy to NuxtHub
 on: push
 
-env:
-  NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
-  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-  SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-
 jobs:
   deploy:
     name: "Deploy to NuxtHub"
@@ -36,7 +31,11 @@ jobs:
         run: bunx nuxthub@latest ensure
 
       - name: Build application
-        run: bun run build
+        run: node --max-old-space-size=8192 node_modules/.bin/nuxt build
+        env:
+          NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
       - name: Deploy to NuxtHub
         uses: nuxt-hub/action@v1
