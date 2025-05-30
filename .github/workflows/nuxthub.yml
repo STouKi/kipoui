@@ -27,7 +27,7 @@ jobs:
 
       - name: Increase Node memory limit
         run: |
-        echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
+          echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: bun install
