@@ -1,4 +1,4 @@
-import { getUser } from '../utils/getUser'
+import { getUser, getChats } from '../utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const user = await getUser(event)
@@ -7,5 +7,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  return (await useDrizzle().select().from(tables.chats).where(eq(tables.chats.profileId, user.id))).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+  return await getChats(event, user.id)
 })

@@ -1,4 +1,4 @@
-import { getUser } from '../../utils/getUser'
+import { getUser, getChatWithMessages } from '../../utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const user = await getUser(event)
@@ -9,12 +9,9 @@ export default defineEventHandler(async (event) => {
 
   const { id } = getRouterParams(event)
 
-  const chat = await useDrizzle().query.chats.findFirst({
-    where: (chat, { eq }) => and(eq(chat.id, Number(id)), eq(chat.profileId, user.id)),
-    with: {
-      messages: true
-    }
-  })
-
-  return chat
+  const { chat, messages } = await getChatWithMessages(event, Number(id), user.id)
+  return {
+    ...chat,
+    messages
+  }
 })

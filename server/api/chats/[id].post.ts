@@ -1,6 +1,6 @@
 import { streamText } from 'ai'
 import { createWorkersAI } from 'workers-ai-provider'
-import { getUser } from '../../utils/getUser'
+import { getUser, useSupabase, getChatWithMessages, addMessage } from '../../utils/supabase'
 
 defineRouteMeta({
   openAPI: {
@@ -16,34 +16,71 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  const db = useDrizzle()
-  const profile = await db.query.profiles.findFirst({
-    where: (profile, { eq }) => eq(profile.id, user.id),
-    with: {
-      physicalData: true,
-      goals: true,
-      habits: true,
-      medicalData: true,
-      preferences: true
-    }
-  })
+  const supabase = await useSupabase(event)
 
-  const age = profile?.physicalData?.birthDate ? new Date().getFullYear() - new Date(profile.physicalData.birthDate).getFullYear() : 0
-  const sex = profile?.physicalData?.gender === 'male' ? 'masculin' : 'féminin'
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single()
+
+  if (profileError) throw profileError
+
+  const { data: physicalData } = await supabase
+    .from('physical_data')
+    .select('*')
+    .eq('profile_id', user.id)
+    .single()
+
+  const { data: goals } = await supabase
+    .from('goals')
+    .select('*')
+    .eq('profile_id', user.id)
+    .single()
+
+  const { data: habits } = await supabase
+    .from('habits')
+    .select('*')
+    .eq('profile_id', user.id)
+    .single()
+
+  const { data: medicalData } = await supabase
+    .from('medical_data')
+    .select('*')
+    .eq('profile_id', user.id)
+    .single()
+
+  const { data: preferences } = await supabase
+    .from('preferences')
+    .select('*')
+    .eq('profile_id', user.id)
+    .single()
+
+  const profileWithRelations = {
+    ...profile,
+    physical_data: physicalData || null,
+    goals: goals || null,
+    habits: habits || null,
+    medical_data: medicalData || null,
+    preferences: preferences || null
+  }
+
+  const age = profileWithRelations?.physical_data?.birth_date ? new Date().getFullYear() - new Date(profileWithRelations.physical_data.birth_date).getFullYear() : 0
+  const sex = profileWithRelations?.physical_data?.gender === 'male' ? 'masculin' : 'féminin'
 
   const systemPrompt = `
   Contexte :
-  Je m’appelle ${profile?.username}, je suis de sexe ${sex}, j’ai ${age} ans, je mesure ${profile?.physicalData?.heightCm}cm pour ${profile?.physicalData?.weightKg}kg, et je souhaite atteindre les ${profile?.goals?.targetWeight} kilos de façon saine, durable et sans pression inutile.
+  Je m'appelle ${profileWithRelations?.username}, je suis de sexe ${sex}, j'ai ${age} ans, je mesure ${profileWithRelations?.physical_data?.height_cm}cm pour ${profileWithRelations?.physical_data?.weight_kg}kg, et je souhaite atteindre les ${profileWithRelations?.goals?.target_weight} kilos de façon saine, durable et sans pression inutile.
   Voici mon profil santé et habitudes actuelles :
-    - Activité physique : Je fais du sport ${profile?.habits?.sportWeekFrequency} fois par semaine
-    ${profile?.habits?.compulsivesHabits ? '- Habitudes compulsives : grignotages, fringales, envies de sucre' : ''}
-    ${profile?.habits?.diet ? '- Régime : ' + profile?.habits?.diet : ''}
-    ${profile?.habits?.religiousRegime ? '- Régime religieux : ' + profile?.habits?.religiousRegime : ''}
-    ${profile?.medicalData?.medicalRegimen ? '- Régime médical : ' + profile?.medicalData?.medicalRegimen : ''}
-    ${profile?.medicalData?.allergies ? '- Allergies : ' + profile?.medicalData?.allergies.join(', ') : ''}
-    ${profile?.medicalData?.eatingDisorders ? '- troubles alimentaires : ' + profile?.medicalData?.eatingDisorders.join(', ') : ''}
-    ${profile?.preferences?.dislikes ? '- Je n\'aime pas : ' + profile?.preferences?.dislikes.join(', ') : ''}
-    ${profile?.profileDetail ? '- Infos supplémentaires : ' + profile?.profileDetail : ''}
+    - Activité physique : Je fais du sport ${profileWithRelations?.habits?.sport_week_frequency} fois par semaine
+    ${profileWithRelations?.habits?.compulsive_habits ? '- Habitudes compulsives : grignotages, fringales, envies de sucre' : ''}
+    ${profileWithRelations?.habits?.diet ? '- Régime : ' + profileWithRelations?.habits?.diet : ''}
+    ${profileWithRelations?.habits?.religious_regime ? '- Régime religieux : ' + profileWithRelations?.habits?.religious_regime : ''}
+    ${profileWithRelations?.medical_data?.medical_regimen ? '- Régime médical : ' + profileWithRelations?.medical_data?.medical_regimen : ''}
+    ${profileWithRelations?.medical_data?.allergies ? '- Allergies : ' + profileWithRelations?.medical_data?.allergies.join(', ') : ''}
+    ${profileWithRelations?.medical_data?.eating_disorders ? '- troubles alimentaires : ' + profileWithRelations?.medical_data?.eating_disorders.join(', ') : ''}
+    ${profileWithRelations?.preferences?.dislikes ? '- Je n\'aime pas : ' + profileWithRelations?.preferences?.dislikes.join(', ') : ''}
+    ${profileWithRelations?.profile_detail ? '- Infos supplémentaires : ' + profileWithRelations?.profile_detail : ''}
 
   Rôle :
   Tu es mon coach personnel, un nutritionniste expérimenté avec plus de 20 ans de pratique.
@@ -80,20 +117,16 @@ export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event)
   const { messages } = await readBody(event)
 
-  const gateway = process.env.CLOUDFLARE_AI_GATEWAY_ID
+  const gateway = process.env.CLOUDFLARE_AI_GATEWAY_ID && process.env.CLOUDFLARE_AI_API_KEY
     ? {
         id: process.env.CLOUDFLARE_AI_GATEWAY_ID,
+        token: process.env.CLOUDFLARE_AI_API_KEY,
         cacheTtl: 60 * 60 * 24
       }
     : undefined
   const workersAI = createWorkersAI({ binding: hubAI(), gateway })
 
-  const chat = await db.query.chats.findFirst({
-    where: (chat, { eq }) => and(eq(chat.id, Number(id)), eq(chat.profileId, user.id)),
-    with: {
-      messages: true
-    }
-  })
+  const { chat, messages: chatMessages } = await getChatWithMessages(event, Number(id), user.id)
   if (!chat) {
     throw createError({ statusCode: 404, statusMessage: 'Chat not found' })
   }
@@ -111,22 +144,24 @@ export default defineEventHandler(async (event) => {
         - Do not use markdown, just plain text`
       }, {
         role: 'user',
-        content: chat.messages[0]!.content
+        content: chatMessages[0].content!
       }]
     }, {
       gateway
     })
-    setHeader(event, 'X-Chat-Title', title.replace(/:/g, '').split('\n')[0])
-    await db.update(tables.chats).set({ title }).where(eq(tables.chats.id, Number(id)))
+
+    const cleaned = title.replace(/:/g, '').split('\n')[0]
+    setHeader(event, 'X-Chat-Title', cleaned)
+    const supabaseClient = await useSupabase(event)
+    await supabaseClient
+      .from('chats')
+      .update({ title: cleaned })
+      .eq('id', Number(id))
   }
 
   const lastMessage = messages[messages.length - 1]
   if (lastMessage.role === 'user' && messages.length > 1) {
-    await db.insert(tables.messages).values({
-      chatId: Number(id),
-      role: 'user',
-      content: lastMessage.content
-    })
+    await addMessage(event, Number(id), 'user', lastMessage.content)
   }
 
   return streamText({
@@ -135,11 +170,7 @@ export default defineEventHandler(async (event) => {
     messages,
     maxTokens: 10000,
     async onFinish(response) {
-      await db.insert(tables.messages).values({
-        chatId: Number(id),
-        role: 'assistant',
-        content: response.text
-      })
+      await addMessage(event, Number(id), 'assistant', response.text)
     }
   }).toDataStreamResponse()
 })

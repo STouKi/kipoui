@@ -22,14 +22,13 @@ const { data: chats, refresh: refreshChats } = await useFetch('/api/chats', {
     label: chat.title || 'Untitled',
     to: `/chat/${chat.id}`,
     icon: 'i-lucide-message-circle',
-    createdAt: chat.createdAt
+    createdAt: chat.created_at
   }))
 })
 
 onNuxtReady(async () => {
   const first10 = (chats.value || []).slice(0, 10)
   for (const chat of first10) {
-    // prefetch the chat and let the browser cache it
     await $fetch(`/api/chats/${chat.id}`)
   }
 })

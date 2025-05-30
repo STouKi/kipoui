@@ -1,4 +1,4 @@
-import { getUser } from '../../utils/getUser'
+import { getUser, deleteChat } from '../../utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const user = await getUser(event)
@@ -9,9 +9,5 @@ export default defineEventHandler(async (event) => {
 
   const { id } = getRouterParams(event)
 
-  const db = useDrizzle()
-
-  return await db.delete(tables.chats)
-    .where(and(eq(tables.chats.id, Number(id)), eq(tables.chats.profileId, user.id)))
-    .returning()
+  return await deleteChat(event, Number(id), user.id)
 })

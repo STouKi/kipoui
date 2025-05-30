@@ -1,4 +1,4 @@
-import { getUser } from '../utils/getUser'
+import { getUser, createChat, addMessage } from '../utils/supabase'
 
 export default defineEventHandler(async (event) => {
   const user = await getUser(event)
@@ -8,18 +8,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const { input } = await readBody(event)
-  const db = useDrizzle()
-
-  const [chat] = await db.insert(tables.chats).values({
-    title: '',
-    profileId: user.id
-  }).returning()
-
-  await db.insert(tables.messages).values({
-    chatId: chat.id,
-    role: 'user',
-    content: input
-  })
+  const chat = await createChat(event, user.id, '')
+  await addMessage(event, chat.id, 'user', input)
 
   return chat
 })
