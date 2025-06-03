@@ -2,8 +2,6 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-// const supabase = useSupabaseClient()
-
 definePageMeta({
   layout: 'auth'
 })
@@ -13,8 +11,6 @@ useSeoMeta({
   title: 'Inscription',
   description: 'Créer un compte pour commencer'
 })
-
-// const toast = useToast()
 
 const fields = [{
   name: 'email',
@@ -36,8 +32,10 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log(payload)
-  /* const { email, password } = payload.data
+  const supabase = useSupabaseClient()
+  const toast = useToast()
+
+  const { email, password } = payload.data
 
   const { error } = await supabase.auth.signUp({
     email,
@@ -63,7 +61,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     description: 'Inscription effectuée avec succès',
     color: 'success',
     icon: 'i-lucide-check-circle'
-  }) */
+  })
 }
 </script>
 
