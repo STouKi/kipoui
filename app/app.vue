@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { fr } from '@nuxt/ui/locale'
+
 const colorMode = useColorMode()
 
 const color = computed(() => colorMode.value === 'dark' ? '#020618' : 'white')
@@ -13,7 +15,7 @@ useHead({
     { rel: 'icon', href: '/favicon.ico' }
   ],
   htmlAttrs: {
-    lang: 'en'
+    lang: 'fr'
   }
 })
 
@@ -45,7 +47,7 @@ provide('navigation', navigation)
 </script>
 
 <template>
-  <UApp>
+  <UApp :locale="fr">
     <NuxtLoadingIndicator />
 
     <NuxtLayout>

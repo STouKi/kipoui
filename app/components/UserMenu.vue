@@ -46,8 +46,12 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     }
   }]
 }], [{
-  label: 'Profil',
-  icon: 'i-lucide-user',
+  label: 'Accueil',
+  icon: 'i-lucide-home',
+  to: '/'
+}, {
+  label: 'Tableau de bord',
+  icon: 'i-lucide-layout-dashboard',
   to: '/tableau-de-bord'
 }, {
   label: 'Chat',
