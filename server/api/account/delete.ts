@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../../types/supabase'
-import { getUser } from '../../utils/supabase'
+import { getAuthUser } from '../../repositories/baseRepository'
 
 export default defineEventHandler(async (event) => {
   try {
-    const user = await getUser(event)
+    const user = await getAuthUser(event)
 
     const supabaseAdmin = createClient<Database>(
       process.env.SUPABASE_URL!,

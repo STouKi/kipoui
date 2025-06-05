@@ -1,11 +1,18 @@
-import { getUser, getChats } from '../utils/supabase'
+import { requireAuth } from '../repositories/baseRepository'
+import { getUserChats } from '../repositories/chatRepository'
 
 export default defineEventHandler(async (event) => {
-  const user = await getUser(event)
+  try {
+    const user = await requireAuth(event)
 
-  if (!user) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    const chats = await getUserChats(event, user.id)
+
+    return chats
+  } catch (error) {
+    console.error('Error in chats.get route:', error)
+    throw createError({
+      statusCode: error.statusCode || 500,
+      message: error.message || 'Error fetching chats'
+    })
   }
-
-  return await getChats(event, user.id)
 })

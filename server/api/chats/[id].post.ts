@@ -1,6 +1,9 @@
 import { streamText } from 'ai'
 import { createWorkersAI } from 'workers-ai-provider'
-import { getUser, useSupabase, getChatWithMessages, addMessage } from '../../utils/supabase'
+import { requireAuth } from '../../repositories/baseRepository'
+import { getFullProfileData } from '../../repositories/profileRepository'
+import { updateChatTitle, getChatWithMessages } from '../../repositories/chatRepository'
+import { addMessage } from '../../repositories/messageRepository'
 
 defineRouteMeta({
   openAPI: {
@@ -10,77 +13,40 @@ defineRouteMeta({
 })
 
 export default defineEventHandler(async (event) => {
-  const user = await getUser(event)
-
+  const user = await requireAuth(event)
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  const supabase = await useSupabase(event)
+  const fullProfile = await getFullProfileData(event, user.id)
 
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-
-  if (profileError) throw profileError
-
-  const { data: physicalData } = await supabase
-    .from('physical_data')
-    .select('*')
-    .eq('profile_id', user.id)
-    .single()
-
-  const { data: goals } = await supabase
-    .from('goals')
-    .select('*')
-    .eq('profile_id', user.id)
-    .single()
-
-  const { data: habits } = await supabase
-    .from('habits')
-    .select('*')
-    .eq('profile_id', user.id)
-    .single()
-
-  const { data: medicalData } = await supabase
-    .from('medical_data')
-    .select('*')
-    .eq('profile_id', user.id)
-    .single()
-
-  const { data: preferences } = await supabase
-    .from('preferences')
-    .select('*')
-    .eq('profile_id', user.id)
-    .single()
-
-  const profileWithRelations = {
-    ...profile,
-    physical_data: physicalData || null,
-    goals: goals || null,
-    habits: habits || null,
-    medical_data: medicalData || null,
-    preferences: preferences || null
+  let age = 0
+  if (fullProfile?.physicalData?.birth_date) {
+    const birthDate = new Date(fullProfile.physicalData.birth_date)
+    const today = new Date()
+    age = today.getFullYear() - birthDate.getFullYear()
+    if (
+      today.getMonth() < birthDate.getMonth()
+      || (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
+    ) {
+      age--
+    }
   }
-
-  const age = profileWithRelations?.physical_data?.birth_date ? new Date().getFullYear() - new Date(profileWithRelations.physical_data.birth_date).getFullYear() : 0
-  const sex = profileWithRelations?.physical_data?.gender === 'male' ? 'masculin' : 'féminin'
+  const sex = fullProfile?.physicalData?.gender === 'male' ? 'masculin' : 'féminin'
 
   const systemPrompt = `
   Contexte :
-  Je m'appelle ${profileWithRelations?.username}, je suis de sexe ${sex}, j'ai ${age} ans, je mesure ${profileWithRelations?.physical_data?.height_cm}cm pour ${profileWithRelations?.physical_data?.weight_kg}kg, et je souhaite atteindre les ${profileWithRelations?.goals?.target_weight} kilos de façon saine, durable et sans pression inutile.
+  Je m'appelle ${fullProfile?.profile?.username}, je suis de sexe ${sex}, j'ai ${age} ans, je mesure ${fullProfile?.physicalData?.height_cm}cm pour ${fullProfile?.physicalData?.weight_kg}kg, et je souhaite atteindre les ${fullProfile?.goals?.target_weight} kilos de façon saine, durable et sans pression inutile.
   Voici mon profil santé et habitudes actuelles :
-    - Activité physique : Je fais du sport ${profileWithRelations?.habits?.sport_week_frequency} fois par semaine
-    ${profileWithRelations?.habits?.compulsive_habits ? '- Habitudes compulsives : grignotages, fringales, envies de sucre' : ''}
-    ${profileWithRelations?.habits?.diet ? '- Régime : ' + profileWithRelations?.habits?.diet : ''}
-    ${profileWithRelations?.habits?.religious_regime ? '- Régime religieux : ' + profileWithRelations?.habits?.religious_regime : ''}
-    ${profileWithRelations?.medical_data?.medical_regimen ? '- Régime médical : ' + profileWithRelations?.medical_data?.medical_regimen : ''}
-    ${profileWithRelations?.medical_data?.allergies ? '- Allergies : ' + profileWithRelations?.medical_data?.allergies.join(', ') : ''}
-    ${profileWithRelations?.medical_data?.eating_disorders ? '- troubles alimentaires : ' + profileWithRelations?.medical_data?.eating_disorders.join(', ') : ''}
-    ${profileWithRelations?.preferences?.dislikes ? '- Je n\'aime pas : ' + profileWithRelations?.preferences?.dislikes.join(', ') : ''}
-    ${profileWithRelations?.profile_detail ? '- Infos supplémentaires : ' + profileWithRelations?.profile_detail : ''}
+    - Activité physique : Je fais du sport ${fullProfile?.habits?.sport_week_frequency} fois par semaine
+    ${fullProfile?.habits?.compulsive_habits ? '- Habitudes compulsives : grignotages, fringales, envies de sucre' : ''}
+    ${fullProfile?.habits?.diet ? '- Régime : ' + fullProfile?.habits?.diet : ''}
+    ${fullProfile?.habits?.religious_regime ? '- Régime religieux : ' + fullProfile?.habits?.religious_regime : ''}
+    ${fullProfile?.medicalData?.medical_regimen ? '- Régime médical : ' + fullProfile?.medicalData?.medical_regimen : ''}
+    ${fullProfile?.medicalData?.allergies ? '- Allergies : ' + fullProfile?.medicalData?.allergies.join(', ') : ''}
+    ${fullProfile?.medicalData?.eating_disorders ? '- troubles alimentaires : ' + fullProfile?.medicalData?.eating_disorders.join(', ') : ''}
+    ${fullProfile?.preferences?.dislikes ? '- Je n\'aime pas : ' + fullProfile?.preferences?.dislikes.join(', ') : ''}
+    ${fullProfile?.profile?.profile_detail ? '- Infos supplémentaires : ' + fullProfile?.profile?.profile_detail : ''}
 
   Rôle :
   Tu es mon coach personnel, un nutritionniste expérimenté avec plus de 20 ans de pratique.
@@ -152,11 +118,7 @@ export default defineEventHandler(async (event) => {
 
     const cleaned = title.replace(/:/g, '').split('\n')[0]
     setHeader(event, 'X-Chat-Title', cleaned)
-    const supabaseClient = await useSupabase(event)
-    await supabaseClient
-      .from('chats')
-      .update({ title: cleaned })
-      .eq('id', Number(id))
+    await updateChatTitle(event, Number(id), cleaned)
   }
 
   const lastMessage = messages[messages.length - 1]
