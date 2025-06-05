@@ -14,8 +14,8 @@ const props = defineProps<{
 const isUpdating = ref(false)
 
 const form = ref({
-  diet: props.habits?.diet || undefined as Diet | undefined,
-  religious_regime: props.habits?.religious_regime || undefined as ReligiousRegime | undefined,
+  diet: props.habits?.diet ?? undefined,
+  religious_regime: props.habits?.religious_regime ?? undefined,
   sport_week_frequency: props.habits?.sport_week_frequency || 0,
   compulsive_habits: props.habits?.compulsive_habits || false
 })
@@ -23,32 +23,38 @@ const form = ref({
 watch(() => props.habits, (newData) => {
   if (newData) {
     form.value = {
-      diet: newData.diet || undefined,
-      religious_regime: newData.religious_regime || undefined,
+      diet: newData.diet ?? undefined,
+      religious_regime: newData.religious_regime ?? undefined,
       sport_week_frequency: newData.sport_week_frequency || 0,
       compulsive_habits: newData.compulsive_habits || false
     }
   }
 }, { deep: true })
 
-const dietOptions = Constants.public.Enums.diet.map((diet) => {
-  const labels: Record<Diet, string> = {
-    vegan: 'Végétalien',
-    vegetarian: 'Végétarien',
-    pescatarian: 'Pescatarian'
-  }
-  return { label: labels[diet], value: diet }
-})
+const dietOptions = [
+  { label: 'Aucun', value: undefined },
+  ...Constants.public.Enums.diet.map((diet) => {
+    const labels: Record<Diet, string> = {
+      vegan: 'Végétalien',
+      vegetarian: 'Végétarien',
+      pescatarian: 'Pescétarien'
+    }
+    return { label: labels[diet], value: diet }
+  })
+]
 
-const religiousRegimeOptions = Constants.public.Enums.religious_regime.map((regime) => {
-  const labels: Record<ReligiousRegime, string> = {
-    halal: 'Halal',
-    kasher: 'Kasher',
-    buddhist: 'Bouddhiste',
-    religious_fasting: 'Jeûne religieux'
-  }
-  return { label: labels[regime], value: regime }
-})
+const religiousRegimeOptions = [
+  { label: 'Aucun', value: undefined },
+  ...Constants.public.Enums.religious_regime.map((regime) => {
+    const labels: Record<ReligiousRegime, string> = {
+      halal: 'Halal',
+      kasher: 'Kasher',
+      buddhist: 'Bouddhiste',
+      religious_fasting: 'Jeûne religieux'
+    }
+    return { label: labels[regime], value: regime }
+  })
+]
 
 const submitData = async () => {
   try {

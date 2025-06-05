@@ -17,7 +17,7 @@ const isUpdating = ref(false)
 const form = ref({
   allergies: props.medicalData?.allergies || [] as Allergy[],
   eating_disorders: props.medicalData?.eating_disorders || [] as EatingDisorder[],
-  medical_regimen: props.medicalData?.medical_regimen || undefined as MedicalRegimen | undefined
+  medical_regimen: props.medicalData?.medical_regimen || [] as MedicalRegimen[]
 })
 
 watch(() => props.medicalData, (newData) => {
@@ -25,7 +25,7 @@ watch(() => props.medicalData, (newData) => {
     form.value = {
       allergies: newData.allergies || [],
       eating_disorders: newData.eating_disorders || [],
-      medical_regimen: newData.medical_regimen || undefined
+      medical_regimen: newData.medical_regimen || []
     }
   }
 }, { deep: true })
@@ -131,6 +131,7 @@ defineExpose({ submitData })
       <USelect
         v-model="form.medical_regimen"
         :items="medicalRegimenOptions"
+        multiple
         placeholder="Sélectionnez votre régime médical"
         :disabled="loading || isUpdating"
         class="w-56"
