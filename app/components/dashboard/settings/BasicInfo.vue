@@ -9,19 +9,54 @@ const props = defineProps<{
 }>()
 
 const fileRef = ref<HTMLInputElement | null>(null)
+const isUploading = ref(false)
+const toast = useToast()
 
-const onFileClick = () => {
-  fileRef.value?.click()
+async function onFileChange(e: Event) {
+  const input = e.target as HTMLInputElement
+
+  if (!input.files?.length) {
+    return
+  }
+
+  const file = input.files[0]!
+
+  const tempUrl = URL.createObjectURL(file)
+  form.value.avatar_url = tempUrl
+
+  isUploading.value = true
+
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await $fetch('/api/upload/avatar', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (response.success) {
+      form.value.avatar_url = response.avatarUrl
+      toast.add({
+        title: 'Avatar mis à jour',
+        description: 'Votre avatar a été téléchargé avec succès',
+        color: 'success'
+      })
+    }
+  } catch (error) {
+    console.error('Error uploading avatar:', error)
+    toast.add({
+      title: 'Erreur',
+      description: error.message || 'Impossible de télécharger l\'avatar',
+      color: 'error'
+    })
+  } finally {
+    isUploading.value = false
+  }
 }
 
-const onFileChange = async (event: Event) => {
-  const target = event.target as HTMLInputElement
-  if (!target.files?.length) return
-
-  const selectedFile = target.files[0]
-  if (selectedFile) {
-    console.log('File selected:', selectedFile.name)
-  }
+function onFileClick() {
+  fileRef.value?.click()
 }
 
 const basicInfoSchema = z.object({
@@ -68,7 +103,11 @@ const submitData = async () => {
           username: form.value.username,
           full_name: form.value.full_name,
           profile_detail: form.value.profile_detail,
-          avatar_url: form.value.avatar_url
+          // L'avatar_url est déjà mis à jour lors du téléchargement
+          // Ne pas inclure l'URL temporaire si elle n'a pas été téléchargée
+          ...(form.value.avatar_url && !form.value.avatar_url.startsWith('blob:') && {
+            avatar_url: form.value.avatar_url
+          })
         }
       }
     })
@@ -129,8 +168,10 @@ defineExpose({ submitData })
           size="lg"
         />
         <UButton
-          label="Choisir"
+          :label="isUploading ? 'Téléchargement...' : 'Choisir'"
           color="neutral"
+          :loading="isUploading"
+          :disabled="isUploading"
           @click="onFileClick"
         />
         <input

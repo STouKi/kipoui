@@ -1,22 +1,33 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 
+type Profile = {
+  id: string
+  username: string
+  full_name: string
+  avatar_url?: string
+  email?: string
+  profile_detail?: string
+  created_at?: string
+  updated_at?: string
+}
+
 defineProps<{
   collapsed?: boolean
 }>()
 
-const user = useSupabaseUser()
 const supabase = useSupabaseClient()
 const toast = useToast()
 const colorMode = useColorMode()
 
+const { data: profile } = await useFetch<Profile>('/api/profile.simple')
+
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
-  icon: 'i-lucide-user',
-  label: user.value?.user_metadata?.name || user.value?.user_metadata?.username || 'Mon compte',
+  label: profile.value?.username || profile.value?.full_name || 'Mon compte',
   avatar: {
-    src: user.value?.user_metadata?.avatar,
-    alt: user.value?.user_metadata?.name || user.value?.user_metadata?.username
+    src: profile.value?.avatar_url,
+    alt: profile.value?.username || profile.value?.full_name
   }
 }], [{
   label: 'Thème',
@@ -94,14 +105,13 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   >
     <UButton
       v-bind="{
-        label: collapsed ? undefined : (user?.user_metadata?.name || user?.user_metadata?.username || 'Mon compte'),
+        label: collapsed ? undefined : (profile?.username || profile?.full_name || 'Mon compte'),
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
       }"
       :avatar="{
-        src: user?.user_metadata?.avatar || undefined,
-        alt: user?.user_metadata?.name || user?.user_metadata?.username
+        src: profile?.avatar_url,
+        alt: profile?.username || profile?.full_name
       }"
-      icon="i-lucide-user"
       color="neutral"
       variant="ghost"
       block

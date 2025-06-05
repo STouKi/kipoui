@@ -49,6 +49,8 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
 
 const copied = ref(false)
 
+const { data: profile } = await useFetch('/api/profile.simple')
+
 function copy(e: MouseEvent, message: Message) {
   clipboard.copy(message.content)
 
@@ -81,7 +83,14 @@ onMounted(() => {
         <UChatMessages
           :messages="messages"
           :status="status"
-          :assistant="{ actions: [{ label: 'Copier', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }] }"
+          :assistant="{ actions: [{ label: 'Copier', icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy', onClick: copy }], icon: 'i-lucide-bot' }"
+          :user="{
+            icon: profile?.avatar_url ? undefined : 'i-lucide-user',
+            avatar: profile?.avatar_url ? {
+              src: profile.avatar_url,
+              alt: (profile?.username ?? profile?.full_name ?? undefined)
+            } : undefined
+          }"
           class="lg:pt-(--ui-header-height) pb-4 sm:pb-6"
           :spacing-offset="160"
         >
@@ -98,6 +107,7 @@ onMounted(() => {
 
         <UChatPrompt
           v-model="input"
+          placeholder="Entrez votre message ici"
           :error="error"
           variant="subtle"
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
