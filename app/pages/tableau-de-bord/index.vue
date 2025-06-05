@@ -21,7 +21,7 @@ definePageMeta({
       <p>
         Pour le moment, seules les options de gestion des paramètres sont disponibles.
         <br><br>
-        N’oubliez pas de compléter au maximum la section “Général” avec vos informations : plus elles sont précises, plus votre chatbot pourra vous accompagner de manière attentive et personnalisée.
+        N’oubliez pas de compléter au maximum la section "Profil" avec vos informations : plus elles sont précises, plus votre chatbot pourra vous accompagner de manière attentive et personnalisée.
       </p>
 
       <p>

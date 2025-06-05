@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 const links = [[{
-  label: 'Général',
+  label: 'Profil',
   icon: 'i-lucide-user',
   to: '/tableau-de-bord/parametres',
   exact: true

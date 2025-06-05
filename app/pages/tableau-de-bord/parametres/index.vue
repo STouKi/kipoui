@@ -76,16 +76,7 @@ async function onSubmit() {
       <UPageCard
         title="Profil"
         variant="naked"
-        orientation="horizontal"
-      >
-        <UButton
-          form="settings"
-          label="Enregistrer les modifications"
-          color="neutral"
-          type="submit"
-          class="w-fit lg:ms-auto"
-        />
-      </UPageCard>
+      />
 
       <DashboardSettingsBasicInfo
         ref="basicInfoRef"
@@ -116,6 +107,16 @@ async function onSubmit() {
         ref="preferencesRef"
         :preferences="preferences"
       />
+
+      <UPageCard variant="naked">
+        <UButton
+          form="settings"
+          label="Enregistrer les modifications"
+          color="neutral"
+          type="submit"
+          class="w-full sm:w-fit sm:ms-auto"
+        />
+      </UPageCard>
     </div>
   </UForm>
 </template>

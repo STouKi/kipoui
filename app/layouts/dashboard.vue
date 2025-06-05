@@ -17,9 +17,8 @@ const links = [[{
   to: '/tableau-de-bord/parametres',
   icon: 'i-lucide-settings',
   defaultOpen: true,
-  type: 'trigger',
   children: [{
-    label: 'Général',
+    label: 'Profil',
     to: '/tableau-de-bord/parametres',
     exact: true,
     onSelect: () => {
@@ -39,12 +38,6 @@ const links = [[{
     }
   }]
 }]] satisfies NavigationMenuItem[][]
-
-const groups = computed(() => [{
-  id: 'links',
-  label: 'Navigation',
-  items: links.flat()
-}])
 
 onMounted(async () => {
   const cookie = useCookie('cookie-consent')
@@ -83,12 +76,6 @@ onMounted(async () => {
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #default="{ collapsed }">
-        <UDashboardSearchButton
-          label="Rechercher..."
-          :collapsed="collapsed"
-          class="bg-transparent ring-default"
-        />
-
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[0]"
@@ -110,8 +97,6 @@ onMounted(async () => {
         <UserMenu :collapsed="collapsed" />
       </template>
     </UDashboardSidebar>
-
-    <UDashboardSearch :groups="groups" />
 
     <slot />
   </UDashboardGroup>
