@@ -33,8 +33,8 @@ const fields = [{
 }]
 
 const schema = z.object({
-  email: z.string().email('Email invalide'),
-  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+  email: z.string({ message: 'Le champ email est obligatoire' }).email('Email invalide'),
+  password: z.string({ message: 'Le mot de passe est obligatoire' }).min(8, 'Le mot de passe doit contenir au moins 8 caractères')
 })
 
 type Schema = z.output<typeof schema>

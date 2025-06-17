@@ -63,6 +63,50 @@ export type Database = {
           }
         ]
       }
+      customers: {
+        Row: {
+          created_at: string
+          id: string
+          last_payment_date: string | null
+          payment_method_id: string | null
+          profile_id: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_end_date: string | null
+          subscription_status: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_payment_date?: string | null
+          payment_method_id?: string | null
+          profile_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_payment_date?: string | null
+          payment_method_id?: string | null
+          profile_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end_date?: string | null
+          subscription_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'customers_profile_id_fkey'
+            columns: ['profile_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       goals: {
         Row: {
           deadline: string | null

@@ -25,13 +25,15 @@ const fields = [{
 }]
 
 const schema = z.object({
-  email: z.string().email('Email invalide'),
-  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+  email: z.string({ message: 'Le champ email est obligatoire' }).email('Email invalide'),
+  password: z.string({ message: 'Le mot de passe est obligatoire' }).min(8, 'Le mot de passe doit contenir au moins 8 caractères')
 })
 
 type Schema = z.output<typeof schema>
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
+  const { priceId } = useRoute().query
+
   const supabase = useSupabaseClient()
   const toast = useToast()
 
@@ -41,7 +43,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     email,
     password,
     options: {
-      emailRedirectTo: `${useRequestURL().origin}/tableau-de-bord`
+      emailRedirectTo: priceId ? `${useRequestURL().origin}/paiement?priceId=${priceId}` : `${useRequestURL().origin}/tableau-de-bord`
     }
   })
 
@@ -58,7 +60,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
   toast.add({
     title: 'Succès',
-    description: 'Inscription effectuée avec succès',
+    description: 'Un mail de confirmation vous a été envoyé',
     color: 'success',
     icon: 'i-lucide-check-circle'
   })

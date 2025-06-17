@@ -9,7 +9,9 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-og-image',
     '@nuxtjs/supabase',
-    '@nuxthub/core'
+    '@nuxthub/core',
+    '@unlok-co/nuxt-stripe',
+    '@pinia/nuxt'
   ],
 
   devtools: {
@@ -21,6 +23,15 @@ export default defineNuxtConfig({
   mdc: {
     highlight: {
       shikiEngine: 'javascript'
+    }
+  },
+
+  runtimeConfig: {
+    public: {
+      appUrl: process.env.APP_URL || 'http://localhost:3000'
+    },
+    stripe: {
+      webhookSecret: process.env.STRIPE_WEBHOOK_SECRET
     }
   },
 
@@ -52,6 +63,15 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
+    }
+  },
+
+  stripe: {
+    server: {
+      key: process.env.STRIPE_SECRET_KEY
+    },
+    client: {
+      key: process.env.STRIPE_PUBLIC_KEY
     }
   },
 

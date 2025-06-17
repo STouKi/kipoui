@@ -100,12 +100,9 @@ export const collections = {
         z.object({
           title: z.string().nonempty(),
           description: z.string().nonempty(),
-          price: z.object({
-            month: z.string().nonempty(),
-            year: z.string().nonempty()
-          }),
-          billing_period: z.string().nonempty(),
-          billing_cycle: z.string().nonempty(),
+          price: z.string().nonempty(),
+          discount: z.string().optional(),
+          billingCycle: z.string().nonempty(),
           button: createLinkSchema(),
           features: z.array(z.string().nonempty()),
           highlight: z.boolean().optional()

@@ -11,7 +11,8 @@ useSeoMeta({
 })
 
 definePageMeta({
-  layout: 'chat'
+  layout: 'chat',
+  middleware: 'subscription-check'
 })
 
 async function createChat(prompt: string) {
