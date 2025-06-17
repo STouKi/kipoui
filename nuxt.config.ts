@@ -28,10 +28,14 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      appUrl: process.env.APP_URL || 'http://localhost:3000'
+      appUrl: process.env.APP_URL
     },
     stripe: {
       webhookSecret: process.env.STRIPE_WEBHOOK_SECRET
+    },
+    supabase: {
+      serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+      url: process.env.SUPABASE_URL
     }
   },
 

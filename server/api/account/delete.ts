@@ -4,11 +4,11 @@ import { getAuthUser } from '../../repositories/supabaseRepository'
 
 export default defineEventHandler(async (event) => {
   try {
-    const user = await getAuthUser(event)
+    const config = useRuntimeConfig()
 
     const supabaseAdmin = createClient<Database>(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      config.supabase.url,
+      config.supabase.serviceRoleKey,
       {
         auth: {
           autoRefreshToken: false,
@@ -17,10 +17,13 @@ export default defineEventHandler(async (event) => {
       }
     )
 
+    const user = await getAuthUser(event)
+
     const { error } = await supabaseAdmin.auth.admin.deleteUser(user!.id)
 
     if (error) {
       console.error('Error deleting user:', error)
+
       throw createError({
         statusCode: 500,
         message: 'Erreur lors de la suppression du compte'
@@ -30,6 +33,7 @@ export default defineEventHandler(async (event) => {
     return { success: true, message: 'Compte supprimé avec succès' }
   } catch (error: unknown) {
     console.error('Error in delete account handler:', error)
+
     const err = error as { statusCode?: number, message?: string }
     throw createError({
       statusCode: err.statusCode || 500,
