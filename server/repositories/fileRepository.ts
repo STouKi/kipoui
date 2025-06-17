@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import { getSupabaseClient, handleError } from './baseRepository'
+import { getSupabaseClient, handleError } from './supabaseRepository'
 
 /**
  * Upload a file to Supabase Storage

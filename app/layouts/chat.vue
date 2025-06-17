@@ -15,7 +15,7 @@ const deleteModal = overlay.create(LazyModalConfirm, {
   }
 })
 
-const { data: chats, refresh: refreshChats } = await useFetch('/api/chats', {
+const { data: chats, refresh: refreshChats } = await useFetch('/api/chats/get', {
   key: 'chats',
   transform: data => data.map(chat => ({
     id: chat.id.toString(),
@@ -171,5 +171,7 @@ defineShortcuts({
     />
 
     <slot />
+
+    <SubscriptionRequiredOverlay />
   </UDashboardGroup>
 </template>

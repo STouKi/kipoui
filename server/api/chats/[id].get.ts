@@ -1,4 +1,4 @@
-import { requireAuth } from '../../repositories/baseRepository'
+import { requireAuth } from '../../repositories/supabaseRepository'
 import { getChatWithMessages } from '../../repositories/chatRepository'
 
 export default defineEventHandler(async (event) => {

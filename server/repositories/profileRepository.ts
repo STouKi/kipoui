@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { Database } from '../types/supabase'
-import { getSupabaseClient, handleError } from './baseRepository'
+import { getSupabaseClient, handleError } from './supabaseRepository'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type PhysicalData = Database['public']['Tables']['physical_data']['Row']

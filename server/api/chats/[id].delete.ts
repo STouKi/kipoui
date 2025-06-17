@@ -1,4 +1,4 @@
-import { requireAuth } from '../../repositories/baseRepository'
+import { requireAuth } from '../../repositories/supabaseRepository'
 import { deleteChat } from '../../repositories/chatRepository'
 
 export default defineEventHandler(async (event) => {

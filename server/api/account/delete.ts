@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../../types/supabase'
-import { getAuthUser } from '../../repositories/baseRepository'
+import { getAuthUser } from '../../repositories/supabaseRepository'
 
 export default defineEventHandler(async (event) => {
   try {

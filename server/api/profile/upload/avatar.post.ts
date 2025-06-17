@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
-import { requireAuth } from '../../repositories/baseRepository'
-import { uploadFile } from '../../repositories/fileRepository'
-import { updateProfile } from '../../repositories/profileRepository'
+import { requireAuth } from '../../../repositories/supabaseRepository'
+import { uploadFile } from '../../../repositories/fileRepository'
+import { updateProfile } from '../../../repositories/profileRepository'
 
 export default defineEventHandler(async (event) => {
   const { id } = await requireAuth(event)

@@ -49,7 +49,7 @@ const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
 
 const copied = ref(false)
 
-const { data: profile } = await useFetch('/api/profile.simple')
+const { data: profile } = await useFetch('/api/profile/simple-get')
 
 function copy(e: MouseEvent, message: Message) {
   clipboard.copy(message.content)

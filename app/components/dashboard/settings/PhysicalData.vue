@@ -80,7 +80,7 @@ const submitData = async () => {
   }
 
   try {
-    await $fetch('/api/profile', {
+    await $fetch('/api/profile/post', {
       method: 'POST',
       body: {
         physicalData: {

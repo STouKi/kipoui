@@ -1,5 +1,5 @@
-import { requireAuth } from '../repositories/baseRepository'
-import { updateFullProfileData } from '../repositories/profileRepository'
+import { requireAuth } from '../../repositories/supabaseRepository'
+import { updateFullProfileData } from '../../repositories/profileRepository'
 
 export default defineEventHandler(async (event) => {
   try {

@@ -140,7 +140,9 @@ export type Database = {
             | Database['public']['Enums']['eating_disorders'][]
             | null
           id: number
-          medical_regimen: Database['public']['Enums']['medical_regimen'][] | null
+          medical_regimen:
+            | Database['public']['Enums']['medical_regimen'][]
+            | null
           profile_id: string | null
         }
         Insert: {

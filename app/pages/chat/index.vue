@@ -17,13 +17,13 @@ definePageMeta({
 async function createChat(prompt: string) {
   input.value = prompt
   loading.value = true
-  const chat = await $fetch('/api/chats', {
+  const chat = await useFetch('/api/chats/post', {
     method: 'POST',
     body: { input: prompt }
   })
 
   refreshNuxtData('chats')
-  navigateTo(`/chat/${chat!.id}`)
+  navigateTo(`/chat/${chat.data.value?.id}`)
 }
 
 function onSubmit() {

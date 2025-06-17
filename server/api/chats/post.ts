@@ -1,6 +1,6 @@
-import { requireAuth } from '../repositories/baseRepository'
-import { createChat } from '../repositories/chatRepository'
-import { addMessage } from '../repositories/messageRepository'
+import { requireAuth } from '../../repositories/supabaseRepository'
+import { createChat } from '../../repositories/chatRepository'
+import { addMessage } from '../../repositories/messageRepository'
 
 export default defineEventHandler(async (event) => {
   try {

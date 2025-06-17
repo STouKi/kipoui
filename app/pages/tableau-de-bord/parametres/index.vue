@@ -17,7 +17,7 @@ const habitsRef = ref<ComponentWithSubmit | null>(null)
 const medicalDataRef = ref<ComponentWithSubmit | null>(null)
 const goalsRef = ref<ComponentWithSubmit | null>(null)
 
-const { data: profileData, refresh } = await useFetch('/api/profile')
+const { data: profileData, refresh } = await useFetch('/api/profile/get')
 
 const profile = ref(profileData.value?.profile || null)
 const physicalData = ref(profileData.value?.physicalData || null)

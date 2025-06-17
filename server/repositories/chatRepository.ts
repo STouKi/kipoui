@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { Database } from '../types/supabase'
-import { getSupabaseClient, handleError } from './baseRepository'
+import { getSupabaseClient, handleError } from './supabaseRepository'
 
 type Chat = Database['public']['Tables']['chats']['Row']
 type Message = Database['public']['Tables']['messages']['Row']

@@ -20,7 +20,7 @@ const supabase = useSupabaseClient()
 const toast = useToast()
 const colorMode = useColorMode()
 
-const { data: profile } = await useFetch<Profile>('/api/profile.simple')
+const { data: profile } = await useFetch<Profile>('/api/profile/simple-get')
 
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',

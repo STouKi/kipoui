@@ -1,6 +1,6 @@
 import { streamText } from 'ai'
 import { createWorkersAI } from 'workers-ai-provider'
-import { requireAuth } from '../../repositories/baseRepository'
+import { requireAuth } from '../../repositories/supabaseRepository'
 import { getFullProfileData } from '../../repositories/profileRepository'
 import { updateChatTitle, getChatWithMessages } from '../../repositories/chatRepository'
 import { addMessage } from '../../repositories/messageRepository'

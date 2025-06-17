@@ -1,5 +1,5 @@
-import { requireAuth } from '../repositories/baseRepository'
-import { getProfileById } from '../repositories/profileRepository'
+import { requireAuth } from '../../repositories/supabaseRepository'
+import { getProfileById } from '../../repositories/profileRepository'
 
 export default defineEventHandler(async (event) => {
   try {
