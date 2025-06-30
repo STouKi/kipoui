@@ -9,10 +9,12 @@ definePageMeta({
   layout: 'auth'
 })
 
+useHead({
+  title: 'Mot de passe oublié'
+})
 useSeoMeta({
-  titleTemplate: 'Kipoui - Mot de passe oublié',
-  title: 'Mot de passe oublié',
-  description: 'Réinitialisez votre mot de passe'
+  description: 'Réinitialisez votre mot de passe',
+  robots: 'noindex, nofollow'
 })
 
 const fields = [{

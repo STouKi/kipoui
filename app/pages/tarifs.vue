@@ -1,12 +1,13 @@
 <script setup lang="ts">
 const { data: page } = await useAsyncData('pricing', () => queryCollection('pricing').first())
 
-const title = page.value?.seo?.title || page.value?.title
-const description = page.value?.seo?.description || page.value?.description
+const title = page.value?.seo?.title
+const description = page.value?.seo?.description
 
+useHead({
+  title
+})
 useSeoMeta({
-  titleTemplate: 'Kipoui - Tarifs',
-  title,
   ogTitle: title,
   description,
   ogDescription: description

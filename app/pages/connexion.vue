@@ -9,10 +9,12 @@ definePageMeta({
   layout: 'auth'
 })
 
+useHead({
+  title: 'Connexion'
+})
 useSeoMeta({
-  titleTemplate: 'Kipoui - Connexion',
-  title: 'Connexion',
-  description: 'Se connecter pour continuer'
+  description: 'Se connecter pour continuer',
+  robots: 'noindex, nofollow'
 })
 
 const fields = [{

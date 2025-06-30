@@ -7,6 +7,14 @@ watchEffect(() => {
   }
 })
 
+useHead({
+  title: 'Paiement'
+})
+useSeoMeta({
+  description: 'Paiement',
+  robots: 'noindex, nofollow'
+})
+
 async function redirectToCheckout() {
   const route = useRoute()
   const { priceId, trial } = route.query

@@ -4,9 +4,10 @@ const { data: page } = await useAsyncData('aPropos', () => queryCollection('aPro
 const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
 
+useHead({
+  title
+})
 useSeoMeta({
-  titleTemplate: 'Kipoui - A propos',
-  title,
   ogTitle: title,
   description,
   ogDescription: description

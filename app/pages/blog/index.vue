@@ -8,7 +8,6 @@ const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
 
 useSeoMeta({
-  titleTemplate: 'Kipoui - Blog',
   title,
   ogTitle: title,
   description,

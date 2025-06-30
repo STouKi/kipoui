@@ -1,7 +1,8 @@
 <script setup lang="ts">
+useHead({
+  title: 'Conditions Générales d\'Utilisation'
+})
 useSeoMeta({
-  titleTemplate: 'Kipoui - Conditions Générales d\'Utilisation',
-  title: 'Conditions Générales d\'Utilisation',
   description: 'Conditions générales d\'utilisation de Kipoui'
 })
 </script>

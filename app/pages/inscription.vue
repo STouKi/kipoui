@@ -6,10 +6,12 @@ definePageMeta({
   layout: 'auth'
 })
 
+useHead({
+  title: 'Inscription'
+})
 useSeoMeta({
-  titleTemplate: 'Kipoui - %s',
-  title: 'Inscription',
-  description: 'Créer un compte pour commencer'
+  description: 'Créer un compte pour commencer',
+  robots: 'noindex, nofollow'
 })
 
 const fields = [{

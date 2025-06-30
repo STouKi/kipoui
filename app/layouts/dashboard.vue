@@ -6,12 +6,16 @@ const toast = useToast()
 const open = ref(false)
 
 const links = [[{
-  label: 'Accueil',
-  icon: 'i-lucide-house',
+  label: 'Tableau de bord',
+  icon: 'i-lucide-circle-gauge',
   to: '/tableau-de-bord',
   onSelect: () => {
     open.value = false
   }
+}, {
+  label: 'Chat',
+  icon: 'i-lucide-message-square-text',
+  to: '/chat'
 }, {
   label: 'Paramètres',
   to: '/tableau-de-bord/parametres',

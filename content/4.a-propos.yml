@@ -1,12 +1,6 @@
 seo:
-  title: Kipoui - Votre coach nutrition personnalisé
+  title: À propos
   description: Une application bienveillante qui combine nutrition, motivation et intelligence artificielle pour un accompagnement sur mesure.
-navigation: false
-text:
-  title: À propos de Kipoui
-  description: Kipoui, c’est bien plus qu’un simple chatbot. C’est une aventure humaine, née d’un vécu, d’un besoin, et surtout d’une transformation.
-  orientation: horizontal
-  image: professional-card.svg
 
 sections:
   - title: À propos de Kipoui

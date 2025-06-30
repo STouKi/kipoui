@@ -72,7 +72,7 @@ async function verifyCheckoutSession() {
   <UDashboardPanel id="home">
     <template #header>
       <UDashboardNavbar
-        title="Accueil"
+        title="Tableau de bord"
         :ui="{ right: 'gap-3' }"
       />
     </template>

@@ -1,9 +1,10 @@
+seo:
+  title: Votre coach nutrition personnalisé
+  description: Une application bienveillante qui combine nutrition, motivation et intelligence artificielle pour un accompagnement sur mesure.
+
 title: Bienvenue sur Kipoui
 description: Kipoui est votre coach nutrition 100% personnalisé, disponible 24h/24. Créez un lien unique avec votre alimentation, retrouvez énergie, équilibre et motivation.
-seo:
-  title: Kipoui - Votre coach nutrition personnalisé
-  description: Une application bienveillante qui combine nutrition, motivation et intelligence artificielle pour un accompagnement sur mesure.
-navigation: false
+
 hero:
   links:
     - label: Démarrer maintenant
@@ -17,6 +18,7 @@ hero:
       color: neutral
       variant: subtle
       to: /a-propos
+
 sections:
   - title: Un coach qui vous comprend
     description: "Kipoui n'est pas une simple appli : c'est un véritable compagnon de route. Avec un profil personnalisé et un chatbot à votre écoute, vous êtes accompagné de façon unique, bienveillante et motivante."
@@ -47,6 +49,7 @@ sections:
       - name: Sans jugement
         description: Vous avancez à votre rythme, avec bienveillance et sérénité.
         icon: i-lucide-leaf
+
 features:
   title: Ce que Kipoui vous apporte
   description: Bien plus qu'une app, Kipoui vous offre un cadre sécurisant et motivant pour changer durablement.
@@ -69,6 +72,7 @@ features:
     - title: Tarif doux
       description: Des formules accessibles, sans engagement ni frais cachés.
       icon: i-lucide-circle-dollar-sign
+
 testimonials:
   headline: Ils ont testé Kipoui
   title: Des utilisateurs conquis
@@ -92,6 +96,7 @@ testimonials:
         description: 29 ans, Bordeaux
         avatar:
           src: https://i.pravatar.cc/120?img=45
+
 cta:
   title: Lancez votre accompagnement Kipoui maintenant !
   description: Profitez d'un premier contact gratuit et d'un assistant personnalisé créé pour vous.

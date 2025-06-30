@@ -106,7 +106,6 @@ defineShortcuts({
           v-if="!collapsed"
           class="flex items-center gap-1.5 ms-auto"
         >
-          <UDashboardSearchButton collapsed />
           <UDashboardSidebarCollapse />
         </div>
       </template>
@@ -157,18 +156,6 @@ defineShortcuts({
         />
       </template>
     </UDashboardSidebar>
-
-    <UDashboardSearch
-      placeholder="Rechercher des chats..."
-      :groups="[{
-        id: 'links',
-        items: [{
-          label: 'Nouveau chat',
-          to: '/chat',
-          icon: 'i-lucide-square-pen'
-        }]
-      }, ...groups]"
-    />
 
     <slot />
 
