@@ -12,6 +12,7 @@
         icon="i-lucide-plus"
         to="/chat"
         class="lg:hidden"
+        aria-label="Nouveau chat"
       />
     </template>
   </UDashboardNavbar>

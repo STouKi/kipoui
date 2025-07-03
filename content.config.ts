@@ -66,7 +66,13 @@ export const collections = {
           orientation: orientationEnum.optional(),
           reverse: z.boolean().optional(),
           features: z.array(createFeatureItemSchema()),
-          image: z.string()
+          image: z.object({
+            name: z.string().nonempty(),
+            extension: z.string().nonempty(),
+            width: z.number().nonnegative(),
+            height: z.number().nonnegative(),
+            alt: z.string().nonempty()
+          })
         })
       ),
       features: createBaseSchema().extend({
@@ -137,7 +143,13 @@ export const collections = {
           orientation: orientationEnum.optional(),
           reverse: z.boolean().optional(),
           features: z.array(createFeatureItemSchema()),
-          image: z.string()
+          image: z.object({
+            name: z.string().nonempty(),
+            extension: z.string().nonempty(),
+            width: z.number().nonnegative(),
+            height: z.number().nonnegative(),
+            alt: z.string().nonempty()
+          })
         })
       )
     })

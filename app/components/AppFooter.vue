@@ -30,6 +30,7 @@ const columns = [{
     :avatar="{
       src: '/images/logo/logo-whithout-text.png'
     }"
+    decorative
   />
 
   <UFooter :ui="{ top: 'border-b border-default' }">
@@ -41,6 +42,9 @@ const columns = [{
               src="/images/logo/logo.png"
               alt="Kipoui"
               width="200"
+              height="173"
+              format="auto"
+              format-quality="80"
             />
           </template>
         </UFooterColumns>

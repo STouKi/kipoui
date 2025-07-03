@@ -26,7 +26,12 @@ useSeoMeta({
       :features="section.features"
     >
       <NuxtImg
-        :src="`/images/${section.image}`"
+        :src="`/images/${section.image.name}.${section.image.extension}`"
+        :width="section.image.width"
+        :height="section.image.height"
+        :alt="section.image.alt"
+        format="auto"
+        format-quality="80"
         class="w-full h-full object-contain rounded-3xl"
       />
     </UPageSection>

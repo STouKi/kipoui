@@ -7,6 +7,7 @@
       color="neutral"
       variant="subtle"
       class="absolute left-8 top-8 rounded-full z-10"
+      aria-label="Retour"
     />
 
     <UPageCard

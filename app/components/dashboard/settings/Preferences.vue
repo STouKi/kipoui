@@ -73,6 +73,7 @@ defineExpose({ submitData })
             icon="i-lucide-plus"
             color="primary"
             :disabled="loading || !newDislike.trim()"
+            aria-label="Ajouter un aliment"
             @click="addDislike"
           />
         </div>
@@ -92,6 +93,7 @@ defineExpose({ submitData })
             size="xs"
             class="ml-1"
             :disabled="loading"
+            aria-label="Supprimer l'aliment"
             @click="removeDislike(index)"
           />
         </UBadge>

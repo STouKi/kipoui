@@ -23,7 +23,13 @@ sections:
   - title: Un coach qui vous comprend
     description: "Kipoui n'est pas une simple appli : c'est un véritable compagnon de route. Avec un profil personnalisé et un chatbot à votre écoute, vous êtes accompagné de façon unique, bienveillante et motivante."
     orientation: horizontal
-    image: professional-card
+    image:
+      name: professional-card
+      extension: svg
+      width: 770
+      height: 502
+      alt: Illustration d'une femme assise connectant un câble à une grande carte profil contenant une photo, des lignes de texte et des barres de statut
+
     features:
       - name: 100% Personnalisé
         description: Votre accompagnement s'adapte à votre mode de vie, vos objectifs, vos contraintes (régime, allergies, etc).
@@ -38,7 +44,12 @@ sections:
     description: "Notre mission : vous aider à retrouver la confiance, à mieux manger et à rester motivé sans pression ni dogmes."
     orientation: horizontal
     reverse: true
-    image: nature-benefits
+    image:
+      name: nature-benefits
+      extension: svg
+      width: 811
+      height: 624
+      alt: Femme marchant paisiblement entre deux arbres, symbolisant la nature et le bien-être
     features:
       - name: Suivi intelligent
         description: Un historique et des recommandations adaptées à vos évolutions.

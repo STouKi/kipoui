@@ -30,6 +30,9 @@ const items = computed(() => [
           src="/images/logo/logo.png"
           alt="Kipoui"
           width="60"
+          height="52"
+          format="auto"
+          format-quality="80"
         />
       </NuxtLink>
     </template>
@@ -49,6 +52,7 @@ const items = computed(() => [
           variant="ghost"
           to="/connexion"
           class="lg:hidden"
+          aria-label="Se connecter"
         />
 
         <UButton

@@ -93,8 +93,11 @@ defineShortcuts({
         >
           <NuxtImg
             src="/images/logo/logo-whithout-text.png"
-            alt="Kipoui"
+            alt="Kiwi"
             width="30"
+            height="30"
+            format="auto"
+            format-quality="80"
           />
           <span
             v-if="!collapsed"
@@ -142,6 +145,7 @@ defineShortcuts({
                 size="xs"
                 class="text-muted hover:text-primary hover:bg-accented/50 focus-visible:bg-accented/50 p-0.5"
                 tabindex="-1"
+                aria-label="Supprimer le chat"
                 @click.stop.prevent="deleteChat((item as any).id)"
               />
             </div>

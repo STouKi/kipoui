@@ -29,8 +29,6 @@ useSeoMeta({
 
         <LazyStarsBg />
       </template>
-
-      <!-- <PromotionalVideo /> -->
     </UPageHero>
 
     <UPageSection
@@ -43,8 +41,13 @@ useSeoMeta({
       :features="section.features"
     >
       <NuxtImg
-        :src="`/images/${section.image}.svg`"
-        class="w-full h-full object-contain"
+        :src="`/images/${section.image.name}.${section.image.extension}`"
+        :width="section.image.width"
+        :height="section.image.height"
+        :alt="section.image.alt"
+        format="auto"
+        format-quality="80"
+        class="w-full h-full object-contain rounded-3xl"
       />
     </UPageSection>
 
@@ -61,39 +64,6 @@ useSeoMeta({
         />
       </UPageGrid>
     </UPageSection>
-
-    <!-- <UPageSection
-      title="Votre compte"
-      description="Gérez votre profil et vos informations personnelles"
-    >
-      <div class="max-w-3xl mx-auto w-full">
-        <AuthUserInfo />
-      </div>
-    </UPageSection> -->
-
-    <!-- <UPageSection
-      id="testimonials"
-      :headline="page.testimonials.headline"
-      :title="page.testimonials.title"
-      :description="page.testimonials.description"
-    >
-      <UPageColumns class="xl:columns-4">
-        <UPageCard
-          v-for="(testimonial, index) in page.testimonials.items"
-          :key="index"
-          variant="subtle"
-          :description="testimonial.quote"
-          :ui="{ description: 'before:content-[open-quote] after:content-[close-quote]' }"
-        >
-          <template #footer>
-            <UUser
-              v-bind="testimonial.user"
-              size="lg"
-            />
-          </template>
-        </UPageCard>
-      </UPageColumns>
-    </UPageSection> -->
 
     <USeparator />
 

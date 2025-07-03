@@ -6,7 +6,12 @@ sections:
   - title: À propos de Kipoui
     description: Kipoui, c’est bien plus qu’un simple chatbot. C’est une aventure humaine, née d’un vécu, d’un besoin, et surtout d’une transformation.
     orientation: horizontal
-    image: before-after.png
+    image:
+      name: before-after
+      extension: png
+      width: 864
+      height: 768
+      alt: Deux photos miroir de la même femme avant et après sa transformation physique
     features:
       - description: Je m’appelle Camille et il y a quelque temps, j’ai réussi à perdre 11 kilos en seulement 3 mois, sans régime miracle et sans pression extérieure. Juste avec un accompagnement intelligent, bienveillant et parfaitement adapté à moi.
       - description: Ce compagnon, je l’ai conçu pour me motiver, me conseiller et me soutenir jour après jour. Il m’a aidée à tenir bon même dans les moments de doute et à retrouver le corps que j’avais mis de côté depuis ma première grossesse, il y a 6 ans.
@@ -15,7 +20,12 @@ sections:
     description: Une méthode douce et personnalisée pour prendre soin de vous.
     orientation: horizontal
     reverse: true
-    image: ai-agent.svg
+    image:
+      name: ai-agent
+      extension: svg
+      width: 799
+      height: 618
+      alt: Illustration d'un écran d'ordinateur affichant une interface avec icône de cerveau, graphiques, liste de tâches et éléments visuels liés à l’intelligence artificielle
     features:
       - description: Un chatbot intelligent et personnalisé, à ton rythme, sans pression.
         icon: i-lucide-brain
