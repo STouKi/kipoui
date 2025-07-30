@@ -19,9 +19,11 @@ export default defineEventHandler(async (event) => {
     return { success: true }
   } catch (error) {
     console.error('Error in chat.delete route:', error)
+
+    const err = error as { statusCode?: number, message?: string }
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Error deleting chat'
+      statusCode: err.statusCode || 500,
+      message: err.message || 'Error deleting chat'
     })
   }
 })

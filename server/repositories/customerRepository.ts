@@ -1,13 +1,13 @@
 import type { H3Event } from 'h3'
-import type { Database } from '../types/supabase'
-import { getSupabaseClient } from './supabaseRepository'
+import type { Database } from '../types/public'
+import { getPublicSupabaseClient } from './supabaseRepository'
 
 type Customer = Database['public']['Tables']['customers']['Row']
 type CustomerUpdate = Database['public']['Tables']['customers']['Update']
 
 export async function getCustomerByProfileId(event: H3Event, profileId: string): Promise<Customer | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('customers')
       .select('*')
@@ -28,7 +28,7 @@ export async function getCustomerByProfileId(event: H3Event, profileId: string):
 
 export async function getCustomerByStripeCustomerId(event: H3Event, stripeCustomerId: string): Promise<Customer | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('customers')
       .select('*')
@@ -55,7 +55,7 @@ export async function createCustomer(
   }
 ): Promise<Customer | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('customers')
       .insert({
@@ -84,7 +84,7 @@ export async function updateCustomer(
   updates: Partial<CustomerUpdate>
 ): Promise<Customer | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('customers')
       .update(updates)

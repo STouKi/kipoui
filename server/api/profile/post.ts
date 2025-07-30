@@ -12,9 +12,11 @@ export default defineEventHandler(async (event) => {
     return result
   } catch (error) {
     console.error('Error in profile.post route:', error)
+
+    const err = error as { statusCode?: number, message?: string }
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Error updating profile data'
+      statusCode: err.statusCode || 500,
+      message: err.message || 'Error updating profile data'
     })
   }
 })

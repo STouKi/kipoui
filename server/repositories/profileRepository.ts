@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
-import type { Database } from '../types/supabase'
-import { getSupabaseClient, handleError } from './supabaseRepository'
+import type { Database } from '../types/public'
+import { getPublicSupabaseClient, handleError } from './supabaseRepository'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type PhysicalData = Database['public']['Tables']['physical_data']['Row']
@@ -25,7 +25,7 @@ export interface ProfileUpdateResult {
 
 export async function getProfileById(event: H3Event, userId: string): Promise<Profile | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -42,7 +42,7 @@ export async function getProfileById(event: H3Event, userId: string): Promise<Pr
 
 export async function getFullProfileData(event: H3Event, userId: string): Promise<FullProfileData> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
 
     const [
       profileResult,
@@ -85,7 +85,7 @@ export async function getFullProfileData(event: H3Event, userId: string): Promis
 
 export async function updateProfile(event: H3Event, userId: string, profileData: Partial<Profile>): Promise<Profile | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('profiles')
       .update(profileData)
@@ -108,7 +108,7 @@ async function updateOrInsertRelatedData(
   data: any
 ): Promise<boolean> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
 
     const { data: existingData, error: checkError } = await supabase
       .from(tableName)

@@ -1,9 +1,15 @@
 import type { H3Event } from 'h3'
-import type { Database } from '../types/supabase'
+import type { Database as PublicDatabase } from '../types/public'
+import type { Database as VecsDatabase } from '../types/vecs'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 
-export async function getSupabaseClient(event: H3Event) {
-  const client = await serverSupabaseClient<Database>(event)
+export async function getPublicSupabaseClient(event: H3Event) {
+  const client = await serverSupabaseClient<PublicDatabase>(event)
+  return client
+}
+
+export async function getVecsSupabaseClient(event: H3Event) {
+  const client = await serverSupabaseClient<VecsDatabase>(event)
   return client
 }
 

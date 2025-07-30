@@ -36,6 +36,15 @@ export default defineNuxtConfig({
     supabase: {
       serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
       url: process.env.SUPABASE_URL
+    },
+    openai: {
+      apiKey: process.env.OPENAI_API_KEY
+    },
+    tavily: {
+      apiKey: process.env.TAVILY_API_KEY
+    },
+    anthropic: {
+      apiKey: process.env.ANTHROPIC_API_KEY
     }
   },
 
@@ -59,6 +68,17 @@ export default defineNuxtConfig({
 
   hub: {
     ai: true
+  },
+
+  vite: {
+    optimizeDeps: {
+      include: ['debug']
+    },
+    build: {
+      commonjsOptions: {
+        transformMixedEsModules: true
+      }
+    }
   },
 
   eslint: {

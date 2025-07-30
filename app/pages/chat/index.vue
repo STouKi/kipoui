@@ -2,12 +2,11 @@
 const input = ref('')
 const loading = ref(false)
 
+useHead({
+  title: 'Chat'
+})
 useSeoMeta({
-  titleTemplate: 'Kipoui - Chat',
-  title: 'Kipoui - Chat',
-  ogTitle: 'Kipoui - Chat',
-  description: 'Test',
-  ogDescription: 'Test',
+  description: 'Lancez une conversation avec votre coach',
   robots: 'noindex, nofollow'
 })
 
@@ -16,12 +15,28 @@ definePageMeta({
   middleware: 'subscription-check'
 })
 
-async function createChat(prompt: string) {
+const filesRef = ref<FileList | null>(null)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+async function createChat(prompt: string, attachments?: FileList | null) {
   input.value = prompt
   loading.value = true
+
+  const formData = new FormData()
+  formData.append('input', prompt)
+
+  if (attachments && attachments.length > 0) {
+    for (let i = 0; i < attachments.length; i++) {
+      const file = attachments[i]
+      if (file) {
+        formData.append('files', file)
+      }
+    }
+  }
+
   const chat = await useFetch('/api/chats/post', {
     method: 'POST',
-    body: { input: prompt }
+    body: formData
   })
 
   refreshNuxtData('chats')
@@ -29,7 +44,12 @@ async function createChat(prompt: string) {
 }
 
 function onSubmit() {
-  createChat(input.value)
+  createChat(input.value, filesRef.value)
+
+  filesRef.value = null
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
 }
 
 const quickChats = [
@@ -75,6 +95,15 @@ const quickChats = [
           variant="subtle"
           @submit="onSubmit"
         >
+          <template #footer>
+            <UInput
+              ref="fileInputRef"
+              type="file"
+              accept="image/*,application/pdf"
+              multiple
+              @change="filesRef = ($event.target as HTMLInputElement)?.files"
+            />
+          </template>
           <UChatPromptSubmit color="neutral" />
         </UChatPrompt>
 

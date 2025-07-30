@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Database } from '../../../../server/types/supabase'
-import { Constants } from '../../../../server/types/supabase'
+import type { Database } from '../../../../server/types/public'
+import { Constants } from '../../../../server/types/public'
 
 type MedicalData = Database['public']['Tables']['medical_data']['Row']
 type Allergy = Database['public']['Enums']['allergy']

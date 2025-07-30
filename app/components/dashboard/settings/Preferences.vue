@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Database } from '../../../../server/types/supabase'
+import type { Database } from '../../../../server/types/public'
 
 type Preferences = Database['public']['Tables']['preferences']['Row']
 

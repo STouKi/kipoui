@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import { getSupabaseClient, handleError } from './supabaseRepository'
+import { getPublicSupabaseClient, handleError } from './supabaseRepository'
 
 /**
  * Upload a file to Supabase Storage
@@ -18,16 +18,7 @@ export async function uploadFile(
   contentType: string
 ): Promise<string | null> {
   try {
-    const supabase = await getSupabaseClient(event)
-
-    const { data: buckets } = await supabase.storage.listBuckets()
-    const bucketExists = buckets?.some(bucket => bucket.name === bucketName)
-
-    if (!bucketExists) {
-      await supabase.storage.createBucket(bucketName, {
-        public: true
-      })
-    }
+    const supabase = await getPublicSupabaseClient(event)
 
     const { error } = await supabase.storage
       .from(bucketName)
@@ -36,7 +27,9 @@ export async function uploadFile(
         upsert: true
       })
 
-    if (error) throw error
+    if (error) {
+      throw error
+    }
 
     const expirySeconds = 10 * 365 * 24 * 60 * 60
     const { data } = await supabase.storage
@@ -67,7 +60,7 @@ export async function deleteFile(
   filePath: string
 ): Promise<boolean> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
 
     const { error } = await supabase.storage
       .from(bucketName)

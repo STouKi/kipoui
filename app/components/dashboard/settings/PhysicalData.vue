@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
-import type { Database } from '../../../../server/types/supabase'
-import { Constants } from '../../../../server/types/supabase'
+import type { Database } from '../../../../server/types/public'
+import { Constants } from '../../../../server/types/public'
 
 type PhysicalData = Database['public']['Tables']['physical_data']['Row']
 type Gender = Database['public']['Enums']['gender']

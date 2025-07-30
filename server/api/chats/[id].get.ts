@@ -14,15 +14,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return {
-      ...result.chat,
-      messages: result.messages
-    }
+    return result
   } catch (error) {
     console.error('Error in chat.get route:', error)
+
+    const err = error as { statusCode?: number, message?: string }
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Error fetching chat'
+      statusCode: err.statusCode || 500,
+      message: err.message || 'Error fetching chat'
     })
   }
 })

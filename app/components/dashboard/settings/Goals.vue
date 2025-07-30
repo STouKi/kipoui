@@ -2,7 +2,7 @@
 import { z } from 'zod'
 
 import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
-import type { Database } from '../../../../server/types/supabase'
+import type { Database } from '../../../../server/types/public'
 
 type Goals = Database['public']['Tables']['goals']['Row']
 

@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
-import type { Database } from '../types/supabase'
-import { getSupabaseClient, handleError } from './supabaseRepository'
+import type { Database } from '../types/public'
+import { getPublicSupabaseClient, handleError } from './supabaseRepository'
 
 type Chat = Database['public']['Tables']['chats']['Row']
 type Message = Database['public']['Tables']['messages']['Row']
@@ -12,7 +12,7 @@ export interface ChatWithMessages {
 
 export async function getUserChats(event: H3Event, userId: string): Promise<Chat[]> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('chats')
       .select('*')
@@ -29,7 +29,7 @@ export async function getUserChats(event: H3Event, userId: string): Promise<Chat
 
 export async function getChatWithMessages(event: H3Event, chatId: number, userId: string): Promise<ChatWithMessages | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
 
     const [chatResult, messagesResult] = await Promise.all([
       supabase
@@ -60,7 +60,7 @@ export async function getChatWithMessages(event: H3Event, chatId: number, userId
 
 export async function createChat(event: H3Event, userId: string, title: string | null = null): Promise<Chat | null> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('chats')
       .insert({
@@ -80,7 +80,7 @@ export async function createChat(event: H3Event, userId: string, title: string |
 
 export async function updateChatTitle(event: H3Event, id: number, title: string): Promise<Chat> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { data, error } = await supabase
       .from('chats')
       .update({
@@ -100,7 +100,7 @@ export async function updateChatTitle(event: H3Event, id: number, title: string)
 
 export async function deleteChat(event: H3Event, chatId: number, userId: string): Promise<boolean> {
   try {
-    const supabase = await getSupabaseClient(event)
+    const supabase = await getPublicSupabaseClient(event)
     const { error } = await supabase
       .from('chats')
       .delete()

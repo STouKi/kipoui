@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { z } from 'zod'
-import type { Database } from '../../../../server/types/supabase'
+import type { Database } from '../../../../server/types/public'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -30,7 +30,7 @@ async function onFileChange(e: Event) {
     const formData = new FormData()
     formData.append('file', file)
 
-    const response = await $fetch('/api/upload/avatar', {
+    const response = await $fetch('/api/profile/upload/avatar', {
       method: 'POST',
       body: formData
     })

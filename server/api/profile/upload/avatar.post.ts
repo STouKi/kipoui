@@ -37,11 +37,9 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Générer un nom de fichier unique
   const fileExt = file.filename.split('.').pop()
   const uniqueFilename = `${id}-${randomUUID()}.${fileExt}`
 
-  // Télécharger le fichier vers Supabase Storage
   const avatarUrl = await uploadFile(
     event,
     'avatars',

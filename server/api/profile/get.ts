@@ -10,9 +10,11 @@ export default defineEventHandler(async (event) => {
     return fullProfile
   } catch (error) {
     console.error('Error in profile.get route:', error)
+
+    const err = error as { statusCode?: number, message?: string }
     throw createError({
-      statusCode: error.statusCode || 500,
-      message: error.message || 'Error fetching profile data'
+      statusCode: err.statusCode || 500,
+      message: err.message || 'Error fetching profile data'
     })
   }
 })

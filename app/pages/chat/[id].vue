@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { DefineComponent } from 'vue'
-import { useChat, type Message } from '@ai-sdk/vue'
+import { useChat } from '@ai-sdk/vue'
+import type { Message } from '@ai-sdk/vue'
 import { useClipboard } from '@vueuse/core'
 import ProseStreamPre from '../../components/prose/PreStream.vue'
+import type { ChatWithMessages } from '~~/server/repositories/chatRepository'
 
 const components = {
   pre: ProseStreamPre as unknown as DefineComponent
@@ -17,21 +19,55 @@ definePageMeta({
   middleware: 'subscription-check'
 })
 
-const { data: chat } = await useFetch(`/api/chats/${route.params.id}`, {
+const { data: chatWithMessages } = await useFetch<ChatWithMessages>(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
-if (!chat.value) {
+if (!chatWithMessages.value) {
   throw createError({ statusCode: 404, statusMessage: 'Chat not found', fatal: true })
 }
 
+const files = ref<FileList | null>(null)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
 const { messages, input, handleSubmit, reload, stop, status, error } = useChat({
-  id: chat.value.id.toString(),
-  api: `/api/chats/${chat.value.id}`,
-  initialMessages: chat.value.messages.map(message => ({
-    id: message.id.toString(),
-    content: message.content!,
-    role: message.role!
-  })),
+  maxSteps: 20,
+  id: chatWithMessages.value.chat.id.toString(),
+  api: `/api/chats/${chatWithMessages.value.chat.id}`,
+  initialMessages: chatWithMessages.value.messages.map((message) => {
+    const transformedMessage = {
+      id: message.id.toString(),
+      content: message.content!,
+      role: message.role!
+    }
+
+    if (message.experimental_attachments && Array.isArray(message.experimental_attachments)) {
+      const attachments = message.experimental_attachments
+        .filter(function (attachment) { return attachment && typeof attachment === 'object' })
+        .map(function (attachment) {
+          if (typeof attachment === 'object' && attachment !== null) {
+            interface AttachmentData {
+              name?: string
+              url?: string
+              type?: string
+            }
+            const typedAttachment = attachment as AttachmentData
+            return {
+              name: typedAttachment.name || '',
+              url: typedAttachment.url || '',
+              contentType: typedAttachment.type || ''
+            }
+          }
+          return null
+        })
+        .filter(function (item) { return item !== null })
+
+      if (attachments.length > 0) {
+        Object.assign(transformedMessage, { experimental_attachments: attachments })
+      }
+    }
+
+    return transformedMessage
+  }),
   onResponse(response) {
     if (response.headers.get('X-Chat-Title')) {
       refreshNuxtData('chats')
@@ -62,8 +98,20 @@ function copy(e: MouseEvent, message: Message) {
   }, 2000)
 }
 
+const submit = (event: Event) => {
+  handleSubmit(event, {
+    experimental_attachments: files.value as FileList
+  })
+
+  files.value = null
+
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
+}
+
 onMounted(() => {
-  if (chat.value?.messages.length === 1) {
+  if (chatWithMessages.value?.messages.length === 1) {
     reload()
   }
 })
@@ -97,12 +145,50 @@ onMounted(() => {
         >
           <template #content="{ message }">
             <MDCCached
+              v-if="message.content.length > 0"
               :value="message.content"
               :cache-key="message.id"
               unwrap="p"
               :components="components"
               :parser-options="{ highlight: false }"
             />
+            <span
+              v-else-if="message.parts?.find(part => part.type === 'tool-invocation')?.toolInvocation.toolName === 'getInformation'"
+              class="italic font-light"
+            >
+              Récupération des informations...
+            </span>
+
+            <span
+              v-else-if="message.parts?.find(part => part.type === 'tool-invocation')?.toolInvocation.toolName === 'addResource'"
+              class="italic font-light"
+            >
+              Mémorisation des informations...
+            </span>
+
+            <span
+              v-else-if="message.parts?.find(part => part.type === 'tool-invocation')?.toolInvocation.toolName === 'tavilySearch'"
+              class="italic font-light"
+            >
+              Recherche des informations...
+            </span>
+
+            <div
+              v-if="message.experimental_attachments?.length"
+              class="mt-2 flex flex-wrap gap-2"
+            >
+              <div
+                v-for="(attachment, index) in message.experimental_attachments.filter(a => a?.contentType?.startsWith('image/'))"
+                :key="`${message.id}-exp-${index}`"
+                class="relative w-40 h-40 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700"
+              >
+                <img
+                  :src="attachment.url"
+                  :alt="attachment.name || `attachment-${index}`"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            </div>
           </template>
         </UChatMessages>
 
@@ -112,8 +198,18 @@ onMounted(() => {
           :error="error"
           variant="subtle"
           class="sticky bottom-0 [view-transition-name:chat-prompt] rounded-b-none z-10"
-          @submit="handleSubmit"
+          @submit="submit"
         >
+          <template #footer>
+            <UInput
+              ref="fileInputRef"
+              type="file"
+              accept="image/*,application/pdf"
+              multiple
+              @change="files = ($event.target as HTMLInputElement)?.files"
+            />
+          </template>
+
           <UChatPromptSubmit
             :status="status"
             color="neutral"
