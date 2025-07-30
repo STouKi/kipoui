@@ -40,8 +40,8 @@ export default defineNuxtConfig({
     openai: {
       apiKey: process.env.OPENAI_API_KEY
     },
-    tavily: {
-      apiKey: process.env.TAVILY_API_KEY
+    exa: {
+      apiKey: process.env.EXA_API_KEY
     },
     anthropic: {
       apiKey: process.env.ANTHROPIC_API_KEY

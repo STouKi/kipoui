@@ -149,6 +149,8 @@ export default defineEventHandler(async (event) => {
       }
     }).toDataStreamResponse()
   } else {
+    console.log('TOOLS', tools)
+
     return streamText({
       model: workersAI('@cf/meta/llama-4-scout-17b-16e-instruct'),
       system: systemPrompt,
@@ -162,6 +164,9 @@ export default defineEventHandler(async (event) => {
       toolCallStreaming: true,
       experimental_transform: smoothStream({ delayInMs: 10, chunking: 'word' }),
       tools,
+      async onStepFinish(step) {
+        console.log(step)
+      },
       async onFinish(response) {
         await addMessage(event, Number(id), 'assistant', response.text)
       },

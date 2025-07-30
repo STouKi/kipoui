@@ -167,7 +167,7 @@ onMounted(() => {
             </span>
 
             <span
-              v-else-if="message.parts?.find(part => part.type === 'tool-invocation')?.toolInvocation.toolName === 'tavilySearch'"
+              v-else-if="message.parts?.find(part => part.type === 'tool-invocation')?.toolInvocation.toolName === 'exaSearch'"
               class="italic font-light"
             >
               Recherche des informations...
