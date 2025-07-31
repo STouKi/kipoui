@@ -41,7 +41,7 @@ export default defineNuxtConfig({
       apiKey: process.env.OPENAI_API_KEY
     },
     exa: {
-      apiKey: process.env.EXA_API_KEY
+      apiKey: process.env.EXASEARCH_API_KEY
     },
     anthropic: {
       apiKey: process.env.ANTHROPIC_API_KEY
