@@ -28,9 +28,13 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      appUrl: process.env.APP_URL
+      appUrl: process.env.APP_URL,
+      stripe: {
+        key: process.env.STRIPE_PUBLIC_KEY
+      }
     },
     stripe: {
+      key: process.env.STRIPE_SECRET_KEY,
       webhookSecret: process.env.STRIPE_WEBHOOK_SECRET
     },
     supabase: {
@@ -87,15 +91,6 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
-    }
-  },
-
-  stripe: {
-    server: {
-      key: process.env.STRIPE_SECRET_KEY
-    },
-    client: {
-      key: process.env.STRIPE_PUBLIC_KEY
     }
   },
 
