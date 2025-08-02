@@ -29,10 +29,20 @@ jobs:
       - name: Build application
         run: node --max-old-space-size=8192 node_modules/.bin/nuxt build
         env:
+          APP_URL: ${{ vars.APP_URL }}
           NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          STRIPE_PUBLIC_KEY: ${{ vars.STRIPE_PUBLIC_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EXASEARCH_API_KEY: ${{ secrets.EXASEARCH_API_KEY }}
+          NUXT_HUB_PROJECT_KEY: ${{ vars.NUXT_HUB_PROJECT_KEY }}
+          NUXT_HUB_ENV: ${{ vars.NUXT_HUB_ENV }}
 
       - name: Deploy to NuxtHub
         uses: nuxt-hub/action@v1
