@@ -31,6 +31,11 @@ export default defineNuxtConfig({
       appUrl: process.env.APP_URL,
       stripe: {
         key: process.env.STRIPE_PUBLIC_KEY
+      },
+      pricing: {
+        customAICoachingAnnualPrice: process.env.STRIPE_CUSTOM_AI_COACHING_ANNUAL_PRICE,
+        customAICoachingMonthlyPrice: process.env.STRIPE_CUSTOM_AI_COACHING_MONTHLY_PRICE,
+        customAICoachingTrimestrialPrice: process.env.STRIPE_CUSTOM_AI_COACHING_TRIMESTRIAL_PRICE
       }
     },
     stripe: {

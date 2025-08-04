@@ -33,26 +33,6 @@ const createImageSchema = () => z.object({
 })
 
 export const collections = {
-  docs: defineCollection({
-    type: 'page',
-    source: '1.docs/**/*'
-  }),
-  posts: defineCollection({
-    type: 'page',
-    source: '3.blog/**/*',
-    schema: z.object({
-      image: z.object({ src: z.string().nonempty().editor({ input: 'media' }) }),
-      authors: z.array(
-        z.object({
-          name: z.string().nonempty(),
-          to: z.string().nonempty(),
-          avatar: z.object({ src: z.string().nonempty().editor({ input: 'media' }) })
-        })
-      ),
-      date: z.date(),
-      badge: z.object({ label: z.string().nonempty() })
-    })
-  }),
   index: defineCollection({
     source: '0.index.yml',
     type: 'page',
@@ -98,43 +78,28 @@ export const collections = {
       })
     })
   }),
-  pricing: defineCollection({
-    source: '2.pricing.yml',
-    type: 'page',
-    schema: z.object({
-      plans: z.array(
-        z.object({
-          title: z.string().nonempty(),
-          description: z.string().nonempty(),
-          price: z.string().nonempty(),
-          discount: z.string().optional(),
-          billingCycle: z.string().nonempty(),
-          button: createLinkSchema(),
-          features: z.array(z.string().nonempty()),
-          highlight: z.boolean().optional()
-        })
-      ),
-      logos: z.object({
-        title: z.string().nonempty(),
-        icons: z.array(z.string())
-      }),
-      faq: createBaseSchema().extend({
-        items: z.array(
-          z.object({
-            label: z.string().nonempty(),
-            content: z.string().nonempty(),
-            defaultOpen: z.boolean().optional()
-          })
-        )
-      })
-    })
-  }),
   blog: defineCollection({
-    source: '3.blog.yml',
+    source: '1.blog.yml',
     type: 'page'
   }),
+  posts: defineCollection({
+    type: 'page',
+    source: '1.blog/**/*',
+    schema: z.object({
+      image: z.object({ src: z.string().nonempty().editor({ input: 'media' }) }),
+      authors: z.array(
+        z.object({
+          name: z.string().nonempty(),
+          to: z.string().nonempty(),
+          avatar: z.object({ src: z.string().nonempty().editor({ input: 'media' }) })
+        })
+      ),
+      date: z.date(),
+      badge: z.object({ label: z.string().nonempty() })
+    })
+  }),
   aPropos: defineCollection({
-    source: '4.a-propos.yml',
+    source: '2.a-propos.yml',
     type: 'page',
     schema: z.object({
       sections: z.array(
