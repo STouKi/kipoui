@@ -4,7 +4,7 @@
 @source "../../../content/**/*";
 
 @theme static {
-  --font-sans: 'Fredoka One', sans-serif;
+  --font-sans: 'Fredoka', sans-serif;
 
   --color-yellowgreen-50: #F7FAEB;
   --color-yellowgreen-100: #EEF6D7;
