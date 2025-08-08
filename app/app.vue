@@ -27,25 +27,6 @@ useSeoMeta({
   twitterImage: 'https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL3NhYXMtdGVtcGxhdGUubnV4dC5kZXYiLCJpYXQiOjE3Mzk0NjM0NDh9.tgzUQaw6XswUPPVbOXazuWwoTHJODg155CYt1xfzIdM.jpg?theme=light',
   twitterCard: 'summary_large_image'
 })
-
-const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'), {
-  transform: data => data.find(item => item.path === '/docs')?.children || []
-})
-const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
-  server: false
-})
-
-const links = [{
-  label: 'Tarifs',
-  icon: 'i-lucide-credit-card',
-  to: '/tarifs'
-}, {
-  label: 'Blog',
-  icon: 'i-lucide-pencil',
-  to: '/blog'
-}]
-
-provide('navigation', navigation)
 </script>
 
 <template>
@@ -55,15 +36,5 @@ provide('navigation', navigation)
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-
-    <ClientOnly>
-      <LazyUContentSearch
-        :files="files"
-        shortcut="meta_k"
-        :navigation="navigation"
-        :links="links"
-        :fuse="{ resultLimit: 42 }"
-      />
-    </ClientOnly>
   </UApp>
 </template>
