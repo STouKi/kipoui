@@ -56,21 +56,28 @@ const religiousRegimeOptions = [
   })
 ]
 
+const userStore = useUserStore()
+
 const submitData = async () => {
   try {
-    await $fetch('/api/profile/post', {
+    const habits = {
+      diet: form.value.diet,
+      religious_regime: form.value.religious_regime,
+      sport_week_frequency: form.value.sport_week_frequency,
+      compulsive_habits: form.value.compulsive_habits
+    }
+
+    await $fetch('/api/profile/update', {
       method: 'POST',
       body: {
-        habits: {
-          diet: form.value.diet,
-          religious_regime: form.value.religious_regime,
-          sport_week_frequency: form.value.sport_week_frequency,
-          compulsive_habits: form.value.compulsive_habits
-        }
+        habits
       }
     })
+
+    await userStore.updateHabits(habits)
   } catch (error) {
     console.error('Error updating habits:', error)
+    throw error
   }
 }
 

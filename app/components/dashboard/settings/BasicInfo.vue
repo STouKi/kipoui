@@ -47,7 +47,7 @@ async function onFileChange(e: Event) {
     console.error('Error uploading avatar:', error)
     toast.add({
       title: 'Erreur',
-      description: error.message || 'Impossible de télécharger l\'avatar',
+      description: (error as Error).message || 'Impossible de télécharger l\'avatar',
       color: 'error'
     })
   } finally {
@@ -90,29 +90,36 @@ watch(() => props.profile, (newData) => {
   }
 }, { deep: true })
 
+const userStore = useUserStore()
+
 const submitData = async () => {
   if (!validateForm()) {
     return Promise.reject(new Error('Validation failed'))
   }
 
   try {
-    await $fetch('/api/profile/post', {
+    const profileData = {
+      username: form.value.username,
+      full_name: form.value.full_name,
+      profile_detail: form.value.profile_detail,
+      // L'avatar_url est déjà mis à jour lors du téléchargement
+      // Ne pas inclure l'URL temporaire si elle n'a pas été téléchargée
+      ...(form.value.avatar_url && !form.value.avatar_url.startsWith('blob:') && {
+        avatar_url: form.value.avatar_url
+      })
+    }
+
+    await $fetch('/api/profile/update', {
       method: 'POST',
       body: {
-        profile: {
-          username: form.value.username,
-          full_name: form.value.full_name,
-          profile_detail: form.value.profile_detail,
-          // L'avatar_url est déjà mis à jour lors du téléchargement
-          // Ne pas inclure l'URL temporaire si elle n'a pas été téléchargée
-          ...(form.value.avatar_url && !form.value.avatar_url.startsWith('blob:') && {
-            avatar_url: form.value.avatar_url
-          })
-        }
+        profile: profileData
       }
     })
+
+    await userStore.updateProfile(profileData)
   } catch (error) {
     console.error('Error updating profile:', error)
+    throw error
   }
 }
 

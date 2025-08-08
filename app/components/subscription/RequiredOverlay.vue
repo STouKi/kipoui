@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useSubscriptionStore } from '~/stores/subscription'
-
 const router = useRouter()
-const subscriptionStore = useSubscriptionStore()
+const userStore = useUserStore()
 
 function goBack() {
   router.back()
@@ -11,7 +9,7 @@ function goBack() {
 
 <template>
   <div
-    v-if="!subscriptionStore.isValid"
+    v-if="!userStore.hasActiveSubscription"
     class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30"
   >
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
@@ -49,21 +47,21 @@ function goBack() {
         </div>
 
         <p
-          v-if="subscriptionStore.status === 'waiting_payment'"
+          v-if="userStore.subscriptionStatus === 'waiting_payment'"
           class="text-sm text-amber-600 dark:text-amber-400"
         >
           Votre période d'essai est terminée. Veuillez ajouter une méthode de paiement pour continuer.
         </p>
 
         <p
-          v-else-if="subscriptionStore.status === 'cancelled'"
+          v-else-if="userStore.subscriptionStatus === 'cancelled'"
           class="text-sm text-red-600 dark:text-red-400"
         >
           Votre abonnement a été annulé. Réactivez-le pour accéder à toutes les fonctionnalités.
         </p>
 
         <p
-          v-else-if="subscriptionStore.status === 'expired'"
+          v-else-if="userStore.subscriptionStatus === 'expired'"
           class="text-sm text-red-600 dark:text-red-400"
         >
           Votre abonnement a expiré. Renouvelez-le pour accéder à toutes les fonctionnalités.

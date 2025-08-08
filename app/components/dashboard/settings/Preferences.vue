@@ -33,18 +33,25 @@ const removeDislike = (index: number) => {
   form.value.dislikes.splice(index, 1)
 }
 
+const userStore = useUserStore()
+
 const submitData = async () => {
   try {
-    await $fetch('/api/profile/post', {
+    const preferences = {
+      dislikes: form.value.dislikes
+    }
+
+    await $fetch('/api/profile/update', {
       method: 'POST',
       body: {
-        preferences: {
-          dislikes: form.value.dislikes
-        }
+        preferences
       }
     })
+
+    await userStore.updatePreferences(preferences)
   } catch (error) {
     console.error('Error updating preferences:', error)
+    throw error
   }
 }
 

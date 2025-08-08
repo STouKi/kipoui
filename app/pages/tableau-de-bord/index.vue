@@ -7,6 +7,8 @@ const route = useRoute()
 const { checkout } = route.query
 
 const { stripe } = useClientStripe()
+const supabaseUser = useSupabaseUser()
+const userStore = useUserStore()
 const checkoutProcessed = ref(false)
 
 watchEffect(() => {
@@ -36,6 +38,10 @@ async function verifyCheckoutSession() {
 
     if (data.value?.success) {
       if ('status' in data.value && data.value.status === 'completed') {
+        if (supabaseUser.value) {
+          await userStore.setUser(supabaseUser.value)
+        }
+
         toast.add({
           title: 'Félicitations !',
           description: data.value.message,

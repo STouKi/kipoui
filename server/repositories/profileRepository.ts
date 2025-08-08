@@ -8,6 +8,7 @@ type Habits = Database['public']['Tables']['habits']['Row']
 type MedicalData = Database['public']['Tables']['medical_data']['Row']
 type Goals = Database['public']['Tables']['goals']['Row']
 type Preferences = Database['public']['Tables']['preferences']['Row']
+type Customer = Database['public']['Tables']['customers']['Row']
 
 export interface FullProfileData {
   profile: Profile | null
@@ -16,6 +17,7 @@ export interface FullProfileData {
   medicalData: MedicalData | null
   goals: Goals | null
   preferences: Preferences | null
+  customer: Customer | null
 }
 
 export interface ProfileUpdateResult {
@@ -50,14 +52,16 @@ export async function getFullProfileData(event: H3Event, userId: string): Promis
       habitsResult,
       medicalDataResult,
       goalsResult,
-      preferencesResult
+      preferencesResult,
+      customerResult
     ] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', userId).single(),
       supabase.from('physical_data').select('*').eq('profile_id', userId).single(),
       supabase.from('habits').select('*').eq('profile_id', userId).single(),
       supabase.from('medical_data').select('*').eq('profile_id', userId).single(),
       supabase.from('goals').select('*').eq('profile_id', userId).single(),
-      supabase.from('preferences').select('*').eq('profile_id', userId).single()
+      supabase.from('preferences').select('*').eq('profile_id', userId).single(),
+      supabase.from('customers').select('*').eq('profile_id', userId).single()
     ])
 
     if (profileResult.error) throw profileResult.error
@@ -68,7 +72,8 @@ export async function getFullProfileData(event: H3Event, userId: string): Promis
       habits: habitsResult.data || null,
       medicalData: medicalDataResult.data || null,
       goals: goalsResult.data || null,
-      preferences: preferencesResult.data || null
+      preferences: preferencesResult.data || null,
+      customer: customerResult.data || null
     }
   } catch (error) {
     handleError(error, 'Error fetching full profile data')
@@ -78,7 +83,8 @@ export async function getFullProfileData(event: H3Event, userId: string): Promis
       habits: null,
       medicalData: null,
       goals: null,
-      preferences: null
+      preferences: null,
+      customer: null
     }
   }
 }

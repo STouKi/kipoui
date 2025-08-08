@@ -4,7 +4,8 @@ import { LazyModalConfirm } from '#components'
 const route = useRoute()
 const toast = useToast()
 const overlay = useOverlay()
-const user = useSupabaseUser()
+const userStore = useUserStore()
+const { isAuthenticated } = storeToRefs(userStore)
 
 const open = ref(false)
 
@@ -155,7 +156,7 @@ defineShortcuts({
 
       <template #footer="{ collapsed }">
         <UserMenu
-          v-if="user"
+          v-if="isAuthenticated"
           :collapsed="collapsed"
         />
       </template>

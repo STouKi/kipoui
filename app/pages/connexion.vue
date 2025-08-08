@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 
 const supabase = useSupabaseClient()
 const toast = useToast()
+const userStore = useUserStore()
 
 definePageMeta({
   layout: 'auth'
@@ -44,7 +45,7 @@ type Schema = z.output<typeof schema>
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   const { email, password } = payload.data
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
   })
@@ -59,6 +60,8 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     return
   }
+
+  await userStore.setUser(data.user)
 
   toast.add({
     title: 'Succès',

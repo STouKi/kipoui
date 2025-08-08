@@ -6,6 +6,16 @@ useSeoMeta({
 })
 
 const toast = useToast()
+const userStore = useUserStore()
+
+const {
+  profile,
+  physicalData,
+  habits,
+  medicalData,
+  goals,
+  preferences
+} = storeToRefs(userStore)
 
 interface ComponentWithSubmit {
   submitData: () => Promise<void>
@@ -17,44 +27,24 @@ const habitsRef = ref<ComponentWithSubmit | null>(null)
 const medicalDataRef = ref<ComponentWithSubmit | null>(null)
 const goalsRef = ref<ComponentWithSubmit | null>(null)
 
-const { data: profileData, refresh } = await useFetch('/api/profile/get')
-
-const profile = ref(profileData.value?.profile || null)
-const physicalData = ref(profileData.value?.physicalData || null)
-const habits = ref(profileData.value?.habits || null)
-const medicalData = ref(profileData.value?.medicalData || null)
-const goals = ref(profileData.value?.goals || null)
-const preferences = ref(profileData.value?.preferences || null)
-
 const dummyState = reactive({})
 
-watch(() => profileData.value, (newData) => {
-  if (newData) {
-    profile.value = newData.profile || null
-    physicalData.value = newData.physicalData || null
-    habits.value = newData.habits || null
-    medicalData.value = newData.medicalData || null
-    goals.value = newData.goals || null
-    preferences.value = newData.preferences || null
-  }
-}, { deep: true })
-
-async function onSubmit() {
+const onSubmit = async () => {
   try {
-    await basicInfoRef.value?.submitData()
-    await physicalDataRef.value?.submitData()
-    await preferencesRef.value?.submitData()
-    await habitsRef.value?.submitData()
-    await medicalDataRef.value?.submitData()
-    await goalsRef.value?.submitData()
+    await Promise.all([
+      basicInfoRef.value?.submitData(),
+      physicalDataRef.value?.submitData(),
+      preferencesRef.value?.submitData(),
+      habitsRef.value?.submitData(),
+      medicalDataRef.value?.submitData(),
+      goalsRef.value?.submitData()
+    ])
 
     toast.add({
       title: 'Modifications enregistrées',
       description: 'Toutes vos modifications ont été enregistrées avec succès',
       color: 'success'
     })
-
-    refresh()
   } catch {
     toast.add({
       title: 'Erreur',

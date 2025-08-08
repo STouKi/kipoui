@@ -11,8 +11,7 @@ useSeoMeta({
 })
 
 definePageMeta({
-  layout: 'chat',
-  middleware: 'subscription-check'
+  layout: 'chat'
 })
 
 const filesRef = ref<FileList | null>(null)

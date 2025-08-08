@@ -1,10 +1,11 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient()
-const user = useSupabaseUser()
+const userStore = useUserStore()
+const { userEmail } = storeToRefs(userStore)
 const toast = useToast()
 
 async function resetPassword() {
-  const { error } = await supabase.auth.resetPasswordForEmail(user.value!.email!, {
+  const { error } = await supabase.auth.resetPasswordForEmail(userEmail.value!, {
     redirectTo: `${useRequestURL().origin}/nouveau-mot-de-passe`
   })
 

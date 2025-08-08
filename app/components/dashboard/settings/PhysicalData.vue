@@ -74,25 +74,32 @@ const genderOptions = Constants.public.Enums.gender.map((gender) => {
   return { label: labels[gender], value: gender }
 })
 
+const userStore = useUserStore()
+
 const submitData = async () => {
   if (!validateForm()) {
     return Promise.reject(new Error('Validation failed'))
   }
 
   try {
-    await $fetch('/api/profile/post', {
+    const physicalData = {
+      gender: form.value.gender,
+      birth_date: form.value.birth_date,
+      height_cm: form.value.height_cm,
+      weight_kg: form.value.weight_kg
+    }
+
+    await $fetch('/api/profile/update', {
       method: 'POST',
       body: {
-        physicalData: {
-          gender: form.value.gender,
-          birth_date: form.value.birth_date,
-          height_cm: form.value.height_cm,
-          weight_kg: form.value.weight_kg
-        }
+        physicalData
       }
     })
+
+    await userStore.updatePhysicalData(physicalData)
   } catch (error) {
     console.error('Error updating physical data:', error)
+    throw error
   }
 }
 defineExpose({ submitData })

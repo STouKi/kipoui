@@ -58,23 +58,30 @@ watch(() => props.goals, (newData) => {
   }
 }, { deep: true })
 
+const userStore = useUserStore()
+
 const submitData = async () => {
   if (!validateForm()) {
     return Promise.reject(new Error('Validation failed'))
   }
 
   try {
-    await $fetch('/api/profile/post', {
+    const goals = {
+      target_weight: form.value.target_weight,
+      deadline: form.value.deadline
+    }
+
+    await $fetch('/api/profile/update', {
       method: 'POST',
       body: {
-        goals: {
-          target_weight: form.value.target_weight,
-          deadline: form.value.deadline
-        }
+        goals
       }
     })
+
+    await userStore.updateGoals(goals)
   } catch (error) {
     console.error('Error updating goals:', error)
+    throw error
   }
 }
 

@@ -68,20 +68,27 @@ const medicalRegimenOptions = Constants.public.Enums.medical_regimen.map((regime
   return { label: labels[regimen], value: regimen }
 })
 
+const userStore = useUserStore()
+
 const submitData = async () => {
   try {
-    await $fetch('/api/profile/post', {
+    const medicalData = {
+      allergies: form.value.allergies,
+      eating_disorders: form.value.eating_disorders,
+      medical_regimen: form.value.medical_regimen
+    }
+
+    await $fetch('/api/profile/update', {
       method: 'POST',
       body: {
-        medicalData: {
-          allergies: form.value.allergies,
-          eating_disorders: form.value.eating_disorders,
-          medical_regimen: form.value.medical_regimen
-        }
+        medicalData
       }
     })
+
+    await userStore.updateMedicalData(medicalData)
   } catch (error) {
     console.error('Error updating medical data:', error)
+    throw error
   }
 }
 

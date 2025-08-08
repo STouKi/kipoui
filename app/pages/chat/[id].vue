@@ -15,8 +15,7 @@ const toast = useToast()
 const clipboard = useClipboard()
 
 definePageMeta({
-  layout: 'chat',
-  middleware: 'subscription-check'
+  layout: 'chat'
 })
 
 const { data: chatWithMessages } = await useFetch<ChatWithMessages>(`/api/chats/${route.params.id}`, {

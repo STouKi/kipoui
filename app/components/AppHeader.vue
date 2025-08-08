@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const user = useSupabaseUser()
+const userStore = useUserStore()
+const { isAuthenticated } = storeToRefs(userStore)
 
 const route = useRoute()
 
@@ -43,7 +44,7 @@ const items = computed(() => [
     />
 
     <template #right>
-      <template v-if="!user">
+      <template v-if="!isAuthenticated">
         <UColorModeButton />
 
         <UButton
@@ -84,7 +85,7 @@ const items = computed(() => [
         class="-mx-2.5"
       />
 
-      <template v-if="!user">
+      <template v-if="!isAuthenticated">
         <USeparator class="my-6" />
 
         <UButton
