@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { ref, watch } from 'vue'
 
 // Define a type for Zod schemas that we can use in our composable
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ZodFormSchema = z.ZodObject<Record<string, z.ZodTypeAny>>
 
 /**
@@ -25,7 +24,6 @@ export function useZodValidation<S extends ZodFormSchema>(
     try {
       // We need to create a partial schema for just this field
       // This is a workaround for TypeScript type issues with Zod
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const partialSchema: Record<string, z.ZodTypeAny> = {}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       partialSchema[field as string] = (schema as any).shape[field as string]
@@ -100,11 +98,19 @@ export function useZodValidation<S extends ZodFormSchema>(
   setupFieldWatchers()
   // We don't validate the form initially anymore
 
+  // Reset validation state (errors, touched fields, and validity)
+  const resetValidation = () => {
+    errors.value = {}
+    isValid.value = false
+    touchedFields.value = new Set()
+  }
+
   return {
     errors,
     isValid,
     validateField,
     validateForm,
-    touchField
+    touchField,
+    resetValidation
   }
 }

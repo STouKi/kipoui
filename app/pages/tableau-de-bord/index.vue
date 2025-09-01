@@ -1,16 +1,25 @@
 <script setup lang="ts">
+import { z } from 'zod'
+import { sub } from 'date-fns'
+import type { Period, Range } from '../../types/dashboard'
+import { useWeightStore } from '~/stores/weight'
+import type { WeightRecord as WeightRow } from '~/stores/weight'
+
 definePageMeta({
   layout: 'dashboard'
 })
 
+// Stripe
+
 const route = useRoute()
+
 const { checkout } = route.query
 
 const { stripe } = useClientStripe()
 const supabaseUser = useSupabaseUser()
 const userStore = useUserStore()
-const checkoutProcessed = ref(false)
 
+const checkoutProcessed = ref(false)
 watchEffect(() => {
   if (stripe.value && checkout && !checkoutProcessed.value) {
     verifyCheckoutSession()
@@ -72,6 +81,79 @@ async function verifyCheckoutSession() {
     })
   }
 }
+
+// Weight stats
+
+const range = shallowRef<Range>({
+  start: sub(new Date(), { days: 14 }),
+  end: new Date()
+})
+
+const period = ref<Period>('daily')
+
+const weightStore = useWeightStore()
+
+const weightSchema = z.object({
+  weight: z.string()
+    .min(1, 'Le poids est requis')
+    .refine((val) => {
+      const num = parseFloat(val.replace(',', '.'))
+      return !Number.isNaN(num) && num > 0
+    }, 'Le poids doit être un nombre positif')
+})
+
+type WeightFormData = z.infer<typeof weightSchema>
+
+const form = ref<WeightFormData>({ weight: '' })
+
+const { errors, validateForm, touchField, resetValidation } = useZodValidation(weightSchema, form)
+const isAdding = ref(false)
+const addWeightModal = ref(false)
+
+async function addWeightRecord() {
+  if (import.meta.server) return
+  const toast = useToast()
+
+  try {
+    isAdding.value = true
+    if (!validateForm()) {
+      touchField('weight')
+      return
+    }
+
+    const input = form.value.weight
+    if (input == null) return
+
+    const record = await $fetch<WeightRow | null>('/api/weight', {
+      method: 'POST',
+      params: { action: 'add' },
+      body: { weight_kg: input }
+    })
+
+    if (record && typeof record.weight_kg === 'number') {
+      weightStore.addLocalRecord(record)
+      range.value = { ...range.value }
+
+      toast.add({
+        title: 'Poids ajouté',
+        description: `Nouveau poids: ${input} kg`,
+        color: 'success'
+      })
+      addWeightModal.value = false
+      form.value.weight = ''
+      resetValidation()
+    }
+  } catch (e) {
+    console.error('Erreur lors de l\'ajout du poids:', e)
+    toast.add({
+      title: 'Erreur',
+      description: 'Impossible d\'ajouter le poids, réessayez.',
+      color: 'error'
+    })
+  } finally {
+    isAdding.value = false
+  }
+}
 </script>
 
 <template>
@@ -80,23 +162,77 @@ async function verifyCheckoutSession() {
       <UDashboardNavbar
         title="Tableau de bord"
         :ui="{ right: 'gap-3' }"
-      />
+      >
+        <template #leading>
+          <UDashboardSidebarCollapse />
+        </template>
+
+        <template #right>
+          <UModal
+            v-model:open="addWeightModal"
+            title="Ajoutez votre nouveau poids"
+          >
+            <UButton
+              icon="i-lucide-plus"
+              size="md"
+            >
+              Ajouter un nouveau poids
+            </UButton>
+
+            <template #body>
+              <div class="flex items-start gap-4">
+                <UFormField
+                  :error="errors.weight"
+                  class="w-full"
+                >
+                  <UInput
+                    v-model="form.weight"
+                    placeholder="Entrez votre poids (ex: 72,4)"
+                    inputmode="decimal"
+                    step="0.1"
+                    class="w-full"
+                    @blur="touchField('weight')"
+                    @keyup.enter="addWeightRecord"
+                  />
+                </UFormField>
+
+                <UButton
+                  icon="i-lucide-plus"
+                  size="md"
+                  :loading="isAdding"
+                  :disabled="isAdding"
+                  @click="addWeightRecord"
+                />
+              </div>
+            </template>
+          </UModal>
+        </template>
+      </UDashboardNavbar>
+
+      <UDashboardToolbar>
+        <template #left>
+          <DashboardDateRangePicker
+            v-model="range"
+            class="-ms-1"
+          />
+
+          <DashboardPeriodSelect
+            v-model="period"
+            :range="range"
+          />
+        </template>
+      </UDashboardToolbar>
     </template>
 
     <template #body>
-      <h2 class="text-2xl font-bold">
-        Bienvenue sur votre tableau de bord !
-      </h2>
-
-      <p>
-        Pour le moment, seules les options de gestion des paramètres sont disponibles.
-        <br><br>
-        N'oubliez pas de compléter au maximum la section "Profil" avec vos informations : plus elles sont précises, plus votre chatbot pourra vous accompagner de manière attentive et personnalisée.
-      </p>
-
-      <p>
-        Et ce n'est que le début ! Très bientôt, vous pourrez suivre ici votre évolution : poids, IMC, et bien d'autres indicateurs pour célébrer vos progrès pas à pas.
-      </p>
+      <DashboardWeightStats
+        :period="period"
+        :range="range"
+      />
+      <DashboardWeightChart
+        :period="period"
+        :range="range"
+      />
     </template>
   </UDashboardPanel>
 </template>

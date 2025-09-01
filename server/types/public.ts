@@ -324,6 +324,35 @@ export type Database = {
         }
         Relationships: []
       }
+      weight_records: {
+        Row: {
+          id: string
+          profile_id: string
+          recorded_at: string
+          weight_kg: number | null
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          recorded_at?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          recorded_at?: string
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'weight_records_profile_id_fkey'
+            columns: ['profile_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
