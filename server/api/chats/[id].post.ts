@@ -1,5 +1,6 @@
 import { anthropic } from '@ai-sdk/anthropic'
-import { smoothStream, streamText } from 'ai'
+import { smoothStream, streamText, generateText, convertToModelMessages, wrapLanguageModel, stepCountIs } from 'ai'
+import type { UIMessage, TextPart, TextUIPart, FileUIPart, FilePart } from 'ai'
 import { createWorkersAI } from 'workers-ai-provider'
 import { requireAuth } from '../../repositories/supabaseRepository'
 import { getFullProfileData } from '../../repositories/profileRepository'
@@ -8,8 +9,7 @@ import { updateChatTitle, getChatWithMessages } from '../../repositories/chatRep
 import { addMessage } from '../../repositories/messageRepository'
 import { generateSystemPrompt } from '../../lib/ai/systemPrompt'
 import { createAITools } from '../../lib/ai/tools'
-
-export const maxDuration = 60
+import { hermesToolMiddleware } from '@ai-sdk-tool/parser'
 
 defineRouteMeta({
   openAPI: {
@@ -18,27 +18,32 @@ defineRouteMeta({
   }
 })
 
+export const maxDuration = 60
+
+function extractPromptText(message: UIMessage) {
+  const textPart = message.parts.find((part): part is TextUIPart => part && part.type === 'text')
+  if (textPart?.text) return textPart.text
+}
+
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
-  if (!user) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
-  }
-
   const fullProfile = await getFullProfileData(event, user.id)
-
   const systemPrompt = generateSystemPrompt(fullProfile)
 
   const { id } = getRouterParams(event)
   const { messages } = await readBody(event)
 
-  const gateway = process.env.CLOUDFLARE_AI_GATEWAY_ID && process.env.CLOUDFLARE_AI_API_KEY
+  const config = useRuntimeConfig()
+  const cfAccountId = config.cloudflare.accountId as string
+  const cfAiApiKey = config.cloudflare.aiApiKey as string
+
+  const gateway = process.env.CLOUDFLARE_AI_GATEWAY_ID && cfAiApiKey
     ? {
         id: process.env.CLOUDFLARE_AI_GATEWAY_ID,
-        token: process.env.CLOUDFLARE_AI_API_KEY,
+        token: cfAiApiKey,
         cacheTtl: 60 * 60 * 24
       }
     : undefined
-  const workersAI = createWorkersAI({ binding: hubAI(), gateway })
 
   const chatData: ChatWithMessages | null = await getChatWithMessages(event, Number(id), user.id)
   if (!chatData) {
@@ -47,8 +52,9 @@ export default defineEventHandler(async (event) => {
   const { chat, messages: dbMessages } = chatData
 
   if (!chat.title) {
-    const { response: title } = await hubAI().run('@cf/meta/llama-3.3-70b-instruct-fp8-fast', {
-      stream: false,
+    const titleWorkersAI = createWorkersAI({ accountId: cfAccountId, apiKey: cfAiApiKey, gateway })
+    const titleRes = await generateText({
+      model: titleWorkersAI('@cf/meta/llama-3.3-70b-instruct-fp8-fast'),
       messages: [{
         role: 'system',
         content: `You are a title generator for a chat:
@@ -59,13 +65,11 @@ export default defineEventHandler(async (event) => {
         - Do not use markdown, just plain text`
       }, {
         role: 'user',
-        content: dbMessages[0].content!
+        content: dbMessages[0]?.content ?? ''
       }]
-    }, {
-      gateway
     })
 
-    const cleaned = title.replace(/:/g, '').split('\n')[0]
+    const cleaned = titleRes.text.replace(/:/g, '').split('\n')[0] ?? ''
     setHeader(event, 'X-Chat-Title', cleaned)
     await updateChatTitle(event, Number(id), cleaned)
   }
@@ -73,106 +77,145 @@ export default defineEventHandler(async (event) => {
   const lastIndex = messages.length - 1
   const lastMessage = messages[lastIndex]
   if (lastMessage.role === 'user') {
-    const lastDbMessage = dbMessages[dbMessages.length - 1]
+    const lastDbMessage = dbMessages.length > 0 ? dbMessages[dbMessages.length - 1] : undefined
 
-    if (lastDbMessage.role !== lastMessage.role || lastDbMessage.content !== lastMessage.content) {
+    if (!lastDbMessage || lastDbMessage.role !== lastMessage.role || lastDbMessage.content !== lastMessage.content) {
       await addMessage(event, Number(id), 'user', lastMessage.content)
     }
 
-    if (lastMessage.experimental_attachments && lastMessage.experimental_attachments.length > 0) {
+    const msgIn = lastMessage as unknown as UIMessage
+    const fileParts = msgIn.parts.filter((part): part is FileUIPart => part && part.type === 'file')
+
+    if (fileParts.length > 0) {
       const currentMessage = { ...lastMessage }
 
-      const contentArray: Array<{ type: string, text?: string, image?: URL, data?: URL, mimeType?: string }> = [{ type: 'text', text: currentMessage.content }]
+      const promptText = extractPromptText(msgIn)
 
-      for (const attachment of lastMessage.experimental_attachments) {
-        if (attachment.contentType?.startsWith('image/') && attachment.url) {
+      type ContentPart = TextPart | FilePart
+      const contentArray: ContentPart[] = []
+      if (promptText) contentArray.push({ type: 'text', text: promptText })
+
+      for (const part of fileParts) {
+        const mediaType = part.mediaType
+        const url = part.url
+
+        if (mediaType.startsWith('image/')) {
           try {
-            const imageResponse = await fetch(attachment.url)
+            const imageResponse = await fetch(url)
             const imageBuffer = await imageResponse.arrayBuffer()
             const imageArray = [...new Uint8Array(imageBuffer)]
 
-            const imagePrompt = typeof lastMessage.content === 'string'
-              ? lastMessage.content
-              : lastMessage.content?.find((c: { type: string, text?: string }) => c.type === 'text')?.text || 'Analyze this image'
+            const imagePrompt = promptText || 'Analyze this image'
 
-            const llavaResponse = await hubAI().run('@cf/llava-hf/llava-1.5-7b-hf', {
-              image: imageArray,
-              prompt: imagePrompt,
-              max_tokens: 512,
-              temperature: 0.7
-            })
-
-            const imageAnalysis = (llavaResponse as { description?: string }).description || JSON.stringify(llavaResponse)
-
-            contentArray.push({
-              type: 'text',
-              text: `[Image analysis: ${imageAnalysis}]`
-            })
+            const llavaRes = await fetch(
+              `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/ai/run/@cf/llava-hf/llava-1.5-7b-hf`,
+              {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${cfAiApiKey}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: imageArray, prompt: imagePrompt, max_tokens: 512, temperature: 0.7 })
+              }
+            )
+            const llavaResult = await llavaRes.json() as { result?: { description?: string } }
+            const imageAnalysis = llavaResult.result?.description || JSON.stringify(llavaResult.result)
+            contentArray.push({ type: 'text', text: `[Image analysis: ${imageAnalysis}]` })
           } catch (error) {
             console.error('Image processing error:', error)
-            contentArray.push({
-              type: 'text',
-              text: '[Image analysis failed]'
-            })
+            contentArray.push({ type: 'text', text: '[Image analysis failed]' })
           }
-        } else if (attachment.contentType === 'application/pdf' && attachment.url) {
-          contentArray.push({ type: 'file', data: new URL(attachment.url), mimeType: 'application/pdf' })
         }
       }
 
       messages[lastIndex] = {
         ...currentMessage,
-        content: contentArray,
         parts: contentArray
       }
     }
   }
 
-  const lastMessageHasPDF = lastMessage.experimental_attachments?.some(
-    (attachment: { contentType?: string }) => attachment.contentType === 'application/pdf'
-  ) || false
+  const modelMessages = convertToModelMessages(messages)
 
-  const tools = createAITools(event)
+  const lastMessageHasPDF = lastMessage.parts?.some((part: FileUIPart | TextUIPart) =>
+    part && part.type === 'file' && part.mediaType === 'application/pdf'
+  )
 
   if (lastMessageHasPDF) {
     return streamText({
       model: anthropic('claude-sonnet-4-0'),
       system: systemPrompt,
-      messages,
-      maxTokens: 50000,
+      messages: modelMessages,
+      maxOutputTokens: 50000,
       temperature: 0.7,
       async onFinish(response) {
+        try {
+          console.log('[AI Response preview]', response.text?.slice(0, 200))
+        } catch (err) {
+          console.debug('Preview log failed (PDF branch)', err)
+        }
         await addMessage(event, Number(id), 'assistant', response.text)
       },
       onError: (error) => {
         console.error(error)
       }
-    }).toDataStreamResponse()
+    }).toUIMessageStreamResponse()
   } else {
-    console.log('TOOLS', tools)
+    const lastUserText = extractPromptText(lastMessage as unknown as UIMessage)
+    const requiresLiveInfo = /\b(news|actualité|actu|derni(?:er|ère)s?|cette semaine|semaine|aujourd'hui|aujourdhui|today|this week|latest|mise à jour|updates?|prix|price|météo|weather|maintenant|now)\b/i.test(lastUserText)
+
+    const workersAI = createWorkersAI({
+      accountId: cfAccountId,
+      apiKey: cfAiApiKey,
+      gateway: requiresLiveInfo && gateway ? { ...gateway, cacheTtl: 0 } : gateway
+    })
+
+    const model = workersAI('@cf/meta/llama-4-scout-17b-16e-instruct')
+    const wrapedModel = wrapLanguageModel({ model, middleware: hermesToolMiddleware })
+
+    const tools = createAITools(event)
+    let exaUsed = false
 
     return streamText({
-      model: workersAI('@cf/meta/llama-4-scout-17b-16e-instruct'),
+      model: wrapedModel,
       system: systemPrompt,
-      messages,
-      maxTokens: 50000,
-      maxSteps: 20,
+      messages: modelMessages,
+      maxOutputTokens: 50000,
+      stopWhen: stepCountIs(20),
       temperature: 0.7,
-      topK: 50,
-      frequencyPenalty: 0.5,
-      presencePenalty: 0.5,
-      toolCallStreaming: true,
       experimental_transform: smoothStream({ delayInMs: 10, chunking: 'word' }),
       tools,
-      async onStepFinish(step) {
-        console.log(step)
+      toolChoice: 'auto',
+
+      async prepareStep() {
+        if (!requiresLiveInfo) return {}
+        if (!exaUsed) {
+          return {
+            toolChoice: { type: 'tool', toolName: 'exaSearch' },
+            activeTools: ['exaSearch'] as const
+          }
+        }
+        return {
+          toolChoice: 'auto',
+          activeTools: ['addResource', 'getInformation'] as const
+        }
       },
+
+      async onStepFinish(step) {
+        if (step.toolCalls && step.toolCalls.length > 0) {
+          const names = step.toolCalls.map(tc => tc.toolName)
+          console.log('[ToolCalls]', names)
+          if (names.includes('exaSearch')) exaUsed = true
+        }
+      },
+
       async onFinish(response) {
         await addMessage(event, Number(id), 'assistant', response.text)
       },
+
       onError: (error) => {
         console.error(error)
       }
-    }).toDataStreamResponse()
+    }).toUIMessageStreamResponse()
   }
 })

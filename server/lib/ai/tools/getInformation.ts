@@ -1,5 +1,5 @@
 import { tool } from 'ai'
-import { z } from 'zod'
+import { z } from 'zod/v3'
 import type { H3Event } from 'h3'
 import { findRelevantContent } from '../embedding'
 
@@ -21,7 +21,7 @@ export function createGetInformationTool(event: H3Event) {
 
       Use this tool proactively to make your answers more personalized and context-aware.
     `,
-    parameters: z.object({
+    inputSchema: z.object({
       question: z.string().describe('the user\'s question to search for in the knowledge base')
     }),
     execute: async ({ question }) => findRelevantContent(event, question)

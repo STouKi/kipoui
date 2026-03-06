@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
-    '@nuxt/ui-pro',
+    '@nuxt/ui',
     '@nuxt/content',
     '@nuxtjs/mdc',
     '@vueuse/nuxt',
@@ -13,6 +13,12 @@ export default defineNuxtConfig({
     '@unlok-co/nuxt-stripe',
     '@pinia/nuxt'
   ],
+  $production: {
+    hub: {
+      // @ts-expect-error - driver not yet typed in nuxthub core
+      driver: 'd1-http'
+    }
+  },
 
   devtools: {
     enabled: true
@@ -54,6 +60,10 @@ export default defineNuxtConfig({
     },
     anthropic: {
       apiKey: process.env.ANTHROPIC_API_KEY
+    },
+    cloudflare: {
+      accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+      aiApiKey: process.env.CLOUDFLARE_AI_API_KEY
     }
   },
 
@@ -76,7 +86,9 @@ export default defineNuxtConfig({
   },
 
   hub: {
-    ai: true
+    db: {
+      dialect: 'sqlite'
+    }
   },
 
   vite: {
@@ -105,5 +117,5 @@ export default defineNuxtConfig({
       callback: '/confirm',
       exclude: ['/', '/tarifs', '/blog', '/a-propos', '/conditions-utilisation', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
     }
-  }
+  },
 })

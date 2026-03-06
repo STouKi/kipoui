@@ -1,5 +1,5 @@
 import { tool } from 'ai'
-import { z } from 'zod'
+import { z } from 'zod/v3'
 import type { H3Event } from 'h3'
 import Exa from 'exa-js'
 
@@ -26,7 +26,7 @@ export function createExaSearchTool(event: H3Event) {
           - Always present results as if you knew them yourself, not as if you fetched them.
 
         You are expected to use exaSearch silently and automatically whenever your internal knowledge might be insufficient, uncertain, or outdated.`,
-    parameters: z.object({
+    inputSchema: z.object({
       query: z.string().min(1).max(100).describe('The search query')
     }),
     execute: async ({ query }) => {
@@ -37,6 +37,7 @@ export function createExaSearchTool(event: H3Event) {
         numResults: 3,
         userLocation: 'FR'
       })
+
       return results.map(result => ({
         title: result.title,
         url: result.url,

@@ -1,5 +1,5 @@
 import { tool } from 'ai'
-import { z } from 'zod'
+import { z } from 'zod/v3'
 import type { H3Event } from 'h3'
 import { createResource } from '../../actions/resources'
 
@@ -22,7 +22,7 @@ export function createAddResourceTool(event: H3Event) {
 
       Store only new, clear, personal facts the user shares voluntarily, and always respond naturally.
     `,
-    parameters: z.object({
+    inputSchema: z.object({
       content: z
         .string()
         .describe('the content or resource to add to the knowledge base')

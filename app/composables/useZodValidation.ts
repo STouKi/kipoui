@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v3'
 import { ref, watch } from 'vue'
 
 // Define a type for Zod schemas that we can use in our composable
