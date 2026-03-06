@@ -5,7 +5,7 @@
         <p class="text-xs text-muted uppercase mb-1.5">
           Poids
         </p>
-        <p class="text-3xl text-highlighted font-semibold">
+        <p class="text-3xl font-semibold text-highlighted">
           --
         </p>
       </div>

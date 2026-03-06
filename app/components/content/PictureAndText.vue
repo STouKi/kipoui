@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
   <component :is="card ? UCard : 'div'">
-    <div class="grid grid-cols-3 items-center w-full gap-x-8">
+    <div class="items-center w-full grid grid-cols-3 gap-x-8">
       <div :class="{ 'order-2': reverse }">
         <slot name="image" />
       </div>

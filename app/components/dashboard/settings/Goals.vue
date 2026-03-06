@@ -98,7 +98,7 @@ defineExpose({ submitData })
       name="target_weight"
       label="Poids cible (kg)"
       :error="errors.target_weight"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <UInput
         v-model.number="form.target_weight"
@@ -111,7 +111,7 @@ defineExpose({ submitData })
     <UFormField
       name="deadline"
       label="Date limite"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <UPopover>
         <UButton

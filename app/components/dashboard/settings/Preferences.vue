@@ -66,7 +66,7 @@ defineExpose({ submitData })
     <UFormField
       label="Aliments que vous n'aimez pas"
       name="dislikes"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
@@ -90,7 +90,7 @@ defineExpose({ submitData })
           :key="index"
           color="neutral"
           variant="soft"
-          class="px-2 py-1 flex justify-between"
+          class="flex justify-between px-2 py-1"
         >
           {{ dislike }}
           <UButton

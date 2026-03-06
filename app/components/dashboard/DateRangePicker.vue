@@ -112,14 +112,14 @@ const selectRange = (range: { days?: number, months?: number, years?: number }) 
 
     <template #content>
       <div class="flex items-stretch sm:divide-x divide-default">
-        <div class="hidden sm:flex flex-col justify-center">
+        <div class="flex-col justify-center hidden sm:flex">
           <UButton
             v-for="(range, index) in ranges"
             :key="index"
             :label="range.label"
             color="neutral"
             variant="ghost"
-            class="rounded-none px-4"
+            class="px-4 rounded-none"
             :class="[isRangeSelected(range) ? 'bg-elevated' : 'hover:bg-elevated/50']"
             truncate
             @click="selectRange(range)"

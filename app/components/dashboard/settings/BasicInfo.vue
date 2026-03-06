@@ -166,7 +166,7 @@ defineExpose({ submitData })
       name="avatar"
       label="Avatar"
       description="JPG, GIF ou PNG. 1MB Max."
-      class="flex max-sm:flex-col justify-between sm:items-center gap-4"
+      class="flex justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <div class="flex flex-wrap items-center gap-3">
         <UAvatar

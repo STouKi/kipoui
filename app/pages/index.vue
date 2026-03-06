@@ -47,7 +47,7 @@ useSeoMeta({
         :alt="section.image.alt"
         format="auto"
         format-quality="80"
-        class="w-full h-full object-contain rounded-3xl"
+        class="object-contain w-full h-full rounded-3xl"
       />
     </UPageSection>
 

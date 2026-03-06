@@ -12,7 +12,7 @@ function goBack() {
     v-if="!userStore.hasActiveSubscription"
     class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30"
   >
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+    <div class="w-full max-w-md p-6 mx-4 bg-white rounded-lg shadow-lg dark:bg-gray-800">
       <div class="flex flex-col items-center text-center gap-4">
         <UIcon
           name="i-lucide-lock"
@@ -27,7 +27,7 @@ function goBack() {
           Cette fonctionnalité nécessite un abonnement actif pour être utilisée.
         </p>
 
-        <div class="flex flex-col gap-2 w-full">
+        <div class="flex flex-col w-full gap-2">
           <UButton
             block
             color="primary"

@@ -82,14 +82,14 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     <template #description>
       Déjà inscrit ? <ULink
         to="/connexion"
-        class="text-primary font-medium"
+        class="font-medium text-primary"
       >Se connecter</ULink>.
     </template>
 
     <template #footer>
       En vous inscrivant, vous acceptez nos <ULink
         to="/conditions-utilisation"
-        class="text-primary font-medium"
+        class="font-medium text-primary"
       >Conditions Générales d'Utilisation</ULink>.
     </template>
   </UAuthForm>

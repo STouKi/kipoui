@@ -115,7 +115,7 @@ defineExpose({ submitData })
       name="gender"
       label="Genre"
       :error="errors.gender"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <USelect
         v-model="form.gender"
@@ -129,7 +129,7 @@ defineExpose({ submitData })
       required
       name="birth_date"
       label="Date de naissance"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <UPopover>
         <UButton
@@ -155,7 +155,7 @@ defineExpose({ submitData })
       name="height_cm"
       label="Taille (cm)"
       :error="errors.height_cm"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <UInput
         v-model.number="form.height_cm"
@@ -171,7 +171,7 @@ defineExpose({ submitData })
       name="weight_kg"
       label="Poids (kg)"
       :error="errors.weight_kg"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <UInput
         v-model.number="form.weight_kg"

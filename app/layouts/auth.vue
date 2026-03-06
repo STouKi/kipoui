@@ -1,18 +1,18 @@
 <template>
-  <div class="h-screen flex items-center justify-center px-4">
+  <div class="flex items-center justify-center h-screen px-4">
     <UButton
       icon="i-lucide-chevron-left"
       to="/"
       size="xl"
       color="neutral"
       variant="subtle"
-      class="absolute left-8 top-8 rounded-full z-10"
+      class="absolute z-10 rounded-full left-8 top-8"
       aria-label="Retour"
     />
 
     <UPageCard
       variant="subtle"
-      class="max-w-sm w-full"
+      class="w-full max-w-sm"
     >
       <slot />
     </UPageCard>

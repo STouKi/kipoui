@@ -92,7 +92,7 @@ defineExpose({ submitData })
     <UFormField
       label="Régime alimentaire"
       name="diet"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <USelect
         v-model="form.diet"
@@ -105,7 +105,7 @@ defineExpose({ submitData })
     <UFormField
       label="Régime religieux"
       name="religious_regime"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <USelect
         v-model="form.religious_regime"
@@ -120,7 +120,7 @@ defineExpose({ submitData })
       label="Fréquence de sport"
       description="jour(s) par semaine"
       name="sport_week_frequency"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <UInputNumber
         v-model="form.sport_week_frequency"
@@ -136,7 +136,7 @@ defineExpose({ submitData })
       label="Habitudes compulsives"
       description="Grignotage, fringales, sucre..."
       name="compulsive_habits"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <USwitch
         v-model="form.compulsive_habits"

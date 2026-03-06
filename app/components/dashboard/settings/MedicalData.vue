@@ -103,7 +103,7 @@ defineExpose({ submitData })
     <UFormField
       label="Allergies"
       name="allergies"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <USelect
         v-model="form.allergies"
@@ -118,7 +118,7 @@ defineExpose({ submitData })
     <UFormField
       label="Troubles alimentaires"
       name="eating_disorders"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <USelect
         v-model="form.eating_disorders"
@@ -133,7 +133,7 @@ defineExpose({ submitData })
     <UFormField
       label="Régime médical"
       name="medical_regimen"
-      class="flex max-sm:flex-col justify-between items-start sm:items-center gap-4"
+      class="flex items-start justify-between max-sm:flex-col sm:items-center gap-4"
     >
       <USelect
         v-model="form.medical_regimen"

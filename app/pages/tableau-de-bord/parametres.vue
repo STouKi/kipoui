@@ -38,13 +38,13 @@ const links = [[{
         <UNavigationMenu
           :items="links"
           highlight
-          class="-mx-1 flex-1"
+          class="flex-1 -mx-1"
         />
       </UDashboardToolbar>
     </template>
 
     <template #body>
-      <div class="flex flex-col gap-4 sm:gap-6 lg:gap-12 w-full lg:max-w-2xl mx-auto">
+      <div class="flex flex-col w-full mx-auto gap-4 sm:gap-6 lg:gap-12 lg:max-w-2xl">
         <NuxtPage />
       </div>
     </template>

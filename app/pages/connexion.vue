@@ -87,14 +87,14 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     <template #description>
       Vous n'avez pas de compte ? <ULink
         to="/inscription"
-        class="text-primary font-medium"
+        class="font-medium text-primary"
       >S'inscrire</ULink>.
     </template>
 
     <template #password-hint>
       <ULink
         to="/mot-de-passe-oublie"
-        class="text-primary font-medium"
+        class="font-medium text-primary"
         tabindex="-1"
       >Mot de passe oublié ?</ULink>
     </template>
@@ -102,7 +102,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     <template #footer>
       En vous connectant, vous acceptez nos <ULink
         to="/conditions-utilisation"
-        class="text-primary font-medium"
+        class="font-medium text-primary"
       >Conditions Générales d'Utilisation</ULink>.
     </template>
   </UAuthForm>

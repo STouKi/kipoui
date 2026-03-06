@@ -52,7 +52,7 @@ const columns = [{
     </template>
 
     <template #left>
-      <p class="text-muted text-sm">
+      <p class="text-sm text-muted">
         Copyright © {{ new Date().getFullYear() }}. Tous droits réservés.
       </p>
     </template>

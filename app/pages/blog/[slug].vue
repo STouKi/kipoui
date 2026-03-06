@@ -48,7 +48,7 @@ if (post.value.image?.src) {
         <time class="text-muted">{{ new Date(post.date).toLocaleDateString('fr', { year: 'numeric', month: 'numeric', day: 'numeric' }) }}</time>
       </template>
 
-      <div class="flex flex-wrap items-center gap-3 mt-4">
+      <div class="flex flex-wrap items-center mt-4 gap-3">
         <UButton
           v-for="(author, index) in post.authors"
           :key="index"

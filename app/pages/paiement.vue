@@ -55,12 +55,12 @@ async function redirectToCheckout() {
 </script>
 
 <template>
-  <div class="container mx-auto p-4">
+  <div class="container p-4 mx-auto">
     <UCard>
       <div class="flex items-center justify-center p-4">
         <UIcon
           name="i-heroicons-arrow-path"
-          class="animate-spin mr-2"
+          class="mr-2 animate-spin"
         />
         <p>
           Redirection vers la page de paiement...

@@ -173,7 +173,7 @@ const bmiBadgeClass = computed(() => {
         leading: 'p-2.5 rounded-full bg-primary/10 ring ring-inset ring-primary/25 flex-col',
         title: 'font-normal text-muted text-xs uppercase'
       }"
-      class="lg:rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1 relative"
+      class="relative lg:rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1"
     >
       <UPopover>
         <UButton
@@ -186,31 +186,31 @@ const bmiBadgeClass = computed(() => {
           <div class="p-4 text-sm">
             <ul class="space-y-2">
               <li class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-gray-600 dark:bg-gray-400" />
+                <span class="bg-gray-600 rounded-full size-2 dark:bg-gray-400" />
                 <span>Dénutrition ou anorexie: IMC &lt; 16,5</span>
               </li>
               <li class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-blue-600 dark:bg-blue-400" />
+                <span class="bg-blue-600 rounded-full size-2 dark:bg-blue-400" />
                 <span>Maigreur: 16,5 ≤ IMC &lt; 18,5</span>
               </li>
               <li class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-green-600 dark:bg-green-400" />
+                <span class="bg-green-600 rounded-full size-2 dark:bg-green-400" />
                 <span>Poids idéal: 18,5 ≤ IMC &lt; 25</span>
               </li>
               <li class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-yellow-600 dark:bg-yellow-400" />
+                <span class="bg-yellow-600 rounded-full size-2 dark:bg-yellow-400" />
                 <span>Surpoids: 25 ≤ IMC &lt; 30</span>
               </li>
               <li class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-orange-600 dark:bg-orange-400" />
+                <span class="bg-orange-600 rounded-full size-2 dark:bg-orange-400" />
                 <span>Obésité modérée: 30 ≤ IMC &lt; 35</span>
               </li>
               <li class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-red-600 dark:bg-red-400" />
+                <span class="bg-red-600 rounded-full size-2 dark:bg-red-400" />
                 <span>Obésité sévère: 35 ≤ IMC &lt; 40</span>
               </li>
               <li class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-violet-600 dark:bg-violet-400" />
+                <span class="rounded-full size-2 bg-violet-600 dark:bg-violet-400" />
                 <span>Obésité morbide: IMC ≥ 40</span>
               </li>
             </ul>

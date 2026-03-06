@@ -81,8 +81,8 @@ const quickChats = [
     :ui="{ body: 'p-0 sm:p-0' }"
   >
     <template #body>
-      <UContainer class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
-        <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
+      <UContainer class="flex flex-col justify-center flex-1 py-8 gap-4 sm:gap-6">
+        <h1 class="text-3xl font-bold sm:text-4xl text-highlighted">
           Comment puis-je vous aider aujourd'hui ?
         </h1>
 

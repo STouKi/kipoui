@@ -8,18 +8,18 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8 max-w-4xl">
-    <h1 class="text-3xl font-bold mb-8 text-center">
+  <div class="container max-w-4xl px-4 py-8 mx-auto">
+    <h1 class="mb-8 text-3xl font-bold text-center">
       Conditions Générales d'Utilisation
     </h1>
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <p class="text-sm text-gray-500 mb-6 text-center">
+    <div class="p-6 bg-white rounded-lg shadow-md">
+      <p class="mb-6 text-sm text-center text-gray-500">
         Dernière mise à jour : 25 mai 2025
       </p>
 
       <div class="space-y-8">
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             1. Introduction
           </h2>
           <p class="mb-3">
@@ -31,10 +31,10 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             2. Définitions
           </h2>
-          <ul class="list-disc pl-6 space-y-2">
+          <ul class="pl-6 list-disc space-y-2">
             <li><strong>Application</strong> : désigne l'application Kipoui, accessible via internet.</li>
             <li><strong>Utilisateur</strong> : désigne toute personne qui accède à l'Application et/ou l'utilise.</li>
             <li><strong>Compte</strong> : désigne l'espace personnel créé par l'Utilisateur sur l'Application.</li>
@@ -44,7 +44,7 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             3. Inscription et éligibilité
           </h2>
           <p class="mb-3">
@@ -59,13 +59,13 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             4. Règles d'utilisation
           </h2>
           <p class="mb-3">
             En utilisant l'Application, vous vous engagez à respecter les règles suivantes :
           </p>
-          <ul class="list-disc pl-6 space-y-2">
+          <ul class="pl-6 list-disc space-y-2">
             <li>Ne pas publier, transmettre ou partager du contenu illégal, offensant, diffamatoire, obscène, menaçant, abusif, ou autrement répréhensible.</li>
             <li>Ne pas usurper l'identité d'une autre personne ou entité.</li>
             <li>Ne pas utiliser l'Application pour envoyer des messages non sollicités ou du spam.</li>
@@ -78,7 +78,7 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             5. Politique de confidentialité
           </h2>
           <p class="mb-3">
@@ -90,7 +90,7 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             6. Propriété intellectuelle
           </h2>
           <p class="mb-3">
@@ -105,7 +105,7 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             7. Limitation de responsabilité
           </h2>
           <p class="mb-3">
@@ -120,7 +120,7 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             8. Résiliation
           </h2>
           <p class="mb-3">
@@ -132,7 +132,7 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             9. Modifications des conditions
           </h2>
           <p class="mb-3">
@@ -144,7 +144,7 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             10. Loi applicable et juridiction
           </h2>
           <p>
@@ -153,14 +153,14 @@ useSeoMeta({
         </section>
 
         <section>
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="mb-4 text-xl font-semibold">
             11. Contact
           </h2>
           <p>
             Si vous avez des questions concernant ces CGU, veuillez nous contacter à l'adresse suivante :
             <ULink
               to="mailto:contact@kipoui.fr"
-              class="text-primary font-medium"
+              class="font-medium text-primary"
             >
               contact@kipoui.fr
             </ULink>

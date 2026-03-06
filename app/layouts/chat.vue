@@ -102,7 +102,7 @@ defineShortcuts({
           />
           <span
             v-if="!collapsed"
-            class="text-xl text-primary font-bold"
+            class="text-xl font-bold text-primary"
           >Chat</span>
         </NuxtLink>
 

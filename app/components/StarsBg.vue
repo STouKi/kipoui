@@ -57,7 +57,7 @@ const starLayers = computed(() => [
 
 <template>
   <div class="absolute pointer-events-none z-[-1] inset-y-0 inset-x-5 sm:inset-x-7 lg:inset-x-9 overflow-hidden">
-    <div class="stars size-full absolute inset-x-0 top-0">
+    <div class="absolute inset-x-0 top-0 stars size-full">
       <div
         v-for="(layer, index) in starLayers"
         :key="index"
@@ -71,7 +71,7 @@ const starLayers = computed(() => [
         <div
           v-for="(star, starIndex) in layer.stars"
           :key="starIndex"
-          class="star absolute rounded-full"
+          class="absolute rounded-full star"
           :style="{
             left: `${star.x}px`,
             top: `${star.y}px`,
