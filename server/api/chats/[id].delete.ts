@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return { success: true }
+    return { success: true };
   } catch (error) {
     console.error('Error in chat.delete route:', error)
 
