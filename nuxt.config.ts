@@ -117,5 +117,5 @@ export default defineNuxtConfig({
       callback: '/confirm',
       exclude: ['/', '/tarifs', '/blog', '/a-propos', '/conditions-utilisation', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
     }
-  },
+  }
 })
