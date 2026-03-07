@@ -1,7 +1,7 @@
 import { anthropic } from '@ai-sdk/anthropic'
-import { smoothStream, streamText, generateText, convertToModelMessages, wrapLanguageModel, stepCountIs } from 'ai'
+import { createGroq } from '@ai-sdk/groq'
+import { smoothStream, streamText, generateText, convertToModelMessages, stepCountIs } from 'ai'
 import type { UIMessage, TextPart, TextUIPart, FileUIPart, FilePart } from 'ai'
-import { createWorkersAI } from 'workers-ai-provider'
 import { requireAuth } from '../../repositories/supabaseRepository'
 import { getFullProfileData } from '../../repositories/profileRepository'
 import type { ChatWithMessages } from '../../repositories/chatRepository'
@@ -9,7 +9,6 @@ import { updateChatTitle, getChatWithMessages } from '../../repositories/chatRep
 import { addMessage } from '../../repositories/messageRepository'
 import { generateSystemPrompt } from '../../lib/ai/systemPrompt'
 import { createAITools } from '../../lib/ai/tools'
-import { hermesToolMiddleware } from '@ai-sdk-tool/parser'
 
 defineRouteMeta({
   openAPI: {
@@ -34,16 +33,7 @@ export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
 
   const config = useRuntimeConfig()
-  const cfAccountId = config.cloudflare.accountId as string
-  const cfAiApiKey = config.cloudflare.aiApiKey as string
-
-  const gateway = process.env.CLOUDFLARE_AI_GATEWAY_ID && cfAiApiKey
-    ? {
-        id: process.env.CLOUDFLARE_AI_GATEWAY_ID,
-        token: cfAiApiKey,
-        cacheTtl: 60 * 60 * 24
-      }
-    : undefined
+  const groq = createGroq({ apiKey: config.groq.apiKey as string })
 
   const chatData: ChatWithMessages | null = await getChatWithMessages(event, Number(id), user.id)
   if (!chatData) {
@@ -52,9 +42,8 @@ export default defineEventHandler(async (event) => {
   const { chat, messages: dbMessages } = chatData
 
   if (!chat.title) {
-    const titleWorkersAI = createWorkersAI({ accountId: cfAccountId, apiKey: cfAiApiKey, gateway })
     const titleRes = await generateText({
-      model: titleWorkersAI('@cf/meta/llama-3.3-70b-instruct-fp8-fast'),
+      model: groq('llama-3.1-8b-instant'),
       messages: [{
         role: 'system',
         content: `You are a title generator for a chat:
@@ -88,7 +77,6 @@ export default defineEventHandler(async (event) => {
 
     if (fileParts.length > 0) {
       const currentMessage = { ...lastMessage }
-
       const promptText = extractPromptText(msgIn)
 
       type ContentPart = TextPart | FilePart
@@ -101,26 +89,19 @@ export default defineEventHandler(async (event) => {
 
         if (mediaType.startsWith('image/')) {
           try {
-            const imageResponse = await fetch(url)
-            const imageBuffer = await imageResponse.arrayBuffer()
-            const imageArray = [...new Uint8Array(imageBuffer)]
-
             const imagePrompt = promptText || 'Analyze this image'
 
-            const llavaRes = await fetch(
-              `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/ai/run/@cf/llava-hf/llava-1.5-7b-hf`,
-              {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${cfAiApiKey}`,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ image: imageArray, prompt: imagePrompt, max_tokens: 512, temperature: 0.7 })
-              }
-            )
-            const llavaResult = await llavaRes.json() as { result?: { description?: string } }
-            const imageAnalysis = llavaResult.result?.description || JSON.stringify(llavaResult.result)
-            contentArray.push({ type: 'text', text: `[Image analysis: ${imageAnalysis}]` })
+            const visionRes = await generateText({
+              model: groq('meta-llama/llama-4-scout-17b-16e-instruct'),
+              messages: [{
+                role: 'user',
+                content: [
+                  { type: 'image', image: url },
+                  { type: 'text', text: imagePrompt }
+                ]
+              }]
+            })
+            contentArray.push({ type: 'text', text: `[Image analysis: ${visionRes.text}]` })
           } catch (error) {
             console.error('Image processing error:', error)
             contentArray.push({ type: 'text', text: '[Image analysis failed]' })
@@ -135,7 +116,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const modelMessages = convertToModelMessages(messages)
+  const modelMessages = await convertToModelMessages(messages)
 
   const lastMessageHasPDF = lastMessage.parts?.some((part: FileUIPart | TextUIPart) =>
     part && part.type === 'file' && part.mediaType === 'application/pdf'
@@ -161,23 +142,15 @@ export default defineEventHandler(async (event) => {
       }
     }).toUIMessageStreamResponse()
   } else {
-    const lastUserText = extractPromptText(lastMessage as unknown as UIMessage)
+    const lastUserText = extractPromptText(lastMessage as unknown as UIMessage) ?? ''
     const requiresLiveInfo = /\b(news|actualité|actu|derni(?:er|ère)s?|cette semaine|semaine|aujourd'hui|aujourdhui|today|this week|latest|mise à jour|updates?|prix|price|météo|weather|maintenant|now)\b/i.test(lastUserText)
 
-    const workersAI = createWorkersAI({
-      accountId: cfAccountId,
-      apiKey: cfAiApiKey,
-      gateway: requiresLiveInfo && gateway ? { ...gateway, cacheTtl: 0 } : gateway
-    })
-
-    const model = workersAI('@cf/meta/llama-4-scout-17b-16e-instruct')
-    const wrapedModel = wrapLanguageModel({ model, middleware: hermesToolMiddleware })
-
+    const model = groq('llama-3.3-70b-versatile')
     const tools = createAITools(event)
     let exaUsed = false
 
     return streamText({
-      model: wrapedModel,
+      model,
       system: systemPrompt,
       messages: modelMessages,
       maxOutputTokens: 50000,

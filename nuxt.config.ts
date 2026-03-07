@@ -9,16 +9,9 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-og-image',
     '@nuxtjs/supabase',
-    '@nuxthub/core',
     '@unlok-co/nuxt-stripe',
     '@pinia/nuxt'
   ],
-  $production: {
-    hub: {
-      // @ts-expect-error - driver not yet typed in nuxthub core
-      driver: 'd1-http'
-    }
-  },
 
   devtools: {
     enabled: true
@@ -61,9 +54,8 @@ export default defineNuxtConfig({
     anthropic: {
       apiKey: process.env.ANTHROPIC_API_KEY
     },
-    cloudflare: {
-      accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
-      aiApiKey: process.env.CLOUDFLARE_AI_API_KEY
+    groq: {
+      apiKey: process.env.GROQ_API_KEY
     }
   },
 
@@ -82,12 +74,6 @@ export default defineNuxtConfig({
         '/'
       ],
       crawlLinks: true
-    }
-  },
-
-  hub: {
-    db: {
-      dialect: 'sqlite'
     }
   },
 

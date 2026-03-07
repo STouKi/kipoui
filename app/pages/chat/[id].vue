@@ -212,7 +212,7 @@ onMounted(() => {
             :status="chat.status"
             color="neutral"
             @stop="chat.stop"
-            @reload="chat.regenerate"
+            @reload="() => chat.regenerate()"
           />
         </UChatPrompt>
       </UContainer>
