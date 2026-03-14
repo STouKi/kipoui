@@ -10,7 +10,8 @@ export default defineNuxtConfig({
     'nuxt-og-image',
     '@nuxtjs/supabase',
     '@unlok-co/nuxt-stripe',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@vercel/analytics'
   ],
 
   devtools: {

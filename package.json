@@ -29,6 +29,7 @@
     "@tavily/core": "^0.5.8",
     "@unlok-co/nuxt-stripe": "5.0.0",
     "@unovis/vue": "^1.5.2",
+    "@vercel/analytics": "^2.0.1",
     "@vueuse/nuxt": "^13.1.0",
     "ai": "^6",
     "better-sqlite3": "^12.2.0",
