@@ -125,7 +125,6 @@ defineShortcuts({
           />
 
           <template v-if="collapsed">
-            <UDashboardSearchButton collapsed />
             <UDashboardSidebarCollapse />
           </template>
         </div>
