@@ -72,6 +72,7 @@ export type Database = {
           query_embedding: string
           similarity_threshold?: number
           match_count?: number
+          user_id?: string | null
         }
         Returns: {
           id: string

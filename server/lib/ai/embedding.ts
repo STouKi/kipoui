@@ -1,7 +1,7 @@
 import { embed, embedMany } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import type { H3Event } from 'h3'
-import { getVecsSupabaseClient } from '../../repositories/supabaseRepository'
+import { getVecsSupabaseClient, getAuthUser } from '../../repositories/supabaseRepository'
 
 const embeddingModel = openai.embedding('text-embedding-3-small')
 
@@ -62,10 +62,13 @@ export const findRelevantContent = async (
     const supabase = await getVecsSupabaseClient(event)
     console.log('Client Supabase obtenu')
 
+    const user = await getAuthUser(event)
+
     const queryParams = {
       query_embedding: JSON.stringify(userQueryEmbedding),
-      similarity_threshold: 0.5,
-      match_count: 4
+      similarity_threshold: 0.3,
+      match_count: 4,
+      user_id: user?.id ?? null
     }
     console.log('Paramètres RPC:', queryParams)
 
