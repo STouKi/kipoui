@@ -127,7 +127,7 @@ export default defineEventHandler(async (event) => {
       model: anthropic('claude-sonnet-4-0'),
       system: systemPrompt,
       messages: modelMessages,
-      maxOutputTokens: 50000,
+      maxOutputTokens: 8192,
       temperature: 0.7,
       async onFinish(response) {
         try {
@@ -145,40 +145,33 @@ export default defineEventHandler(async (event) => {
     const lastUserText = extractPromptText(lastMessage as unknown as UIMessage) ?? ''
     const requiresLiveInfo = /\b(news|actualité|actu|derni(?:er|ère)s?|cette semaine|semaine|aujourd'hui|aujourdhui|today|this week|latest|mise à jour|updates?|prix|price|météo|weather|maintenant|now)\b/i.test(lastUserText)
 
-    const model = groq('llama-3.3-70b-versatile')
+    const model = groq('openai/gpt-oss-120b')
     const tools = createAITools(event)
-    let exaUsed = false
 
     return streamText({
       model,
       system: systemPrompt,
       messages: modelMessages,
-      maxOutputTokens: 50000,
+      maxOutputTokens: 8192,
       stopWhen: stepCountIs(20),
       temperature: 0.7,
       experimental_transform: smoothStream({ delayInMs: 10, chunking: 'word' }),
       tools,
       toolChoice: 'auto',
 
-      async prepareStep() {
-        if (!requiresLiveInfo) return {}
-        if (!exaUsed) {
+      async prepareStep({ stepNumber }) {
+        if (stepNumber === 0 && requiresLiveInfo) {
           return {
             toolChoice: { type: 'tool', toolName: 'exaSearch' },
             activeTools: ['exaSearch'] as const
           }
         }
-        return {
-          toolChoice: 'auto',
-          activeTools: ['addResource', 'getInformation'] as const
-        }
+        return {}
       },
 
       async onStepFinish(step) {
         if (step.toolCalls && step.toolCalls.length > 0) {
-          const names = step.toolCalls.map(tc => tc.toolName)
-          console.log('[ToolCalls]', names)
-          if (names.includes('exaSearch')) exaUsed = true
+          console.log('[ToolCalls]', step.toolCalls.map(tc => tc.toolName))
         }
       },
 
