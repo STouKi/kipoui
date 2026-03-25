@@ -155,21 +155,31 @@ onMounted(() => {
             >{{ message.parts.filter(p => p.type === 'text').map(p => p.text).join('') }}</pre>
             <span
               v-else-if="message.parts?.some(part => part.type === 'tool-getInformation')"
-              class="italic font-light"
+              class="flex items-center gap-2 italic font-light"
             >
+              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
               Récupération des informations...
             </span>
             <span
               v-else-if="message.parts?.some(part => part.type === 'tool-addResource')"
-              class="italic font-light"
+              class="flex items-center gap-2 italic font-light"
             >
+              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
               Mémorisation des informations...
             </span>
             <span
               v-else-if="message.parts?.some(part => part.type === 'tool-exaSearch')"
-              class="italic font-light"
+              class="flex items-center gap-2 italic font-light"
             >
+              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
               Recherche des informations...
+            </span>
+            <span
+              v-else-if="message.parts?.some(part => part.type === 'tool-logWeight')"
+              class="flex items-center gap-2 italic font-light"
+            >
+              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
+              Enregistrement du poids...
             </span>
             <div
               v-if="imageParts(message).length"
