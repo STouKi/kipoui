@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@unlok-co/nuxt-stripe',
     '@pinia/nuxt',
-    '@vercel/analytics/nuxt'
   ],
 
   devtools: {
