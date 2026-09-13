@@ -1,0 +1,14 @@
+{
+  "images" : [
+    {
+      "filename" : "logo-whithout-text.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "620x620"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

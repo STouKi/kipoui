@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const isMobileBuild = process.env.CAPACITOR_BUILD === 'true'
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -13,6 +15,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vercel/analytics'
   ],
+  ssr: isMobileBuild ? false : undefined,
 
   devtools: {
     enabled: true
@@ -29,6 +32,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appUrl: process.env.APP_URL,
+      isNative: isMobileBuild,
       stripe: {
         key: process.env.STRIPE_PUBLIC_KEY
       },
@@ -70,12 +74,9 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: true
     },
-    prerender: {
-      routes: [
-        '/'
-      ],
-      crawlLinks: true
-    }
+    prerender: isMobileBuild
+      ? { routes: [] }
+      : { routes: ['/'], crawlLinks: true }
   },
 
   vite: {

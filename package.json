@@ -9,13 +9,24 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "build:mobile": "CAPACITOR_BUILD=true VITE_CAPACITOR=true nuxt build --preset static",
+    "cap:sync": "bun run build:mobile && bunx cap sync ios",
+    "cap:open": "bunx cap open ios",
+    "cap:run": "bunx cap run ios",
+    "cap:dev": "nuxt dev --host 0.0.0.0"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3",
     "@ai-sdk/groq": "^3.0.29",
     "@ai-sdk/openai": "^3",
     "@ai-sdk/vue": "^3",
+    "@capacitor/app": "^8.1.0",
+    "@capacitor/core": "^8.3.1",
+    "@capacitor/ios": "^8.3.1",
+    "@capacitor/keyboard": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.2",
     "@iconify-json/lucide": "^1.2.40",
     "@iconify-json/simple-icons": "^1.2.33",
     "@nuxt/content": "^3.5.1",
@@ -44,6 +55,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.3.1",
     "@nuxt/eslint": "^1.3.0",
     "@nuxtjs/supabase": "^1.5.1",
     "eslint": "^9.26.0",
