@@ -38,7 +38,10 @@ useSeoMeta({
   ogDescription: description
 })
 
-defineOgImageComponent('Saas')
+const config = useRuntimeConfig()
+if (!config.public.isNative) {
+  defineOgImageComponent('Saas')
+}
 </script>
 
 <template>

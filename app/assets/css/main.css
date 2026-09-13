@@ -32,3 +32,8 @@ body {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
+
+/* Empêche l'overscroll élastique de la WKWebView iOS */
+.capacitor-ios body {
+  overscroll-behavior: none;
+}

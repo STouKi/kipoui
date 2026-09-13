@@ -44,6 +44,8 @@ const links = [[{
 }]] satisfies NavigationMenuItem[][]
 
 onMounted(async () => {
+  const config = useRuntimeConfig()
+  if (config.public.isNative) return
   const cookie = useCookie('cookie-consent')
   if (cookie.value === 'accepted') {
     return
