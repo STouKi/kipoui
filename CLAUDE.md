@@ -23,7 +23,8 @@ Package manager: **bun** (not npm/pnpm).
 - **Frontend**: Nuxt 4, Vue 3, @nuxt/ui (Tailwind-based), Pinia, VueUse
 - **Backend**: Nitro server routes (in `server/api/`)
 - **Database**: Supabase (Postgres + auth). Two schemas: `public` (main data) and `vecs` (embeddings/RAG)
-- **AI**: Vercel AI SDK v6 (`ai` package). Primary model: Groq `llama-3.3-70b-versatile` (via `@ai-sdk/groq`). Falls back to Anthropic `claude-sonnet-4-0` for PDF analysis. Embeddings via OpenAI `text-embedding-3-small`
+- **AI**: Vercel AI SDK v6 (`ai` package). Primary model: Groq `openai/gpt-oss-120b` (via `@ai-sdk/groq`). Falls back to Anthropic `claude-sonnet-4-0` for PDF analysis. Embeddings via OpenAI `text-embedding-3-small`
+- **Analytics**: Vercel Analytics via `@vercel/analytics` Nuxt module (in `nuxt.config.ts` modules array)
 - **Payments**: Stripe (via `@unlok-co/nuxt-stripe`)
 - **Deployment**: Vercel (via GitHub integration). Domain: `kipoui.com` — DNS at OVH (not Vercel nameservers). OVH email configured (MX + SPF + DKIM) — ne jamais migrer vers les NS Vercel, ne pas toucher ces records DNS.
 
@@ -31,7 +32,7 @@ Package manager: **bun** (not npm/pnpm).
 
 **Server repositories** (`server/repositories/`): All DB access goes through typed repository files — `chatRepository`, `profileRepository`, `messageRepository`, `weightRepository`, etc. Server routes call repositories, not Supabase directly.
 
-**Auth**: `requireAuth(event)` from `server/repositories/supabaseRepository.ts` gates all protected API routes. Client-side auth state lives in `app/stores/user.ts` (Pinia), initialized by `app/plugins/user.client.ts` and `app/plugins/user.server.ts`.
+**Auth**: `requireAuth(event)` from `server/repositories/supabaseRepository.ts` gates all protected API routes. Client-side auth state lives in `app/stores/user.ts` (Pinia), initialized by `app/plugins/user.client.ts` and `app/plugins/user.server.ts`. The server plugin wraps `useSupabaseUser()` in try/catch to avoid prerender 500 errors when Supabase env vars are missing at build time.
 
 **User store** (`app/stores/user.ts`): Central store holding the full user profile tree — `profile`, `physicalData`, `habits`, `medicalData`, `goals`, `preferences`, `customer`. Populated by `/api/profile/get` on init.
 
@@ -39,13 +40,15 @@ Package manager: **bun** (not npm/pnpm).
 1. Auth + full profile fetch → system prompt generation
 2. Title auto-generation via Groq `llama-3.1-8b-instant` (first message only)
 3. Image attachments analyzed via Groq vision model `meta-llama/llama-4-scout-17b-16e-instruct` using `generateText` before being passed as text
-4. PDF attachments → switches to Anthropic `claude-sonnet-4-0`
-5. Default path: `llama-3.3-70b-versatile` via `createGroq({ apiKey })`. Groq has native tool calling — no middleware needed. Tools: `exaSearch`, `addResource`, `getInformation`
-6. Live-info keywords in message trigger forced `exaSearch` tool on first step via `prepareStep`
+4. PDF attachments → switches to Anthropic `claude-sonnet-4-0` (`maxOutputTokens: 8192`)
+5. Default path: `openai/gpt-oss-120b` via `createGroq({ apiKey })`. `maxOutputTokens: 4096`. Groq has native tool calling — no middleware needed. Tools: `exaSearch`, `addResource`, `getInformation`, `logWeight`
+6. Live-info keywords in message trigger forced `exaSearch` tool on first step via `prepareStep`. Otherwise `prepareStep` returns `{}` (auto tool choice).
 
 Note: `convertToModelMessages()` is async in AI SDK v6 — always `await` it.
 
-**RAG tools** (`server/lib/ai/tools/`): `addResource` saves content + embeddings to Supabase `vecs` schema; `getInformation` queries via `match_documents` RPC with similarity threshold 0.5.
+**RAG tools** (`server/lib/ai/tools/`): `addResource` saves content + embeddings to Supabase `vecs` schema; `getInformation` queries via `match_documents` RPC with similarity threshold **0.3** (lowered from 0.5 to catch semantically distant but relevant entries).
+
+**logWeight tool** (`server/lib/ai/tools/logWeight.ts`): Records user weight after explicit confirmation. Updates both `weight_records` table (historical graph) and `physical_data.weight_kg` (used in system prompt) via `Promise.all`. Never called without explicit user confirmation.
 
 **Client chat** (`app/pages/chat/[id].vue`): Uses `@ai-sdk/vue` `Chat` class with `DefaultChatTransport`. Messages rendered with `@nuxtjs/mdc` for markdown streaming.
 
