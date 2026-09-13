@@ -3,10 +3,11 @@ const supabase = useSupabaseClient()
 const userStore = useUserStore()
 const { userEmail } = storeToRefs(userStore)
 const toast = useToast()
+const { getRedirectUrl } = useAppUrl()
 
 async function resetPassword() {
   const { error } = await supabase.auth.resetPasswordForEmail(userEmail.value!, {
-    redirectTo: `${useRequestURL().origin}/nouveau-mot-de-passe`
+    redirectTo: getRedirectUrl('/nouveau-mot-de-passe')
   })
 
   if (error) {

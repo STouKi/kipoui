@@ -38,6 +38,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
   const supabase = useSupabaseClient()
   const toast = useToast()
+  const { getRedirectUrl } = useAppUrl()
 
   const { email, password } = payload.data
 
@@ -45,7 +46,9 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     email,
     password,
     options: {
-      emailRedirectTo: priceId ? `${useRequestURL().origin}/paiement?priceId=${priceId}` : `${useRequestURL().origin}/tableau-de-bord`
+      emailRedirectTo: priceId
+        ? getRedirectUrl(`/paiement?priceId=${priceId}`)
+        : getRedirectUrl('/tableau-de-bord')
     }
   })
 

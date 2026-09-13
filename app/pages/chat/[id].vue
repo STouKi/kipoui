@@ -19,7 +19,10 @@ definePageMeta({
   layout: 'chat'
 })
 
-const { data: chatWithMessages } = await useFetch<ChatWithMessages>(`/api/chats/${route.params.id}`, {
+const config = useRuntimeConfig()
+const apiBase = config.public.isNative ? (config.public.appUrl as string) : ''
+
+const { data: chatWithMessages } = await useFetch<ChatWithMessages>(`${apiBase}/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
 if (!chatWithMessages.value) {
@@ -60,7 +63,7 @@ const initialMessages: UIMessage[] = chatWithMessages.value.messages.map((messag
 const chat = new Chat({
   id: chatWithMessages.value.chat.id.toString(),
   messages: initialMessages,
-  transport: new DefaultChatTransport({ api: `/api/chats/${chatWithMessages.value.chat.id}` }),
+  transport: new DefaultChatTransport({ api: `${apiBase}/api/chats/${chatWithMessages.value.chat.id}` }),
   onFinish: () => {
     refreshNuxtData('chats')
   },
@@ -72,7 +75,7 @@ const chat = new Chat({
 
 const copied = ref(false)
 
-const { data: profile } = await useFetch('/api/profile/simple-get')
+const { data: profile } = await useFetch(`${apiBase}/api/profile/simple-get`)
 
 // Debug helper: render raw text without MDC when `?raw=1` is in the URL
 const renderRaw = computed(() => String(route.query.raw || '') === '1')

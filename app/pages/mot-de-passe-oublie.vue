@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 
 const supabase = useSupabaseClient()
 const toast = useToast()
+const { getRedirectUrl } = useAppUrl()
 
 definePageMeta({
   layout: 'auth'
@@ -35,7 +36,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   const { email } = payload.data
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${useRequestURL().origin}/nouveau-mot-de-passe`
+    redirectTo: getRedirectUrl('/nouveau-mot-de-passe')
   })
 
   if (error) {
