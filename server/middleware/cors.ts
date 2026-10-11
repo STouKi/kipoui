@@ -13,9 +13,10 @@ export default defineEventHandler((event) => {
     setResponseHeader(event, 'access-control-max-age', '600')
   }
 
+  // No allowHeaders: h3 then allows the headers the preflight asks for. Besides Authorization and
+  // Content-Type, the AI SDK chat transport sends a User-Agent header that a fixed list would block
   handleCors(event, {
     origin: [NATIVE_APP_ORIGIN],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowHeaders: ['Authorization', 'Content-Type']
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
   })
 })
