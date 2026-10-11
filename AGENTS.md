@@ -32,7 +32,7 @@ Package manager: **bun** (not npm/pnpm).
 
 **Server repositories** (`server/repositories/`): All DB access goes through typed repository files — `chatRepository`, `profileRepository`, `messageRepository`, `weightRepository`, etc. Server routes call repositories, not Supabase directly.
 
-**Auth**: `requireAuth(event)` from `server/repositories/supabaseRepository.ts` gates all protected API routes. Client-side auth state lives in `app/stores/user.ts` (Pinia), initialized by `app/plugins/user.client.ts` and `app/plugins/user.server.ts`. The server plugin wraps `useSupabaseUser()` in try/catch to avoid prerender 500 errors when Supabase env vars are missing at build time.
+**Auth**: `requireAuth(event)` from `server/repositories/supabaseRepository.ts` gates all protected API routes. It accepts either the Supabase SSR cookies (web) or an `Authorization: Bearer <access token>` header (native app): with a Bearer token, `getPublicSupabaseClient`/`getVecsSupabaseClient` return a client carrying it, so queries still run under RLS. Client-side auth state lives in `app/stores/user.ts` (Pinia), initialized by `app/plugins/user.client.ts` and `app/plugins/user.server.ts`. The server plugin wraps `useSupabaseUser()` in try/catch to avoid prerender 500 errors when Supabase env vars are missing at build time.
 
 **User store** (`app/stores/user.ts`): Central store holding the full user profile tree — `profile`, `physicalData`, `habits`, `medicalData`, `goals`, `preferences`, `customer`. Populated by `/api/profile/get` on init.
 
@@ -54,6 +54,12 @@ Note: `convertToModelMessages()` is async in AI SDK v6 — always `await` it.
 
 ### Routing
 Pages are in French: `/connexion`, `/inscription`, `/tableau-de-bord`, `/tarifs`, etc. Supabase redirects unauthenticated users to `/connexion`.
+
+### Mobile app (Capacitor iOS)
+- `bun run build:mobile` builds a static SPA into `.output/public` (`CAPACITOR_BUILD=true`: no SSR, no prerender, Supabase session in localStorage). `bun run cap:sync` builds and copies it into `ios/`, `bun run cap:run` launches it.
+- `runtimeConfig.public.isNative` (set at build time) is the native flag: use it rather than `import.meta.env`.
+- The app runs on `capacitor://localhost` and calls the API at `APP_URL`, baked in at build time (`build:mobile` pins it to `https://kipoui.com` so the local `.env` value never ships in the app). `app/plugins/capacitor.client.ts` sends `/api/` requests from the global `$fetch` (hence `useFetch`) there, with the Bearer token from `useApiAuthHeaders()`. The chat transport uses the native fetch, so it sets both explicitly. `server/middleware/cors.ts` allows that origin on `/api/`.
+- `app/middleware/native-guard.global.ts` restricts the app to its own screens (auth, chat, dashboard). `useAppUrl().getRedirectUrl()` keeps Supabase auth email links on the web domain.
 
 ### Form validation
 `app/composables/useZodValidation.ts` — composable wrapping Zod schemas for reactive per-field validation with touch tracking. Import Zod as `from 'zod/v3'`.
