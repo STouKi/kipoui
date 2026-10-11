@@ -59,7 +59,9 @@ Pages are in French: `/connexion`, `/inscription`, `/tableau-de-bord`, `/tarifs`
 - `bun run build:mobile` builds a static SPA into `.output/public` (`CAPACITOR_BUILD=true`: no SSR, no prerender, Supabase session in localStorage). `bun run cap:sync` builds and copies it into `ios/`, `bun run cap:run` launches it.
 - `runtimeConfig.public.isNative` (set at build time) is the native flag: use it rather than `import.meta.env`.
 - The app runs on `capacitor://localhost` and calls the API at `APP_URL`, baked in at build time (`build:mobile` pins it to `https://kipoui.com` so the local `.env` value never ships in the app). `app/plugins/capacitor.client.ts` sends `/api/` requests from the global `$fetch` (hence `useFetch`) there, with the Bearer token from `useApiAuthHeaders()`. The chat transport uses the native fetch, so it sets both explicitly. `server/middleware/cors.ts` allows that origin on `/api/`.
-- `app/middleware/native-guard.global.ts` restricts the app to its own screens (auth, chat, dashboard). `useAppUrl().getRedirectUrl()` keeps Supabase auth email links on the web domain.
+- The iOS shell uses the UIScene lifecycle (`ios/App/App/SceneDelegate.swift` + `UIApplicationSceneManifest` in `Info.plist`): iOS 27 refuses to launch apps without it and Capacitor 8's template doesn't provide it, so keep both if `ios/` is ever regenerated.
+- The WebView covers the whole screen (`contentInset: 'never'`, `viewport-fit=cover` in the native build): full-screen containers must use the `safe-area-*` classes from `main.css` (env() is 0 on the web, so they are safe there).
+- `app/middleware/native-guard.global.ts` restricts the app to its own screens (auth, chat, dashboard) and sends `/` to the dashboard or the login page depending on the session. `useAppUrl().getRedirectUrl()` keeps Supabase auth email links on the web domain.
 
 ### Form validation
 `app/composables/useZodValidation.ts` — composable wrapping Zod schemas for reactive per-field validation with touch tracking. Import Zod as `from 'zod/v3'`.
