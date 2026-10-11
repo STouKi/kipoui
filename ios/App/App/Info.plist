@@ -24,6 +24,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Kipoui utilise l'appareil photo pour que vous puissiez photographier vos repas et les envoyer à votre coach.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Kipoui accède à vos photos pour que vous puissiez les joindre à vos messages ou en faire votre photo de profil.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
