@@ -72,14 +72,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UDashboardGroup unit="rem">
+  <UDashboardGroup
+    unit="rem"
+    class="safe-area-panels"
+  >
     <UDashboardSidebar
       id="default"
       v-model:open="open"
       collapsible
       resizable
       class="bg-elevated/25"
-      :ui="{ footer: 'lg:border-t lg:border-default' }"
+      :ui="{ footer: 'lg:border-t lg:border-default', content: 'safe-area-y' }"
     >
       <template #default="{ collapsed }">
         <UNavigationMenu

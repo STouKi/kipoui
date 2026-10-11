@@ -8,7 +8,8 @@ const config: CapacitorConfig = {
     allowNavigation: ['kipoui.com', '*.supabase.co']
   },
   ios: {
-    contentInset: 'always',
+    // The page also covers the status bar and home indicator: main.css keeps content in the safe area
+    contentInset: 'never',
     scrollEnabled: true,
     limitsNavigationsToAppBoundDomains: true,
     backgroundColor: '#020618'

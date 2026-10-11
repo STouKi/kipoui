@@ -78,7 +78,10 @@ defineShortcuts({
 </script>
 
 <template>
-  <UDashboardGroup unit="rem">
+  <UDashboardGroup
+    unit="rem"
+    class="safe-area-panels"
+  >
     <UDashboardSidebar
       id="default"
       v-model:open="open"
@@ -86,6 +89,7 @@ defineShortcuts({
       collapsible
       resizable
       class="bg-elevated/50"
+      :ui="{ content: 'safe-area-y' }"
     >
       <template #header="{ collapsed }">
         <NuxtLink

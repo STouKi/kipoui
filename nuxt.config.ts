@@ -21,6 +21,14 @@ export default defineNuxtConfig({
     enabled: true
   },
 
+  app: {
+    head: {
+      viewport: isMobileBuild
+        ? 'viewport-fit=cover, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no'
+        : undefined
+    }
+  },
+
   css: ['~/assets/css/main.css'],
 
   mdc: {
