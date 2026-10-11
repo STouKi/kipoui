@@ -100,6 +100,10 @@ export default defineNuxtConfig({
   },
 
   supabase: {
+    // No server reads the session in the native app: keep it in localStorage rather than
+    // cookies, with the same PKCE flow the cookie-based client uses on the web
+    useSsrCookies: !isMobileBuild,
+    clientOptions: isMobileBuild ? { auth: { flowType: 'pkce' } } : {},
     redirectOptions: {
       login: '/connexion',
       callback: '/confirm',

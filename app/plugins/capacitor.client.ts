@@ -5,10 +5,24 @@ export default defineNuxtPlugin(async () => {
   const { Capacitor } = await import('@capacitor/core')
   if (!Capacitor.isNativePlatform()) return
 
-  const baseURL = config.public.appUrl as string
+  // Enables native-only styles such as .capacitor-ios in main.css
+  document.documentElement.classList.add(`capacitor-${Capacitor.getPlatform()}`)
 
-  // Override the global $fetch so all $fetch() calls in stores use the absolute API URL
-  globalThis.$fetch = $fetch.create({ baseURL })
+  const apiURL = config.public.appUrl as string
+  const getAuthHeaders = useApiAuthHeaders()
+
+  // Override the global $fetch (also used by useFetch) so API calls reach the remote server
+  // with the user's token. Other requests, such as Nuxt's own assets, stay local.
+  globalThis.$fetch = $fetch.create({
+    async onRequest({ request, options }) {
+      if (typeof request !== 'string' || !request.startsWith('/api/')) return
+
+      options.baseURL = apiURL
+      for (const [name, value] of Object.entries(await getAuthHeaders())) {
+        options.headers.set(name, value)
+      }
+    }
+  })
 
   // Sync StatusBar style with the app's color mode
   const { StatusBar, Style } = await import('@capacitor/status-bar')

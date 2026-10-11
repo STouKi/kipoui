@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "build:mobile": "CAPACITOR_BUILD=true VITE_CAPACITOR=true nuxt build --preset static",
+    "build:mobile": "CAPACITOR_BUILD=true APP_URL=https://kipoui.com nuxt build --preset static",
     "cap:sync": "bun run build:mobile && bunx cap sync ios",
     "cap:open": "bunx cap open ios",
     "cap:run": "bunx cap run ios",
