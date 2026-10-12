@@ -23,7 +23,7 @@ Package manager: **bun** (not npm/pnpm).
 - **Frontend**: Nuxt 4, Vue 3, @nuxt/ui (Tailwind-based), Pinia, VueUse
 - **Backend**: Nitro server routes (in `server/api/`)
 - **Database**: Supabase (Postgres + auth). Two schemas: `public` (main data) and `vecs` (embeddings/RAG)
-- **AI**: Vercel AI SDK v6 (`ai` package). Primary model: Groq `openai/gpt-oss-120b` (via `@ai-sdk/groq`). Falls back to Anthropic `claude-sonnet-4-0` for PDF analysis. Embeddings via OpenAI `text-embedding-3-small`
+- **AI**: Vercel AI SDK v6 (`ai` package). Primary model: Groq `openai/gpt-oss-120b` (via `@ai-sdk/groq`). Falls back to Anthropic `claude-sonnet-5` for PDF analysis. Embeddings via OpenAI `text-embedding-3-small`
 - **Analytics**: Vercel Analytics via `@vercel/analytics` Nuxt module (in `nuxt.config.ts` modules array)
 - **Payments**: Stripe (via `@unlok-co/nuxt-stripe`)
 - **Deployment**: Vercel (via GitHub integration). Domain: `kipoui.com` — DNS at OVH (not Vercel nameservers). OVH email configured (MX + SPF + DKIM) — ne jamais migrer vers les NS Vercel, ne pas toucher ces records DNS.
@@ -38,13 +38,15 @@ Package manager: **bun** (not npm/pnpm).
 
 **AI chat flow** (`server/api/chats/[id].post.ts`):
 1. Auth + full profile fetch → system prompt generation
-2. Title auto-generation via Groq `llama-3.1-8b-instant` (first message only)
-3. Image attachments analyzed via Groq vision model `meta-llama/llama-4-scout-17b-16e-instruct` using `generateText` before being passed as text
-4. PDF attachments → switches to Anthropic `claude-sonnet-4-0` (`maxOutputTokens: 8192`)
+2. Title auto-generation via Groq `openai/gpt-oss-20b` (first message only, `reasoningEffort: 'low'`). A failure falls back to the start of the message and never blocks the chat
+3. Image attachments analyzed via Groq vision model `qwen/qwen3.8-27b` using `generateText` before being passed as text
+4. PDF attachments → switches to Anthropic `claude-sonnet-5` (`maxOutputTokens: 8192`)
 5. Default path: `openai/gpt-oss-120b` via `createGroq({ apiKey })`. `maxOutputTokens: 4096`. Groq has native tool calling — no middleware needed. Tools: `exaSearch`, `addResource`, `getInformation`, `logWeight`
 6. Live-info keywords in message trigger forced `exaSearch` tool on first step via `prepareStep`. Otherwise `prepareStep` returns `{}` (auto tool choice).
 
 Note: `convertToModelMessages()` is async in AI SDK v6 — always `await` it.
+
+Attachments arrive as data URLs, which AI SDK v6 tries to download and refuses (it only downloads http(s)): pass their base64 content (`toInlineData()` in the route). Attachments of earlier messages are replaced by a text mention before `convertToModelMessages()`. Groq retires models regularly (`llama-3.1-8b-instant` and `llama-4-scout` were shut down in 2026): when a model call fails with "does not exist", check https://console.groq.com/docs/deprecations.
 
 **RAG tools** (`server/lib/ai/tools/`): `addResource` saves content + embeddings to Supabase `vecs` schema; `getInformation` queries via `match_documents` RPC with similarity threshold **0.3** (lowered from 0.5 to catch semantically distant but relevant entries).
 
