@@ -1,7 +1,7 @@
 import { anthropic } from '@ai-sdk/anthropic'
 import { createGroq } from '@ai-sdk/groq'
 import { smoothStream, streamText, generateText, convertToModelMessages, stepCountIs } from 'ai'
-import type { UIMessage, TextPart, TextUIPart, FileUIPart, FilePart } from 'ai'
+import type { UIMessage, TextUIPart, FileUIPart } from 'ai'
 import { requireAuth } from '../../repositories/supabaseRepository'
 import { getFullProfileData } from '../../repositories/profileRepository'
 import type { ChatWithMessages } from '../../repositories/chatRepository'
@@ -24,6 +24,12 @@ function extractPromptText(message: UIMessage) {
   if (textPart?.text) return textPart.text
 }
 
+// The AI SDK treats data URLs as files to download, and only downloads http(s) URLs:
+// attachments are passed as their base64 content instead
+function toInlineData(url: string) {
+  return url.startsWith('data:') ? url.slice(url.indexOf(',') + 1) : url
+}
+
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const fullProfile = await getFullProfileData(event, user.id)
@@ -42,24 +48,29 @@ export default defineEventHandler(async (event) => {
   const { chat, messages: dbMessages } = chatData
 
   if (!chat.title) {
-    const titleRes = await generateText({
-      model: groq('llama-3.1-8b-instant'),
-      messages: [{
-        role: 'system',
-        content: `You are a title generator for a chat:
-        - Generate a short title based on the first user's message
-        - The title should be less than 30 characters long
-        - The title should be a summary of the user's message
-        - Do not use quotes (' or ") or colons (:) or any other punctuation
-        - Do not use markdown, just plain text`
-      }, {
-        role: 'user',
-        content: dbMessages[0]?.content ?? ''
-      }]
-    })
-
-    const cleaned = titleRes.text.replace(/:/g, '').split('\n')[0] ?? ''
-    setHeader(event, 'X-Chat-Title', cleaned)
+    // The title is cosmetic: a model failure must not block the conversation
+    let cleaned = (dbMessages[0]?.content ?? '').slice(0, 30)
+    try {
+      const titleRes = await generateText({
+        model: groq('openai/gpt-oss-20b'),
+        providerOptions: { groq: { reasoningEffort: 'low' } },
+        messages: [{
+          role: 'system',
+          content: `You are a title generator for a chat:
+          - Generate a short title based on the first user's message
+          - The title should be less than 30 characters long
+          - The title should be a summary of the user's message
+          - Do not use quotes (' or ") or colons (:) or any other punctuation
+          - Do not use markdown, just plain text`
+        }, {
+          role: 'user',
+          content: dbMessages[0]?.content ?? ''
+        }]
+      })
+      cleaned = titleRes.text.replace(/:/g, '').split('\n')[0] || cleaned
+    } catch (error) {
+      console.error('Title generation error:', error)
+    }
     await updateChatTitle(event, Number(id), cleaned)
   }
 
@@ -79,7 +90,7 @@ export default defineEventHandler(async (event) => {
       const currentMessage = { ...lastMessage }
       const promptText = extractPromptText(msgIn)
 
-      type ContentPart = TextPart | FilePart
+      type ContentPart = TextUIPart | FileUIPart
       const contentArray: ContentPart[] = []
       if (promptText) contentArray.push({ type: 'text', text: promptText })
 
@@ -92,11 +103,11 @@ export default defineEventHandler(async (event) => {
             const imagePrompt = promptText || 'Analyze this image'
 
             const visionRes = await generateText({
-              model: groq('meta-llama/llama-4-scout-17b-16e-instruct'),
+              model: groq('qwen/qwen3.8-27b'),
               messages: [{
                 role: 'user',
                 content: [
-                  { type: 'image', image: url },
+                  { type: 'image', image: toInlineData(url), mediaType },
                   { type: 'text', text: imagePrompt }
                 ]
               }]
@@ -106,6 +117,9 @@ export default defineEventHandler(async (event) => {
             console.error('Image processing error:', error)
             contentArray.push({ type: 'text', text: '[Image analysis failed]' })
           }
+        } else if (mediaType === 'application/pdf') {
+          // Claude reads the PDF itself (PDF branch below)
+          contentArray.push({ ...part, url: toInlineData(url) })
         }
       }
 
@@ -116,6 +130,14 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // Earlier attachments can't be re-sent as data URLs (see toInlineData) and the text model
+  // can't read them anyway: the conversation keeps a mention of them instead
+  for (const message of messages.slice(0, lastIndex)) {
+    message.parts = message.parts.map((part: UIMessage['parts'][number]) =>
+      part.type === 'file' ? { type: 'text', text: `[Pièce jointe : ${part.filename ?? part.mediaType}]` } : part
+    )
+  }
+
   const modelMessages = await convertToModelMessages(messages)
 
   const lastMessageHasPDF = lastMessage.parts?.some((part: FileUIPart | TextUIPart) =>
@@ -124,7 +146,7 @@ export default defineEventHandler(async (event) => {
 
   if (lastMessageHasPDF) {
     return streamText({
-      model: anthropic('claude-sonnet-4-0'),
+      model: anthropic('claude-sonnet-5'),
       system: systemPrompt,
       messages: modelMessages,
       maxOutputTokens: 8192,
