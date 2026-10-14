@@ -46,13 +46,13 @@ async function deleteAccount() {
 <template>
   <UPageCard
     title="Compte"
-    description="Vous ne souhaitez plus utiliser notre service ? Vous pouvez supprimer votre compte ici. Cette action est irréversible. Toutes les informations liées à ce compte seront supprimées définitivement."
+    description="Vous ne souhaitez plus utiliser notre service ? Vous pouvez supprimer votre compte ici. Cette action est irréversible. Toutes les informations liées à ce compte seront supprimées définitivement et votre abonnement éventuel sera résilié immédiatement."
     class="bg-gradient-to-tl from-error/10 from-5% to-default"
   >
     <template #footer>
       <UModal
         title="Supprimer votre compte"
-        description="Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible. Toutes les informations liées à ce compte seront supprimées définitivement."
+        description="Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible. Toutes les informations liées à ce compte seront supprimées définitivement et votre abonnement éventuel sera résilié immédiatement."
       >
         <UButton
           label="Supprimer le compte"

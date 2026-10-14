@@ -5,6 +5,14 @@ import type { Database as PublicDatabase } from '../types/public'
 import type { Database as VecsDatabase } from '../types/vecs'
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 
+// Bypasses RLS: only for trusted server code acting without a user session
+export function getAdminSupabaseClient() {
+  const { supabase } = useRuntimeConfig()
+  return createClient<PublicDatabase>(supabase.url, supabase.serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  })
+}
+
 // The native app calls the API cross-origin, so no session cookie comes with its
 // requests: it sends the Supabase access token as a Bearer header instead
 function getBearerToken(event: H3Event) {
