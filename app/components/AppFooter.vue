@@ -4,6 +4,9 @@ const columns = [{
   children: [{
     label: 'CGU',
     to: '/conditions-utilisation'
+  }, {
+    label: 'Confidentialité',
+    to: '/confidentialite'
   }]
 }, {
   label: 'Entreprise',

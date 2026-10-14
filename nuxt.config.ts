@@ -115,7 +115,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/connexion',
       callback: '/confirm',
-      exclude: ['/', '/tarifs', '/blog', '/a-propos', '/conditions-utilisation', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
+      exclude: ['/', '/tarifs', '/blog', '/a-propos', '/conditions-utilisation', '/confidentialite', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
     }
   }
 })

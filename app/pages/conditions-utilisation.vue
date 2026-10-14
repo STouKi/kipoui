@@ -12,8 +12,8 @@ useSeoMeta({
     <h1 class="mb-8 text-3xl font-bold text-center">
       Conditions Générales d'Utilisation
     </h1>
-    <div class="p-6 bg-white rounded-lg shadow-md">
-      <p class="mb-6 text-sm text-center text-gray-500">
+    <div class="p-6 rounded-lg shadow-md bg-default">
+      <p class="mb-6 text-sm text-center text-muted">
         Dernière mise à jour : 25 mai 2025
       </p>
 
@@ -82,7 +82,10 @@ useSeoMeta({
             5. Politique de confidentialité
           </h2>
           <p class="mb-3">
-            Notre Politique de Confidentialité décrit comment nous collectons, utilisons, stockons et partageons vos informations personnelles. En utilisant l'Application, vous consentez à notre collecte et utilisation de vos données conformément à notre Politique de Confidentialité.
+            Notre <ULink
+              to="/confidentialite"
+              class="font-medium text-primary"
+            >Politique de Confidentialité</ULink> décrit comment nous collectons, utilisons, stockons et partageons vos informations personnelles. En utilisant l'Application, vous consentez à notre collecte et utilisation de vos données conformément à notre Politique de Confidentialité.
           </p>
           <p>
             Nous prenons la protection de vos données personnelles très au sérieux et mettons en œuvre des mesures de sécurité appropriées pour les protéger.
@@ -159,10 +162,10 @@ useSeoMeta({
           <p>
             Si vous avez des questions concernant ces CGU, veuillez nous contacter à l'adresse suivante :
             <ULink
-              to="mailto:contact@kipoui.fr"
+              to="mailto:contact@kipoui.com"
               class="font-medium text-primary"
             >
-              contact@kipoui.fr
+              contact@kipoui.com
             </ULink>
           </p>
         </section>
