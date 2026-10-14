@@ -37,7 +37,7 @@ Package manager: **bun** (not npm/pnpm).
 **User store** (`app/stores/user.ts`): Central store holding the full user profile tree — `profile`, `physicalData`, `habits`, `medicalData`, `goals`, `preferences`, `customer`. Populated by `/api/profile/get` on init.
 
 **AI chat flow** (`server/api/chats/[id].post.ts`):
-1. Auth + full profile fetch → system prompt generation
+1. Auth + AI consent check (403 without `user_metadata.ai_consent_at`) + full profile fetch → system prompt generation
 2. Title auto-generation via Groq `openai/gpt-oss-20b` (first message only, `reasoningEffort: 'low'`). A failure falls back to the start of the message and never blocks the chat
 3. Image attachments analyzed via Groq vision model `qwen/qwen3.8-27b` using `generateText` before being passed as text
 4. PDF attachments → switches to Anthropic `claude-sonnet-5` (`maxOutputTokens: 8192`)
@@ -52,6 +52,8 @@ Attachments arrive as data URLs, which AI SDK v6 tries to download and refuses (
 
 **logWeight tool** (`server/lib/ai/tools/logWeight.ts`): Records user weight after explicit confirmation. Updates both `weight_records` table (historical graph) and `physical_data.weight_kg` (used in system prompt) via `Promise.all`. Never called without explicit user confirmation.
 
+**AI consent**: explicit consent to send profile data (including health and religious diet data) and messages to the AI providers, required by the GDPR (art. 9) and App Store guideline 5.1.2(i). Stored in Supabase Auth `user_metadata.ai_consent_at` (no DB column), read and written through `useAiConsent()`. Given at signup (`inscription.vue` checkbox) or through `AiConsentOverlay` in the chat layout, withdrawn in Paramètres > Sécurité. Legal pages: `/conditions-utilisation` and `/confidentialite`.
+
 **Client chat** (`app/pages/chat/[id].vue`): Uses `@ai-sdk/vue` `Chat` class with `DefaultChatTransport`. Messages rendered with `@nuxtjs/mdc` for markdown streaming.
 
 ### Routing
@@ -62,8 +64,10 @@ Pages are in French: `/connexion`, `/inscription`, `/tableau-de-bord`, `/tarifs`
 - `runtimeConfig.public.isNative` (set at build time) is the native flag: use it rather than `import.meta.env`.
 - The app runs on `capacitor://localhost` and calls the API at `APP_URL`, baked in at build time (`build:mobile` pins it to `https://kipoui.com` so the local `.env` value never ships in the app). `app/plugins/capacitor.client.ts` sends `/api/` requests from the global `$fetch` (hence `useFetch`) there, with the Bearer token from `useApiAuthHeaders()`. The chat transport uses the native fetch, so it sets both explicitly. `server/middleware/cors.ts` allows that origin on `/api/`.
 - The iOS shell uses the UIScene lifecycle (`ios/App/App/SceneDelegate.swift` + `UIApplicationSceneManifest` in `Info.plist`): iOS 27 refuses to launch apps without it and Capacitor 8's template doesn't provide it, so keep both if `ios/` is ever regenerated.
+- The iOS app is a companion app: subscriptions are only sold on the website. In native, `SubscriptionRequiredOverlay` shows no call to action to purchase (App Store guideline 3.1.3(f)): never make `/tarifs`, `/paiement` or a purchase link reachable in the app.
+- In native, the default layout (only used there by the legal pages) is a minimal shell with a back button instead of the site header and footer.
 - The WebView covers the whole screen (`contentInset: 'never'`, `viewport-fit=cover` in the native build): full-screen containers must use the `safe-area-*` classes from `main.css` (env() is 0 on the web, so they are safe there).
-- `app/middleware/native-guard.global.ts` restricts the app to its own screens (auth, chat, dashboard) and sends `/` to the dashboard or the login page depending on the session. `useAppUrl().getRedirectUrl()` keeps Supabase auth email links on the web domain.
+- `app/middleware/native-guard.global.ts` restricts the app to its own screens (auth, chat, dashboard, legal pages) and sends `/` to the dashboard or the login page depending on the session. `useAppUrl().getRedirectUrl()` keeps Supabase auth email links on the web domain.
 
 ### Form validation
 `app/composables/useZodValidation.ts` — composable wrapping Zod schemas for reactive per-field validation with touch tracking. Import Zod as `from 'zod/v3'`.
