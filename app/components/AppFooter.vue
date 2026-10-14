@@ -7,6 +7,9 @@ const columns = [{
   }, {
     label: 'Confidentialité',
     to: '/confidentialite'
+  }, {
+    label: 'Contact',
+    to: '/contact'
   }]
 }, {
   label: 'Entreprise',
