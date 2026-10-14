@@ -12,7 +12,7 @@ export async function getCustomerByProfileId(event: H3Event, profileId: string):
       .from('customers')
       .select('*')
       .eq('profile_id', profileId)
-      .single()
+      .maybeSingle()
 
     if (error) {
       console.warn('Erreur lors de la récupération du client:', error)
@@ -33,7 +33,7 @@ export async function getCustomerByStripeCustomerId(event: H3Event, stripeCustom
       .from('customers')
       .select('*')
       .eq('stripe_customer_id', stripeCustomerId)
-      .single()
+      .maybeSingle()
 
     if (error) {
       console.warn('Erreur lors de la récupération du client par ID Stripe:', error)

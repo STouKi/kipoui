@@ -59,7 +59,7 @@ async function redirectToCheckout() {
     <UCard>
       <div class="flex items-center justify-center p-4">
         <UIcon
-          name="i-heroicons-arrow-path"
+          name="i-lucide-loader-circle"
           class="mr-2 animate-spin"
         />
         <p>
