@@ -1,5 +1,5 @@
 import type Stripe from 'stripe'
-import { getServerStripe, handleError } from '../../repositories/stripeRepository'
+import { getServerStripe, handleError, toSubscriptionStatus } from '../../repositories/stripeRepository'
 import { getAuthUser } from '../../repositories/supabaseRepository'
 import { getCustomerByProfileId, updateCustomer } from '../../repositories/customerRepository'
 
@@ -56,6 +56,7 @@ export default defineEventHandler(async (event) => {
 
     await updateCustomer(event, customerData.id, {
       stripe_subscription_id: subscription?.id || '',
+      ...(subscription && { subscription_status: toSubscriptionStatus(subscription.status) }),
       payment_method_id: paymentMethodId,
       subscription_end_date: subscriptionEndDate,
       last_payment_date: new Date().toISOString()

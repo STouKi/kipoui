@@ -13,6 +13,12 @@ export function getAdminSupabaseClient() {
   })
 }
 
+// For requests authenticated by something other than a user session, such as the Stripe
+// webhook by its signature: the repositories then act as the service role for the request
+export function actAsServiceRole(event: H3Event) {
+  event.context.supabaseServiceRole = true
+}
+
 // The native app calls the API cross-origin, so no session cookie comes with its
 // requests: it sends the Supabase access token as a Bearer header instead
 function getBearerToken(event: H3Event) {
@@ -34,6 +40,10 @@ function getBearerSupabaseClient<T>(event: H3Event, token: string): SupabaseClie
 }
 
 async function getSupabaseClient<T>(event: H3Event) {
+  if (event.context.supabaseServiceRole) {
+    return getAdminSupabaseClient() as unknown as SupabaseClient<T>
+  }
+
   const token = getBearerToken(event)
   return token ? getBearerSupabaseClient<T>(event, token) : serverSupabaseClient<T>(event)
 }

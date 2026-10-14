@@ -1,7 +1,8 @@
 import type { H3Event } from 'h3'
 import type Stripe from 'stripe'
-import { getServerStripe, handleError } from '../../repositories/stripeRepository'
+import { getServerStripe, handleError, toSubscriptionStatus } from '../../repositories/stripeRepository'
 import { getCustomerByStripeCustomerId, updateCustomer } from '../../repositories/customerRepository'
+import { actAsServiceRole } from '../../repositories/supabaseRepository'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -27,17 +28,16 @@ export default defineEventHandler(async (event) => {
       throw new Error('Signature webhook invalide')
     }
 
+    // Stripe calls without a user session, so RLS would hide every customer: the signature
+    // above authenticates the request, and the repositories act as the service role
+    actAsServiceRole(event)
+
+    // A trial ending without a payment method pauses the subscription (missing_payment_method:
+    // 'pause'), which subscription.updated reports: access stays open until then
     switch (stripeEvent.type) {
-      case 'customer.subscription.trial_will_end':
-        await handleTrialWillEnd(event, stripeEvent.data.object as Stripe.Subscription)
-        break
-
       case 'customer.subscription.created':
-        await handleSubscriptionCreated(event, stripeEvent.data.object as Stripe.Subscription)
-        break
-
       case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event, stripeEvent.data.object as Stripe.Subscription)
+        await handleSubscriptionChange(event, stripeEvent.data.object as Stripe.Subscription)
         break
 
       case 'invoice.payment_failed':
@@ -56,40 +56,14 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-async function handleTrialWillEnd(event: H3Event, subscription: Stripe.Subscription) {
+async function handleSubscriptionChange(event: H3Event, subscription: Stripe.Subscription) {
   const customer = await getCustomerByStripeCustomerId(event, subscription.customer as string)
   if (!customer) return
 
-  const hasPaymentMethod = !!subscription.default_payment_method
-
-  if (!hasPaymentMethod) {
-    await updateCustomer(event, customer.id, {
-      subscription_status: 'waiting_payment'
-    })
-  }
-}
-
-async function handleSubscriptionUpdated(event: H3Event, subscription: Stripe.Subscription) {
-  const customer = await getCustomerByStripeCustomerId(event, subscription.customer as string)
-  if (!customer) return
-
-  if (subscription.status === 'trialing') {
-    await updateCustomer(event, customer.id, {
-      subscription_status: 'trial'
-    })
-  } else if (subscription.status === 'active') {
-    await updateCustomer(event, customer.id, {
-      subscription_status: 'active'
-    })
-  } else if (subscription.status === 'incomplete' || subscription.status === 'past_due' || subscription.status === 'unpaid') {
-    await updateCustomer(event, customer.id, {
-      subscription_status: 'waiting_payment'
-    })
-  } else if (subscription.status === 'canceled') {
-    await updateCustomer(event, customer.id, {
-      subscription_status: 'cancelled'
-    })
-  }
+  await updateCustomer(event, customer.id, {
+    subscription_status: toSubscriptionStatus(subscription.status),
+    stripe_subscription_id: subscription.id
+  })
 }
 
 async function handlePaymentFailed(event: H3Event, invoice: Stripe.Invoice) {
@@ -110,21 +84,5 @@ async function handleSubscriptionDeleted(event: H3Event, subscription: Stripe.Su
   await updateCustomer(event, customer.id, {
     subscription_status: 'cancelled',
     stripe_subscription_id: null
-  })
-}
-
-async function handleSubscriptionCreated(event: H3Event, subscription: Stripe.Subscription) {
-  const customer = await getCustomerByStripeCustomerId(event, subscription.customer as string)
-  if (!customer) return
-
-  console.log('Subscription status:', subscription.status)
-
-  let subscriptionStatus = 'active'
-  if (subscription.status === 'trialing') {
-    subscriptionStatus = 'trial'
-  }
-
-  await updateCustomer(event, customer.id, {
-    subscription_status: subscriptionStatus
   })
 }

@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import type Stripe from 'stripe'
 import { getAuthUser } from './supabaseRepository'
 import { getProfileById } from './profileRepository'
 import { getCustomerByProfileId, createCustomer } from './customerRepository'
@@ -15,6 +16,21 @@ export function handleError(error: unknown, message: string = 'Stripe error') {
     statusCode: 500,
     message
   })
+}
+
+// Status stored for the app, which only gives access to 'active' and 'trialing'
+export function toSubscriptionStatus(status: Stripe.Subscription.Status) {
+  switch (status) {
+    case 'active':
+    case 'trialing':
+      return status
+    case 'canceled':
+    case 'incomplete_expired':
+      return 'cancelled'
+    default:
+      // incomplete, past_due, unpaid, and paused: a trial that ended without a payment method
+      return 'waiting_payment'
+  }
 }
 
 /**
