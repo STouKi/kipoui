@@ -32,6 +32,10 @@ function toInlineData(url: string) {
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  // Profile data (including health data) only reaches the AI providers with explicit consent
+  if (!user.user_metadata?.ai_consent_at) {
+    throw createError({ statusCode: 403, statusMessage: 'AI consent required' })
+  }
   const fullProfile = await getFullProfileData(event, user.id)
   const systemPrompt = generateSystemPrompt(fullProfile)
 

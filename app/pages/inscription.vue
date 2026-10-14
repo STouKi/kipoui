@@ -24,11 +24,17 @@ const fields = [{
   label: 'Mot de passe',
   type: 'password' as const,
   placeholder: 'Entrez votre mot de passe'
+}, {
+  name: 'aiConsent',
+  type: 'checkbox' as const
 }]
+
+const aiConsentMessage = 'Votre accord est nécessaire pour utiliser le coach'
 
 const schema = z.object({
   email: z.string({ message: 'Le champ email est obligatoire' }).email('Email invalide'),
-  password: z.string({ message: 'Le mot de passe est obligatoire' }).min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+  password: z.string({ message: 'Le mot de passe est obligatoire' }).min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
+  aiConsent: z.boolean({ message: aiConsentMessage }).refine(value => value, { message: aiConsentMessage })
 })
 
 type Schema = z.output<typeof schema>
@@ -48,7 +54,8 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     options: {
       emailRedirectTo: priceId
         ? getRedirectUrl(`/paiement?priceId=${priceId}`)
-        : getRedirectUrl('/tableau-de-bord')
+        : getRedirectUrl('/tableau-de-bord'),
+      data: { ai_consent_at: new Date().toISOString() }
     }
   })
 
@@ -87,6 +94,18 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         to="/connexion"
         class="font-medium text-primary"
       >Se connecter</ULink>.
+    </template>
+
+    <template #aiConsent-field="{ state }">
+      <UCheckbox v-model="state.aiConsent">
+        <template #label>
+          J'accepte que mes données de profil, y compris sensibles (santé, régime alimentaire), et mes messages soient traités par des services d'intelligence artificielle tiers pour personnaliser mon accompagnement.
+          <ULink
+            to="/confidentialite"
+            class="font-medium text-primary"
+          >En savoir plus</ULink>
+        </template>
+      </UCheckbox>
     </template>
 
     <template #footer>

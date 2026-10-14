@@ -168,5 +168,6 @@ defineShortcuts({
     <slot />
 
     <SubscriptionRequiredOverlay />
+    <AiConsentOverlay />
   </UDashboardGroup>
 </template>
