@@ -5,7 +5,9 @@ const ALLOWED_ROUTES = [
   '/nouveau-mot-de-passe',
   '/chat',
   '/tableau-de-bord',
-  '/confirm'
+  '/confirm',
+  '/conditions-utilisation',
+  '/confidentialite'
 ]
 
 export default defineNuxtRouteMiddleware((to) => {
