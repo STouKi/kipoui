@@ -1,6 +1,8 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Codex, Claude Code...) when working with code in this repository.
+
+This is the single context file: `CLAUDE.md` only imports it for Claude Code. Edit this file, never `CLAUDE.md`.
 
 ## Commands
 
@@ -14,6 +16,14 @@ bun run typecheck    # TypeScript type checking (vue-tsc)
 ```
 
 Package manager: **bun** (not npm/pnpm).
+
+Stripe webhooks in local dev: log the Stripe CLI into the test environment of the local key (never the live account), then run
+
+```bash
+stripe listen --forward-to localhost:3000/api/stripe/webhook --events customer.subscription.created,customer.subscription.updated,customer.subscription.deleted,customer.subscription.paused,customer.subscription.resumed,invoice.payment_failed
+```
+
+Recent CLI versions require `--events`. Give the dev server the `whsec_...` secret it prints as `STRIPE_WEBHOOK_SECRET` (it stays the same from one session to the next on a machine).
 
 ## Architecture
 
@@ -74,6 +84,17 @@ Pages are in French: `/connexion`, `/inscription`, `/tableau-de-bord`, `/tarifs`
 - The WebView covers the whole screen (`contentInset: 'never'`, `viewport-fit=cover` in the native build): full-screen containers must use the `safe-area-*` classes from `main.css` (env() is 0 on the web, so they are safe there).
 - `app/middleware/native-guard.global.ts` restricts the app to its own screens (auth, chat, dashboard, legal pages) and sends `/` to the dashboard or the login page depending on the session. `useAppUrl().getRedirectUrl()` keeps Supabase auth email links on the web domain.
 
+### Mobile redesign (Ionic Vue, in progress)
+Decided on 2026-10-14: the iOS app will be rebuilt as a separate Ionic Vue + Capacitor app in this repo. The current one is the web dashboard in a WebView (hamburger menu, long desktop forms with a single save button, a delete button that only shows on hover, 32-36 px controls) and doesn't feel native. Until the Ionic app ships, the Nuxt mobile build above stays the iOS app.
+- Client only: it calls the existing API with the Bearer token (CORS already allows `capacitor://localhost`) and reuses Vue, Capacitor, the AI SDK chat (`@ai-sdk/vue`), the Supabase client and the types. No server change planned.
+- Once it replaces the Nuxt build, remove the native code from the website (`isNative`, `native-guard`, the `safe-area-*` classes, the native layouts, `build:mobile`).
+- 3 tabs. **Coach**: conversation list (search, new conversation button, swipe to delete), then the conversation pushed full screen, input docked above the keyboard, "+" for camera, photo library or PDF. **Suivi**: current weight with trend and goal progress, 7 j / 1 mois / 3 mois / 1 an chart, "Ajouter une pesée" in a bottom sheet with a numeric keypad, latest weigh-ins. **Profil**: grouped list like iOS Settings, each row opening its own screen that saves on its own (profile sections, notifications, AI consent, privacy policy, account security, contact, sign out).
+- Native patterns: large titles, push navigation with swipe back, swipe actions, bottom sheets, pull to refresh, haptics, 44 pt touch targets, 17 px text (at least 16 px in inputs, or iOS zooms on focus).
+- Visual identity: Fredoka, slate neutrals, kiwi logo, the `yellowgreen` palette from `main.css`. Primary 500 (`#9ACD32`) only takes dark text (`#1A2306` in the mockups): white on it is 1.9:1 where WCAG asks 4.5:1, a mistake the website's solid buttons still make in light mode. Green text and active tab on white: 700 (`#5D7B1E`). Icon tiles: 100 (`#EEF6D7`) with 800 (`#3F5214`) icons.
+- The subscription only appears as a status in Profil (companion app rule above).
+- Mockups of the 4 key screens (Coach, Conversation, Suivi, Profil), clickable prototype: design canvas "Kipoui iOS", https://claude.ai/artifact/UR1CAGWEtEnsHV1G18gCZT (private to the owner). Light mode only (dark mode still to design); sub-screens (editing a profile section, adding a weigh-in, attachment picker, sign in) aren't drawn yet.
+- Status (2026-10-14): mockups validated, Ionic project not created yet. Next step: scaffold it with the 3 tabs.
+
 ### Form validation
 `app/composables/useZodValidation.ts` — composable wrapping Zod schemas for reactive per-field validation with touch tracking. Import Zod as `from 'zod/v3'`.
 
@@ -86,6 +107,13 @@ Pages are in French: `/connexion`, `/inscription`, `/tableau-de-bord`, `/tarifs`
 Required: `SUPABASE_URL`, `SUPABASE_KEY` (anon), `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `EXASEARCH_API_KEY`, `TAVILY_API_KEY`, `GROQ_API_KEY`, `STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `APP_URL`, Stripe price IDs.
 
 Managed in **Vercel** only (Settings → Environment Variables). No GitHub Actions → no GitHub secrets needed. `DATABASE_URL` is not used in the codebase.
+
+Local dev (as of October 2026): the local `.env` points at the **production** Supabase project with Stripe **test** keys, so test signups and payments land in the real database. Delete test accounts when done (Paramètres > Sécurité, which also deletes their Stripe customer).
+
+## Git workflow
+- Work on `preview`: each push gets a Vercel preview deployment. Merging `preview` into `main` on GitHub deploys production (kipoui.com).
+- Check the current branch before committing: after a merge, the local checkout may still be on `main`.
+- Commit messages: gitmoji + Conventional Commits, in English (`:sparkles: feat(billing): ...`, `:bug: fix: ...`, `:memo: docs: ...`).
 
 ## Security
 - **Never read `.env` or any secrets file** (`.env.local`, `.env.production`, etc.) — ask the user to share only what's needed.
