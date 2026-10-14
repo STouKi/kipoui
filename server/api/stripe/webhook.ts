@@ -33,10 +33,13 @@ export default defineEventHandler(async (event) => {
     actAsServiceRole(event)
 
     // A trial ending without a payment method pauses the subscription (missing_payment_method:
-    // 'pause'), which subscription.updated reports: access stays open until then
+    // 'pause'), which subscription.paused reports: access stays open until then. The customer
+    // portal resumes it once a payment method is added (subscription.resumed)
     switch (stripeEvent.type) {
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
+      case 'customer.subscription.paused':
+      case 'customer.subscription.resumed':
         await handleSubscriptionChange(event, stripeEvent.data.object as Stripe.Subscription)
         break
 

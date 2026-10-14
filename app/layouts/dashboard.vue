@@ -4,6 +4,8 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 const toast = useToast()
 
 const open = ref(false)
+// Subscriptions are only managed on the website (companion app, App Store guideline 3.1.3(f))
+const { isNative } = useRuntimeConfig().public
 
 const links = [[{
   label: 'Tableau de bord',
@@ -28,7 +30,15 @@ const links = [[{
     onSelect: () => {
       open.value = false
     }
-  }, {
+  }, ...(isNative
+    ? []
+    : [{
+        label: 'Abonnement',
+        to: '/tableau-de-bord/parametres/abonnement',
+        onSelect: () => {
+          open.value = false
+        }
+      }]), {
     label: 'Notifications',
     to: '/tableau-de-bord/parametres/notifications',
     onSelect: () => {

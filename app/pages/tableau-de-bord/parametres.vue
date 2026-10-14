@@ -5,12 +5,21 @@ definePageMeta({
   layout: 'dashboard'
 })
 
+// Subscriptions are only managed on the website (companion app, App Store guideline 3.1.3(f))
+const { isNative } = useRuntimeConfig().public
+
 const links = [[{
   label: 'Profil',
   icon: 'i-lucide-user',
   to: '/tableau-de-bord/parametres',
   exact: true
-}, {
+}, ...(isNative
+  ? []
+  : [{
+      label: 'Abonnement',
+      icon: 'i-lucide-credit-card',
+      to: '/tableau-de-bord/parametres/abonnement'
+    }]), {
   label: 'Notifications',
   icon: 'i-lucide-bell',
   to: '/tableau-de-bord/parametres/notifications'

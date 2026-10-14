@@ -4,6 +4,7 @@ const userStore = useUserStore()
 // The iOS app is a companion app: subscriptions are only sold on the website, and Apple forbids
 // any call to action to purchase outside the app (guideline 3.1.3(f))
 const { isNative } = useRuntimeConfig().public
+const { loading, openBillingPortal } = useBillingPortal()
 
 function goBack() {
   router.back()
@@ -32,7 +33,17 @@ function goBack() {
 
         <div class="flex flex-col w-full gap-2">
           <UButton
-            v-if="!isNative"
+            v-if="!isNative && userStore.subscriptionStatus === 'waiting_payment'"
+            block
+            color="primary"
+            :loading="loading"
+            @click="openBillingPortal"
+          >
+            Ajouter un moyen de paiement
+          </UButton>
+
+          <UButton
+            v-else-if="!isNative"
             block
             color="primary"
             to="/tarifs"
