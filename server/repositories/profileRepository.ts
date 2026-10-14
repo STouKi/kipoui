@@ -111,6 +111,8 @@ async function updateOrInsertRelatedData(
   event: H3Event,
   userId: string,
   tableName: 'profiles' | 'physical_data' | 'habits' | 'medical_data' | 'goals' | 'preferences' | 'chats' | 'messages',
+  // The payload's shape depends on tableName, which supabase-js can't type for a dynamic table
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
 ): Promise<boolean> {
   try {

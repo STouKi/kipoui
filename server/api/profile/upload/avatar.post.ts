@@ -7,14 +7,14 @@ export default defineEventHandler(async (event) => {
   const { id } = await requireAuth(event)
 
   const formData = await readMultipartFormData(event)
-  if (!formData || formData.length === 0) {
+  const file = formData?.[0]
+  if (!file) {
     throw createError({
       statusCode: 400,
       message: 'Aucun fichier n\'a été envoyé'
     })
   }
 
-  const file = formData[0]
   if (!file.filename || !file.data || !file.type) {
     throw createError({
       statusCode: 400,

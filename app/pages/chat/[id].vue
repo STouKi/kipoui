@@ -34,6 +34,9 @@ if (!chatWithMessages.value) {
 const files = ref<FileList | null>(null)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 
+// Attachments as stored in messages.experimental_attachments (a JSON column)
+type StoredAttachment = { name?: string, url?: string, type?: string, contentType?: string }
+
 const initialMessages: UIMessage[] = chatWithMessages.value.messages.map((message) => {
   const parts: UIMessage['parts'] = []
 
@@ -42,9 +45,9 @@ const initialMessages: UIMessage[] = chatWithMessages.value.messages.map((messag
   }
 
   if (message.experimental_attachments && Array.isArray(message.experimental_attachments)) {
-    const fileParts: FileUIPart[] = message.experimental_attachments
-      .filter((attachment: any) => attachment && typeof attachment === 'object')
-      .map((attachment: any): FileUIPart => ({
+    const fileParts: FileUIPart[] = (message.experimental_attachments as (StoredAttachment | null)[])
+      .filter((attachment): attachment is StoredAttachment => !!attachment && typeof attachment === 'object')
+      .map((attachment): FileUIPart => ({
         type: 'file' as const,
         filename: attachment.name || '',
         url: attachment.url || '',
@@ -73,7 +76,8 @@ const chat = new Chat({
     refreshNuxtData('chats')
   },
   onError(error) {
-    const { message } = typeof error.message === 'string' && (error as any).message[0] === '{' ? JSON.parse((error as any).message) : (error as any)
+    // Server errors arrive as the JSON body of the response
+    const { message } = error.message.startsWith('{') ? JSON.parse(error.message) : error
     toast.add({ description: message, icon: 'i-lucide-alert-circle', color: 'error', duration: 0 })
   }
 })
@@ -165,28 +169,40 @@ onMounted(() => {
               v-else-if="message.parts?.some(part => part.type === 'tool-getInformation')"
               class="flex items-center gap-2 italic font-light"
             >
-              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
+              <UIcon
+                name="i-lucide-loader-circle"
+                class="animate-spin size-4 shrink-0"
+              />
               Récupération des informations...
             </span>
             <span
               v-else-if="message.parts?.some(part => part.type === 'tool-addResource')"
               class="flex items-center gap-2 italic font-light"
             >
-              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
+              <UIcon
+                name="i-lucide-loader-circle"
+                class="animate-spin size-4 shrink-0"
+              />
               Mémorisation des informations...
             </span>
             <span
               v-else-if="message.parts?.some(part => part.type === 'tool-exaSearch')"
               class="flex items-center gap-2 italic font-light"
             >
-              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
+              <UIcon
+                name="i-lucide-loader-circle"
+                class="animate-spin size-4 shrink-0"
+              />
               Recherche des informations...
             </span>
             <span
               v-else-if="message.parts?.some(part => part.type === 'tool-logWeight')"
               class="flex items-center gap-2 italic font-light"
             >
-              <UIcon name="i-lucide-loader-circle" class="animate-spin size-4 shrink-0" />
+              <UIcon
+                name="i-lucide-loader-circle"
+                class="animate-spin size-4 shrink-0"
+              />
               Enregistrement du poids...
             </span>
             <div
