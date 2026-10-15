@@ -115,7 +115,9 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/connexion',
       callback: '/confirm',
-      exclude: ['/', '/tarifs', '/blog', '/a-propos', '/conditions-utilisation', '/confidentialite', '/contact', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
+      // Exact paths, unless they end with a * wildcard. Prerendering runs without a session, so a
+      // public page missing here is generated as a redirection to the login page
+      exclude: ['/', '/tarifs', '/blog', '/blog/*', '/a-propos', '/conditions-utilisation', '/confidentialite', '/contact', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
     }
   }
 })
