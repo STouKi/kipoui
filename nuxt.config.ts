@@ -82,9 +82,10 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: true
     },
+    // The pages for the iOS app (/app/...) aren't linked from the site, so the crawler can't find them
     prerender: isMobileBuild
       ? { routes: [] }
-      : { routes: ['/'], crawlLinks: true }
+      : { routes: ['/', '/app/confidentialite', '/app/conditions-utilisation', '/app/compte-confirme'], crawlLinks: true }
   },
 
   vite: {
@@ -117,7 +118,7 @@ export default defineNuxtConfig({
       callback: '/confirm',
       // Exact paths, unless they end with a * wildcard. Prerendering runs without a session, so a
       // public page missing here is generated as a redirection to the login page
-      exclude: ['/', '/tarifs', '/blog', '/blog/*', '/a-propos', '/conditions-utilisation', '/confidentialite', '/contact', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe']
+      exclude: ['/', '/tarifs', '/blog', '/blog/*', '/a-propos', '/conditions-utilisation', '/confidentialite', '/contact', '/inscription', '/mot-de-passe-oublie', '/nouveau-mot-de-passe', '/app/*']
     }
   }
 })
