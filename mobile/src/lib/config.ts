@@ -1,0 +1,15 @@
+import { Capacitor } from '@capacitor/core'
+
+// Public values, already in the website's JavaScript: the anon key only allows what the
+// database's row level security allows
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://iuvkhpapjbziviyvzjge.supabase.co'
+export const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1dmtocGFwamJ6aXZpeXZ6amdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0NzQyMTksImV4cCI6MjA2MzA1MDIxOX0.O2ZDphfP9Jw9C5MmsX_ER1wT3vuub3ZdSx8YT_M7YDY'
+
+// Supabase auth emails link to the website
+export const WEB_URL = 'https://kipoui.com'
+
+// The native app calls the website's API directly. In the browser, the dev server forwards /api
+// to it (vite.config.ts)
+export const API_URL = Capacitor.isNativePlatform() ? (import.meta.env.VITE_API_URL || WEB_URL) : ''
+
+export const CONTACT_EMAIL = 'contact@kipoui.com'

@@ -1,0 +1,89 @@
+/*
+ * Kipoui colors: the website's yellowgreen palette (app/assets/css/main.css) and Tailwind's slate.
+ * The app only has a light theme for now.
+ */
+:root {
+  --kp-green-50: #f7faeb;
+  --kp-green-100: #eef6d7;
+  --kp-green-500: #9acd32;
+  --kp-green-600: #7ba428;
+  --kp-green-700: #5d7b1e;
+  --kp-green-800: #3f5214;
+  --kp-on-green: #1a2306;
+
+  --kp-slate-100: #f1f5f9;
+  --kp-slate-200: #e2e8f0;
+  --kp-slate-300: #cbd5e1;
+  --kp-slate-400: #94a3b8;
+  --kp-slate-500: #64748b;
+  --kp-slate-600: #475569;
+  --kp-slate-700: #334155;
+  --kp-slate-900: #0f172a;
+
+  --ion-font-family: 'Fredoka', ui-rounded, system-ui, sans-serif;
+
+  --ion-text-color: #0f172a;
+  --ion-text-color-rgb: 15, 23, 42;
+  --ion-background-color: #ffffff;
+  --ion-background-color-rgb: 255, 255, 255;
+  --ion-border-color: #e2e8f0;
+  --ion-placeholder-color: #64748b;
+
+  --ion-toolbar-background: #ffffff;
+  --ion-toolbar-border-color: #e2e8f0;
+  --ion-tab-bar-background: #ffffff;
+  --ion-tab-bar-border-color: #e2e8f0;
+  --ion-tab-bar-color: #64748b;
+  --ion-tab-bar-color-selected: #5d7b1e;
+  --ion-item-border-color: #e2e8f0;
+
+  /*
+   * iOS tints text buttons, back buttons and the active tab with the primary color: the dark
+   * green is readable on white (4.9:1), the brand green is not (1.9:1)
+   */
+  --ion-color-primary: #5d7b1e;
+  --ion-color-primary-rgb: 93, 123, 30;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #526c1a;
+  --ion-color-primary-tint: #6d8835;
+
+  /* The brand green fills buttons, always with dark text (8.9:1) */
+  --ion-color-brand: #9acd32;
+  --ion-color-brand-rgb: 154, 205, 50;
+  --ion-color-brand-contrast: #1a2306;
+  --ion-color-brand-contrast-rgb: 26, 35, 6;
+  --ion-color-brand-shade: #88b42c;
+  --ion-color-brand-tint: #a4d247;
+
+  --ion-color-danger: #dc2626;
+  --ion-color-danger-rgb: 220, 38, 38;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #c22121;
+  --ion-color-danger-tint: #e03c3c;
+
+  /* Secondary round buttons (attachments, stop) */
+  --ion-color-light: #f1f5f9;
+  --ion-color-light-rgb: 241, 245, 249;
+  --ion-color-light-contrast: #334155;
+  --ion-color-light-contrast-rgb: 51, 65, 85;
+  --ion-color-light-shade: #d4d8db;
+  --ion-color-light-tint: #f2f6fa;
+
+  --ion-color-medium: #64748b;
+  --ion-color-medium-rgb: 100, 116, 139;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #58667a;
+  --ion-color-medium-tint: #748297;
+}
+
+.ion-color-brand {
+  --ion-color-base: var(--ion-color-brand);
+  --ion-color-base-rgb: var(--ion-color-brand-rgb);
+  --ion-color-contrast: var(--ion-color-brand-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-brand-contrast-rgb);
+  --ion-color-shade: var(--ion-color-brand-shade);
+  --ion-color-tint: var(--ion-color-brand-tint);
+}

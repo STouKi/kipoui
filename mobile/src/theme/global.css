@@ -1,0 +1,120 @@
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grouped screens (Suivi, Profil): white cards and lists on a light gray background, like iOS Settings */
+.grouped-page ion-content,
+.grouped-page ion-toolbar {
+  --background: var(--kp-slate-100);
+}
+
+/* Ionic gives the large title's toolbar the page background color (white) with the same
+   specificity, and its styles can load after ours on the device: the title stays on the gray */
+.grouped-page ion-header.header-collapse-condense ion-toolbar,
+.grouped-page ion-header ion-toolbar {
+  --background: var(--kp-slate-100);
+}
+
+.grouped-page ion-header.header-collapse-condense {
+  background: var(--kp-slate-100);
+}
+
+.page-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 16px 24px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+/* Title above a group of rows, like iOS Settings */
+.group-title {
+  margin: 10px 0 -8px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--kp-slate-600);
+}
+
+.grouped-page ion-list.list-inset {
+  margin: 0;
+  border-radius: 16px;
+}
+
+/* Explanation under a group of rows, like iOS Settings */
+.group-hint {
+  margin: -6px 0 0;
+  padding: 0 16px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--kp-slate-600);
+}
+
+/* Values typed in a row are right-aligned, like iOS Settings. Ionic's native input inherits
+   text-align from ion-input (a rule on the inner input loses to Ionic's own) */
+ion-input.value-end {
+  text-align: end;
+}
+
+.input-unit {
+  margin-left: 6px;
+  color: var(--kp-slate-600);
+}
+
+/* Main actions: large green buttons */
+ion-button.main-action {
+  --border-radius: 14px;
+  height: 52px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Square icon on the left of a row */
+.row-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--kp-green-100);
+  color: var(--kp-green-800);
+  font-size: 18px;
+}
+
+.row-icon.danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 32px;
+  text-align: center;
+  color: var(--kp-slate-600);
+}
+
+.empty-state h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--kp-slate-900);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 21px;
+}
