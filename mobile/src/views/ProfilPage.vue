@@ -26,15 +26,18 @@ import {
   lockClosedOutline,
   mailOutline,
   notificationsOutline,
+  openOutline,
   optionsOutline,
   personOutline,
+  readerOutline,
   restaurantOutline,
   sparklesOutline
 } from 'ionicons/icons'
 import UserAvatar from '@/components/UserAvatar.vue'
 import { useAiConsent } from '@/composables/useAiConsent'
 import { useProfile } from '@/composables/useProfile'
-import { CONTACT_EMAIL } from '@/lib/config'
+import { CONTACT_EMAIL, PRIVACY_URL, TERMS_URL } from '@/lib/config'
+import { openExternal } from '@/lib/native'
 import { user } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 
@@ -210,8 +213,9 @@ async function signOut() {
             </ion-note>
           </ion-item>
           <ion-item
-            router-link="/tabs/profil/confidentialite"
-            detail
+            button
+            :detail="false"
+            @click="openExternal(PRIVACY_URL)"
           >
             <span
               slot="start"
@@ -223,6 +227,12 @@ async function signOut() {
               />
             </span>
             <ion-label>Politique de confidentialité</ion-label>
+            <ion-icon
+              slot="end"
+              :icon="openOutline"
+              class="end-icon"
+              aria-hidden="true"
+            />
           </ion-item>
           <ion-item
             router-link="/tabs/profil/securite"
@@ -262,7 +272,29 @@ async function signOut() {
             <ion-icon
               slot="end"
               :icon="mailOutline"
-              class="mail"
+              class="end-icon"
+              aria-hidden="true"
+            />
+          </ion-item>
+          <ion-item
+            button
+            :detail="false"
+            @click="openExternal(TERMS_URL)"
+          >
+            <span
+              slot="start"
+              class="row-icon"
+            >
+              <ion-icon
+                :icon="readerOutline"
+                aria-hidden="true"
+              />
+            </span>
+            <ion-label>Conditions d'utilisation</ion-label>
+            <ion-icon
+              slot="end"
+              :icon="openOutline"
+              class="end-icon"
               aria-hidden="true"
             />
           </ion-item>
@@ -341,7 +373,7 @@ async function signOut() {
   color: var(--kp-slate-700);
 }
 
-.mail {
+.end-icon {
   font-size: 18px;
   color: var(--kp-slate-400);
 }

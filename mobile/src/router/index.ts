@@ -9,7 +9,7 @@ import ConversationPage from '@/views/ConversationPage.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    // Reachable without being signed in
+    // Login and signup: only reachable while signed out
     public?: boolean
   }
 }
@@ -19,6 +19,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/connexion',
     component: () => import('@/views/LoginPage.vue'),
+    meta: { public: true }
+  },
+  {
+    path: '/inscription',
+    component: () => import('@/views/SignupPage.vue'),
     meta: { public: true }
   },
   {
@@ -51,7 +56,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   if (!to.meta.public && !session.value) return '/connexion'
-  if (to.path === '/connexion' && session.value) return '/tabs/coach'
+  if (to.meta.public && session.value) return '/tabs/coach'
 })
 
 export default router

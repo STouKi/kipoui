@@ -13,3 +13,11 @@ export const WEB_URL = 'https://kipoui.com'
 export const API_URL = Capacitor.isNativePlatform() ? (import.meta.env.VITE_API_URL || WEB_URL) : ''
 
 export const CONTACT_EMAIL = 'contact@kipoui.com'
+
+// The website's legal pages, in their version without the site's navigation (/app/...)
+export const PRIVACY_URL = `${WEB_URL}/app/confidentialite`
+export const TERMS_URL = `${WEB_URL}/app/conditions-utilisation`
+
+// Where the links of the auth emails sent from the app lead (Supabase must allow these URLs)
+export const ACCOUNT_CONFIRMED_URL = `${WEB_URL}/app/compte-confirme`
+export const NEW_PASSWORD_URL = `${WEB_URL}/nouveau-mot-de-passe`

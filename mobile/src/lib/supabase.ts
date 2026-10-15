@@ -14,6 +14,9 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
     },
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false
+    detectSessionInUrl: false,
+    // The links of the auth emails (signup, password reset) open the website, which can't use a
+    // PKCE verifier kept in the app: the session travels in the link instead
+    flowType: 'implicit'
   }
 })

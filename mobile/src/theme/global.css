@@ -68,6 +68,27 @@ ion-input.value-end {
   color: var(--kp-slate-600);
 }
 
+/* Link inside a sentence */
+.text-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--kp-green-700);
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+}
+
+/* Small print under a form */
+.legal-note {
+  margin: 0;
+  padding: 0 16px;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+  color: var(--kp-slate-600);
+}
+
 /* Main actions: large green buttons */
 ion-button.main-action {
   --border-radius: 14px;

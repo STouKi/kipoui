@@ -9,13 +9,14 @@ import {
   IonList,
   IonPage,
   IonSpinner,
+  alertController,
   useIonRouter
 } from '@ionic/vue'
 import type { AuthError } from '@supabase/supabase-js'
 import KiwiAvatar from '@/components/KiwiAvatar.vue'
-import { WEB_URL } from '@/lib/config'
+import { ACCOUNT_CONFIRMED_URL, NEW_PASSWORD_URL, TERMS_URL } from '@/lib/config'
 import { showAlert } from '@/lib/feedback'
-import { successFeedback, warningFeedback } from '@/lib/native'
+import { openExternal, successFeedback, warningFeedback } from '@/lib/native'
 import { session } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 
@@ -30,8 +31,6 @@ function describeError(error: AuthError) {
   switch (error.code) {
     case 'invalid_credentials':
       return 'E-mail ou mot de passe incorrect.'
-    case 'email_not_confirmed':
-      return 'Confirmez d\'abord votre adresse e-mail, avec le lien reçu à l\'inscription.'
     case 'over_request_rate_limit':
     case 'over_email_send_rate_limit':
       return 'Trop de tentatives. Réessayez dans quelques minutes.'
@@ -53,6 +52,11 @@ async function signIn() {
   })
   loading.value = false
 
+  if (error?.code === 'email_not_confirmed') {
+    warningFeedback()
+    await offerConfirmationEmail(email.value.trim())
+    return
+  }
   if (error) {
     warningFeedback()
     await showAlert('Connexion impossible', describeError(error))
@@ -65,6 +69,32 @@ async function signIn() {
   ionRouter.navigate('/tabs/coach', 'root', 'replace')
 }
 
+// The confirmation link may have expired, or the email gone to spam
+async function offerConfirmationEmail(address: string) {
+  const alert = await alertController.create({
+    header: 'Adresse non confirmée',
+    message: 'Confirmez d\'abord votre adresse e-mail, avec le lien reçu à l\'inscription.',
+    buttons: [
+      { text: 'OK', role: 'cancel' },
+      { text: 'Renvoyer l\'e-mail', role: 'confirm' }
+    ]
+  })
+  await alert.present()
+  const { role } = await alert.onDidDismiss()
+  if (role !== 'confirm') return
+
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: address,
+    options: { emailRedirectTo: ACCOUNT_CONFIRMED_URL }
+  })
+  if (error) {
+    await showAlert('Envoi impossible', describeError(error))
+    return
+  }
+  await showAlert('E-mail envoyé', `Un nouveau lien de confirmation a été envoyé à ${address}.`)
+}
+
 async function resetPassword() {
   const address = email.value.trim()
   if (!address) {
@@ -74,7 +104,7 @@ async function resetPassword() {
 
   // The link opens the website, where the new password is chosen
   const { error } = await supabase.auth.resetPasswordForEmail(address, {
-    redirectTo: `${WEB_URL}/nouveau-mot-de-passe`
+    redirectTo: NEW_PASSWORD_URL
   })
   if (error) {
     await showAlert('Envoi impossible', describeError(error))
@@ -148,6 +178,25 @@ async function resetPassword() {
             Mot de passe oublié ?
           </ion-button>
         </form>
+
+        <div class="footer">
+          <ion-button
+            fill="clear"
+            router-link="/inscription"
+          >
+            Pas encore de compte ? Créer un compte
+          </ion-button>
+          <p class="legal-note">
+            En vous connectant, vous acceptez nos
+            <button
+              type="button"
+              class="text-link"
+              @click="openExternal(TERMS_URL)"
+            >
+              conditions d'utilisation
+            </button>.
+          </p>
+        </div>
       </main>
     </ion-content>
   </ion-page>
@@ -195,6 +244,17 @@ async function resetPassword() {
 
 .forgot {
   align-self: center;
+  font-size: 16px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.footer ion-button {
   font-size: 16px;
 }
 </style>

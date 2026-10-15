@@ -6,8 +6,7 @@ import ProfileSubPage from '@/components/ProfileSubPage.vue'
 
 // Profil screens not built yet
 const TITLES: Record<string, string> = {
-  notifications: 'Notifications',
-  confidentialite: 'Politique de confidentialité'
+  notifications: 'Notifications'
 }
 
 // Ionic keeps this page alive under the next ones, while the route changes: read it once
