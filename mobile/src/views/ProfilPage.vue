@@ -25,7 +25,6 @@ import {
   heartOutline,
   lockClosedOutline,
   mailOutline,
-  notificationsOutline,
   openOutline,
   optionsOutline,
   personOutline,
@@ -166,27 +165,6 @@ async function signOut() {
               />
             </span>
             <ion-label>{{ row.label }}</ion-label>
-          </ion-item>
-        </ion-list>
-
-        <h2 class="group-title">
-          Application
-        </h2>
-        <ion-list inset>
-          <ion-item
-            router-link="/tabs/profil/notifications"
-            detail
-          >
-            <span
-              slot="start"
-              class="row-icon"
-            >
-              <ion-icon
-                :icon="notificationsOutline"
-                aria-hidden="true"
-              />
-            </span>
-            <ion-label>Notifications</ion-label>
           </ion-item>
         </ion-list>
 

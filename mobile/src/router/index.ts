@@ -41,8 +41,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'profil/sante', component: () => import('@/views/profil/SantePage.vue') },
       { path: 'profil/preferences', component: () => import('@/views/profil/PreferencesPage.vue') },
       { path: 'profil/ia', component: () => import('@/views/profil/AiConsentPage.vue') },
-      { path: 'profil/securite', component: () => import('@/views/profil/SecurityPage.vue') },
-      { path: 'profil/:section', component: () => import('@/views/profil/ComingSoonPage.vue') }
+      { path: 'profil/securite', component: () => import('@/views/profil/SecurityPage.vue') }
     ]
   },
   // Full screen, above the tabs. "nouvelle" starts a new conversation
