@@ -5,6 +5,30 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 const supabase = useSupabaseClient()
 const toast = useToast()
 
+// Links requested from the iOS app use the implicit flow (the app keeps no PKCE verifier the site
+// could use): their session arrives in the URL fragment, which the site's PKCE client refuses
+onMounted(async () => {
+  const params = new URLSearchParams(window.location.hash.slice(1))
+  if (!params.has('access_token') && !params.has('error')) return
+  // Keep the tokens out of the browser history
+  window.history.replaceState(window.history.state, '', window.location.pathname)
+
+  const accessToken = params.get('access_token')
+  const refreshToken = params.get('refresh_token')
+  const { error } = accessToken && refreshToken
+    ? await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+    : { error: new Error(params.get('error_description') ?? 'Invalid link') }
+
+  if (error) {
+    toast.add({
+      title: 'Lien expiré',
+      description: 'Ce lien n\'est plus valide. Demandez-en un nouveau avec « Mot de passe oublié ? ».',
+      color: 'error',
+      icon: 'i-lucide-alert-circle'
+    })
+  }
+})
+
 definePageMeta({
   layout: 'auth'
 })
