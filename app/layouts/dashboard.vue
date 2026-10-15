@@ -4,8 +4,6 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 const toast = useToast()
 
 const open = ref(false)
-// Subscriptions are only managed on the website (companion app, App Store guideline 3.1.3(f))
-const { isNative } = useRuntimeConfig().public
 
 const links = [[{
   label: 'Tableau de bord',
@@ -30,15 +28,13 @@ const links = [[{
     onSelect: () => {
       open.value = false
     }
-  }, ...(isNative
-    ? []
-    : [{
-        label: 'Abonnement',
-        to: '/tableau-de-bord/parametres/abonnement',
-        onSelect: () => {
-          open.value = false
-        }
-      }]), {
+  }, {
+    label: 'Abonnement',
+    to: '/tableau-de-bord/parametres/abonnement',
+    onSelect: () => {
+      open.value = false
+    }
+  }, {
     label: 'Notifications',
     to: '/tableau-de-bord/parametres/notifications',
     onSelect: () => {
@@ -54,8 +50,6 @@ const links = [[{
 }]] satisfies NavigationMenuItem[][]
 
 onMounted(async () => {
-  const config = useRuntimeConfig()
-  if (config.public.isNative) return
   const cookie = useCookie('cookie-consent')
   if (cookie.value === 'accepted') {
     return
@@ -82,17 +76,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UDashboardGroup
-    unit="rem"
-    class="safe-area-panels"
-  >
+  <UDashboardGroup unit="rem">
     <UDashboardSidebar
       id="default"
       v-model:open="open"
       collapsible
       resizable
       class="bg-elevated/25"
-      :ui="{ footer: 'lg:border-t lg:border-default', content: 'safe-area-y' }"
+      :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #default="{ collapsed }">
         <UNavigationMenu

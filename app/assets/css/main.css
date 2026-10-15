@@ -32,29 +32,3 @@ body {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
-
-/* App iOS : la page couvre aussi la barre d'état et l'indicateur d'accueil (viewport-fit=cover,
-   build natif uniquement). Ces classes gardent le contenu dans la zone sûre ; sur le web, env() vaut 0 */
-.safe-area-y,
-.safe-area-panels > * {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.safe-area-panels {
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-}
-
-.safe-area-screen {
-  height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-}
-
-.safe-area-mb {
-  margin-bottom: env(safe-area-inset-bottom);
-}
-
-/* Empêche l'overscroll élastique de la WKWebView iOS */
-.capacitor-ios body {
-  overscroll-behavior: none;
-}

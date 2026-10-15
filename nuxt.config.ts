@@ -1,6 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const isMobileBuild = process.env.CAPACITOR_BUILD === 'true'
-
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -15,18 +13,9 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vercel/analytics'
   ],
-  ssr: isMobileBuild ? false : undefined,
 
   devtools: {
     enabled: true
-  },
-
-  app: {
-    head: {
-      viewport: isMobileBuild
-        ? 'viewport-fit=cover, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no'
-        : undefined
-    }
   },
 
   css: ['~/assets/css/main.css'],
@@ -40,7 +29,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appUrl: process.env.APP_URL,
-      isNative: isMobileBuild,
       stripe: {
         key: process.env.STRIPE_PUBLIC_KEY
       },
@@ -83,9 +71,10 @@ export default defineNuxtConfig({
       openAPI: true
     },
     // The pages for the iOS app (/app/...) aren't linked from the site, so the crawler can't find them
-    prerender: isMobileBuild
-      ? { routes: [] }
-      : { routes: ['/', '/app/confidentialite', '/app/conditions-utilisation', '/app/compte-confirme'], crawlLinks: true }
+    prerender: {
+      routes: ['/', '/app/confidentialite', '/app/conditions-utilisation', '/app/compte-confirme'],
+      crawlLinks: true
+    }
   },
 
   vite: {
@@ -109,10 +98,6 @@ export default defineNuxtConfig({
   },
 
   supabase: {
-    // No server reads the session in the native app: keep it in localStorage rather than
-    // cookies, with the same PKCE flow the cookie-based client uses on the web
-    useSsrCookies: !isMobileBuild,
-    clientOptions: isMobileBuild ? { auth: { flowType: 'pkce' } } : {},
     redirectOptions: {
       login: '/connexion',
       callback: '/confirm',

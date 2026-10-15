@@ -26,5 +26,3 @@ logs
 # VSC
 .history
 
-# Capacitor iOS native dependencies (équivalent de node_modules)
-ios/App/Pods/

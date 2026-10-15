@@ -30,10 +30,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp
-    :locale="fr"
-    :toaster="{ ui: { viewport: 'safe-area-mb' } }"
-  >
+  <UApp :locale="fr">
     <NuxtLoadingIndicator />
 
     <NuxtLayout>

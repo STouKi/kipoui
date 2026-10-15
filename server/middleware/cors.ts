@@ -1,4 +1,4 @@
-// The iOS app is served from capacitor://localhost and calls the API on APP_URL,
+// The iOS app (mobile/) is served from capacitor://localhost and calls the API on APP_URL,
 // so its requests are cross-origin. Requests from any other origin are left untouched.
 const NATIVE_APP_ORIGIN = 'capacitor://localhost'
 

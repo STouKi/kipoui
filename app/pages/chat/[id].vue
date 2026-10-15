@@ -19,11 +19,6 @@ definePageMeta({
   layout: 'chat'
 })
 
-const config = useRuntimeConfig()
-// The chat transport uses the native fetch, which ignores the base URL the native app sets on $fetch
-const apiBase = config.public.isNative ? (config.public.appUrl as string) : ''
-const getAuthHeaders = useApiAuthHeaders()
-
 const { data: chatWithMessages } = await useFetch<ChatWithMessages>(`/api/chats/${route.params.id}`, {
   cache: 'force-cache'
 })
@@ -69,8 +64,7 @@ const chat = new Chat({
   id: chatWithMessages.value.chat.id.toString(),
   messages: initialMessages,
   transport: new DefaultChatTransport({
-    api: `${apiBase}/api/chats/${chatWithMessages.value.chat.id}`,
-    headers: getAuthHeaders
+    api: `/api/chats/${chatWithMessages.value.chat.id}`
   }),
   onFinish: () => {
     refreshNuxtData('chats')
