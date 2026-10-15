@@ -51,6 +51,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, statusMessage: 'AI consent required' })
   }
   const fullProfile = await getFullProfileData(event, user.id)
+  // The website's overlay alone doesn't stop direct API calls
+  if (!['active', 'trialing'].includes(fullProfile.customer?.subscription_status ?? '')) {
+    throw createError({ statusCode: 403, statusMessage: 'Active subscription required' })
+  }
   const systemPrompt = generateSystemPrompt(fullProfile)
 
   const { id } = getRouterParams(event)
