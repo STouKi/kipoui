@@ -6,6 +6,7 @@ import {
   getLatestWeightRecord,
   getWeightStats
 } from '../../repositories/weightRepository'
+import { updateFullProfileData } from '../../repositories/profileRepository'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
@@ -37,9 +38,13 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      return await addWeightRecord(event, user.id, {
-        weight_kg: parseFloat(body.weight_kg)
-      })
+      const weight_kg = parseFloat(body.weight_kg)
+      // Like the coach's logWeight tool: the coach's system prompt reads the profile's weight
+      const [record] = await Promise.all([
+        addWeightRecord(event, user.id, { weight_kg }),
+        updateFullProfileData(event, user.id, { physicalData: { weight_kg } })
+      ])
+      return record
     }
 
     default:
