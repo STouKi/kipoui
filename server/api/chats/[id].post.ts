@@ -2,6 +2,7 @@ import { anthropic } from '@ai-sdk/anthropic'
 import { createGroq } from '@ai-sdk/groq'
 import { smoothStream, streamText, generateText, convertToModelMessages, stepCountIs } from 'ai'
 import type { UIMessage, TextUIPart, FileUIPart } from 'ai'
+import type { MultiPartData } from 'h3'
 import { requireAuth } from '../../repositories/supabaseRepository'
 import { getFullProfileData } from '../../repositories/profileRepository'
 import type { ChatWithMessages } from '../../repositories/chatRepository'
@@ -28,6 +29,19 @@ function extractPromptText(message: UIMessage) {
 // attachments are passed as their base64 content instead
 function toInlineData(url: string) {
   return url.startsWith('data:') ? url.slice(url.indexOf(',') + 1) : url
+}
+
+// New attachments are stored like those of a conversation's first message (/api/chats/post).
+// Attachments that already have a storage URL (a regenerate resends them) are skipped
+function toStoredFiles(parts: FileUIPart[]): MultiPartData[] | undefined {
+  const files = parts
+    .filter(part => part.url.startsWith('data:'))
+    .map(part => ({
+      filename: part.filename || `piece-jointe.${part.mediaType.split('/')[1]}`,
+      type: part.mediaType,
+      data: Buffer.from(toInlineData(part.url), 'base64')
+    }))
+  return files.length > 0 ? files : undefined
 }
 
 export default defineEventHandler(async (event) => {
@@ -83,16 +97,18 @@ export default defineEventHandler(async (event) => {
   if (lastMessage.role === 'user') {
     const lastDbMessage = dbMessages.length > 0 ? dbMessages[dbMessages.length - 1] : undefined
 
-    if (!lastDbMessage || lastDbMessage.role !== lastMessage.role || lastDbMessage.content !== lastMessage.content) {
-      await addMessage(event, Number(id), 'user', lastMessage.content)
-    }
-
     const msgIn = lastMessage as unknown as UIMessage
+    // UI messages carry their text in parts: they have no `content` since AI SDK 5
+    const promptText = extractPromptText(msgIn)
     const fileParts = msgIn.parts.filter((part): part is FileUIPart => part && part.type === 'file')
+
+    // A regenerate resends the last stored message (e.g. the first one, saved by /api/chats/post)
+    if (!lastDbMessage || lastDbMessage.role !== 'user' || lastDbMessage.content !== (promptText ?? '')) {
+      await addMessage(event, Number(id), 'user', promptText ?? '', toStoredFiles(fileParts))
+    }
 
     if (fileParts.length > 0) {
       const currentMessage = { ...lastMessage }
-      const promptText = extractPromptText(msgIn)
 
       type ContentPart = TextUIPart | FileUIPart
       const contentArray: ContentPart[] = []
@@ -142,7 +158,8 @@ export default defineEventHandler(async (event) => {
     )
   }
 
-  const modelMessages = await convertToModelMessages(messages)
+  // Messages saved empty by a former bug have no parts and would become empty model messages
+  const modelMessages = await convertToModelMessages(messages.filter((message: UIMessage) => message.parts.length > 0))
 
   const lastMessageHasPDF = lastMessage.parts?.some((part: FileUIPart | TextUIPart) =>
     part && part.type === 'file' && part.mediaType === 'application/pdf'
