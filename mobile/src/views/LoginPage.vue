@@ -229,7 +229,7 @@ async function resetPassword() {
 .intro p {
   margin: 0;
   font-size: 17px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .form {

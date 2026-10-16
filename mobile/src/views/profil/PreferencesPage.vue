@@ -77,7 +77,7 @@ onBeforeUnmount(() => dislikesSave.flush())
         </ion-item>
         <ion-item-options side="end">
           <ion-item-option
-            color="danger"
+            color="destructive"
             expandable
             @click="removeDislike(food)"
           >

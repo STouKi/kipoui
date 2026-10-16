@@ -288,7 +288,7 @@ async function remove(record: WeightRecord, event: Event) {
               </ion-item>
               <ion-item-options side="end">
                 <ion-item-option
-                  color="danger"
+                  color="destructive"
                   @click="remove(record, $event)"
                 >
                   Supprimer
@@ -330,7 +330,7 @@ async function remove(record: WeightRecord, event: Event) {
 
 .caption {
   font-size: 15px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .value {
@@ -348,7 +348,7 @@ async function remove(record: WeightRecord, event: Event) {
 .unit {
   font-size: 22px;
   font-weight: 500;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .trend {
@@ -358,16 +358,16 @@ async function remove(record: WeightRecord, event: Event) {
   margin-top: 4px;
   padding: 5px 10px;
   border-radius: 999px;
-  background: var(--kp-slate-100);
-  color: var(--kp-slate-700);
+  background: var(--kp-fill);
+  color: var(--kp-text-muted);
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .trend.good {
-  background: var(--kp-green-100);
-  color: var(--kp-green-800);
+  background: var(--kp-tint-bg);
+  color: var(--kp-tint-fg);
 }
 
 .goal {
@@ -381,20 +381,20 @@ async function remove(record: WeightRecord, event: Event) {
   height: 8px;
   overflow: hidden;
   border-radius: 4px;
-  background: var(--kp-slate-200);
+  background: var(--kp-fill-strong);
 }
 
 .bar div {
   height: 100%;
   border-radius: 4px;
-  background: var(--kp-green-500);
+  background: var(--kp-green);
 }
 
 .no-data {
   margin: 0;
   font-size: 15px;
   line-height: 21px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .chart {
@@ -413,6 +413,6 @@ async function remove(record: WeightRecord, event: Event) {
 .kg {
   font-size: 17px;
   font-weight: 500;
-  color: var(--kp-slate-900);
+  color: var(--kp-text);
 }
 </style>

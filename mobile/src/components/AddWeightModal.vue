@@ -131,6 +131,6 @@ function focusInput() {
 .unit {
   font-size: 28px;
   font-weight: 500;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 </style>

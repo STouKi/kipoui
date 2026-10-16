@@ -325,7 +325,7 @@ async function signOut() {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 15px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .subscription {
@@ -337,23 +337,23 @@ async function signOut() {
 }
 
 .subscription.active {
-  background: var(--kp-green-100);
-  color: var(--kp-green-800);
+  background: var(--kp-tint-bg);
+  color: var(--kp-tint-fg);
 }
 
 .subscription.pending {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--kp-warning-bg);
+  color: var(--kp-warning-fg);
 }
 
 .subscription.inactive {
-  background: var(--kp-slate-100);
-  color: var(--kp-slate-700);
+  background: var(--kp-fill);
+  color: var(--kp-text-muted);
 }
 
 .end-icon {
   font-size: 18px;
-  color: var(--kp-slate-400);
+  color: var(--kp-text-subtle);
 }
 
 .sign-out {

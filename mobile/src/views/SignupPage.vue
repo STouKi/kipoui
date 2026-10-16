@@ -255,12 +255,12 @@ async function signUp() {
   margin: 0;
   font-size: 17px;
   line-height: 24px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .sent-icon {
   font-size: 64px;
-  color: var(--kp-green-700);
+  color: var(--kp-accent);
 }
 
 .confirm {
@@ -289,7 +289,7 @@ async function signUp() {
   gap: 6px;
   padding: 14px 16px;
   border-radius: 16px;
-  background: #ffffff;
+  background: var(--kp-surface);
 }
 
 .consent ion-checkbox {

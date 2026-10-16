@@ -3,20 +3,24 @@ body {
 }
 
 /* Grouped screens (Suivi, Profil): white cards and lists on a light gray background, like iOS Settings */
+.grouped-page {
+  --ion-item-background: var(--kp-surface);
+}
+
 .grouped-page ion-content,
 .grouped-page ion-toolbar {
-  --background: var(--kp-slate-100);
+  --background: var(--kp-grouped-bg);
 }
 
 /* Ionic gives the large title's toolbar the page background color (white) with the same
    specificity, and its styles can load after ours on the device: the title stays on the gray */
 .grouped-page ion-header.header-collapse-condense ion-toolbar,
 .grouped-page ion-header ion-toolbar {
-  --background: var(--kp-slate-100);
+  --background: var(--kp-grouped-bg);
 }
 
 .grouped-page ion-header.header-collapse-condense {
-  background: var(--kp-slate-100);
+  background: var(--kp-grouped-bg);
 }
 
 .page-body {
@@ -27,7 +31,7 @@ body {
 }
 
 .card {
-  background: #ffffff;
+  background: var(--kp-surface);
   border-radius: 16px;
   padding: 16px 18px;
 }
@@ -40,7 +44,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .grouped-page ion-list.list-inset {
@@ -54,7 +58,7 @@ body {
   padding: 0 16px;
   font-size: 13px;
   line-height: 18px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 /* Values typed in a row are right-aligned, like iOS Settings. Ionic's native input inherits
@@ -65,7 +69,7 @@ ion-input.value-end {
 
 .input-unit {
   margin-left: 6px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 /* Link inside a sentence */
@@ -73,7 +77,7 @@ ion-input.value-end {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--kp-green-700);
+  color: var(--kp-accent);
   font-family: inherit;
   font-size: inherit;
   text-decoration: underline;
@@ -86,7 +90,7 @@ ion-input.value-end {
   font-size: 13px;
   line-height: 18px;
   text-align: center;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 /* Main actions: large green buttons */
@@ -107,14 +111,9 @@ ion-button.main-action {
   width: 30px;
   height: 30px;
   border-radius: 8px;
-  background: var(--kp-green-100);
-  color: var(--kp-green-800);
+  background: var(--kp-tint-bg);
+  color: var(--kp-tint-fg);
   font-size: 18px;
-}
-
-.row-icon.danger {
-  background: #fee2e2;
-  color: #b91c1c;
 }
 
 .empty-state {
@@ -124,14 +123,14 @@ ion-button.main-action {
   gap: 12px;
   padding: 48px 32px;
   text-align: center;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .empty-state h2 {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: var(--kp-slate-900);
+  color: var(--kp-text);
 }
 
 .empty-state p {

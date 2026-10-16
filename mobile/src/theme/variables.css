@@ -1,41 +1,50 @@
 /*
  * Kipoui colors: the website's yellowgreen palette (app/assets/css/main.css) and Tailwind's slate.
- * The app only has a light theme for now.
+ * Screens only use the semantic colors below (--kp-text, --kp-surface...), redefined for the dark
+ * theme, which follows the iOS appearance setting.
  */
 :root {
-  --kp-green-50: #f7faeb;
-  --kp-green-100: #eef6d7;
-  --kp-green-500: #9acd32;
-  --kp-green-600: #7ba428;
-  --kp-green-700: #5d7b1e;
-  --kp-green-800: #3f5214;
+  --ion-font-family: 'Fredoka', ui-rounded, system-ui, sans-serif;
+
+  /* The brand green, in both themes, always with dark text on it (8.7:1) */
+  --kp-green: #9acd32;
   --kp-on-green: #1a2306;
 
-  --kp-slate-100: #f1f5f9;
-  --kp-slate-200: #e2e8f0;
-  --kp-slate-300: #cbd5e1;
-  --kp-slate-400: #94a3b8;
-  --kp-slate-500: #64748b;
-  --kp-slate-600: #475569;
-  --kp-slate-700: #334155;
-  --kp-slate-900: #0f172a;
-
-  --ion-font-family: 'Fredoka', ui-rounded, system-ui, sans-serif;
+  --kp-text: #0f172a;
+  --kp-text-muted: #475569;
+  --kp-text-subtle: #64748b;
+  --kp-page-bg: #ffffff;
+  /* Grouped screens (Suivi, Profil): cards and rows on a gray background, like iOS Settings */
+  --kp-grouped-bg: #f1f5f9;
+  --kp-surface: #ffffff;
+  --kp-fill: #f1f5f9;
+  --kp-fill-strong: #e2e8f0;
+  --kp-border: #e2e8f0;
+  --kp-input-border: #94a3b8;
+  /* Green text and icons (4.9:1 on white) */
+  --kp-accent: #5d7b1e;
+  --kp-tint-bg: #eef6d7;
+  --kp-tint-fg: #3f5214;
+  --kp-chart-line: #7ba428;
+  --kp-error-bg: #fef2f2;
+  --kp-error-fg: #991b1b;
+  --kp-warning-bg: #fef3c7;
+  --kp-warning-fg: #92400e;
 
   --ion-text-color: #0f172a;
   --ion-text-color-rgb: 15, 23, 42;
   --ion-background-color: #ffffff;
   --ion-background-color-rgb: 255, 255, 255;
-  --ion-border-color: #e2e8f0;
-  --ion-placeholder-color: #64748b;
+  --ion-border-color: var(--kp-border);
+  --ion-placeholder-color: var(--kp-text-subtle);
 
-  --ion-toolbar-background: #ffffff;
-  --ion-toolbar-border-color: #e2e8f0;
-  --ion-tab-bar-background: #ffffff;
-  --ion-tab-bar-border-color: #e2e8f0;
-  --ion-tab-bar-color: #64748b;
-  --ion-tab-bar-color-selected: #5d7b1e;
-  --ion-item-border-color: #e2e8f0;
+  --ion-toolbar-background: var(--kp-page-bg);
+  --ion-toolbar-border-color: var(--kp-border);
+  --ion-tab-bar-background: var(--kp-surface);
+  --ion-tab-bar-border-color: var(--kp-border);
+  --ion-tab-bar-color: var(--kp-text-subtle);
+  --ion-tab-bar-color-selected: var(--kp-accent);
+  --ion-item-border-color: var(--kp-border);
 
   /*
    * iOS tints text buttons, back buttons and the active tab with the primary color: the dark
@@ -48,7 +57,7 @@
   --ion-color-primary-shade: #526c1a;
   --ion-color-primary-tint: #6d8835;
 
-  /* The brand green fills buttons, always with dark text (8.9:1) */
+  /* Green filled buttons */
   --ion-color-brand: #9acd32;
   --ion-color-brand-rgb: 154, 205, 50;
   --ion-color-brand-contrast: #1a2306;
@@ -56,12 +65,21 @@
   --ion-color-brand-shade: #88b42c;
   --ion-color-brand-tint: #a4d247;
 
+  /* Red text: sign out, account deletion */
   --ion-color-danger: #dc2626;
   --ion-color-danger-rgb: 220, 38, 38;
   --ion-color-danger-contrast: #ffffff;
   --ion-color-danger-contrast-rgb: 255, 255, 255;
   --ion-color-danger-shade: #c22121;
   --ion-color-danger-tint: #e03c3c;
+
+  /* Red buttons (swipe to delete) and error messages, in both themes: white on it is 4.8:1 */
+  --ion-color-destructive: #dc2626;
+  --ion-color-destructive-rgb: 220, 38, 38;
+  --ion-color-destructive-contrast: #ffffff;
+  --ion-color-destructive-contrast-rgb: 255, 255, 255;
+  --ion-color-destructive-shade: #c22121;
+  --ion-color-destructive-tint: #e03c3c;
 
   /* Secondary round buttons (attachments, stop) */
   --ion-color-light: #f1f5f9;
@@ -79,6 +97,115 @@
   --ion-color-medium-tint: #748297;
 }
 
+/*
+ * Dark theme: the website's dark slate (#020618) rather than Ionic's black and gray palette. The
+ * step colors, which Ionic's components use for their own shades, go from the page background to
+ * the text color
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --kp-text: #f1f5f9;
+    --kp-text-muted: #a7b4c6;
+    --kp-text-subtle: #8c9ab0;
+    --kp-page-bg: #020618;
+    --kp-grouped-bg: #020618;
+    --kp-surface: #0f172a;
+    --kp-fill: #1e293b;
+    --kp-fill-strong: #334155;
+    --kp-border: #1e293b;
+    --kp-input-border: #64748b;
+    /* On dark, the brand green is readable as text (10.7:1) */
+    --kp-accent: #9acd32;
+    --kp-tint-bg: #25342b;
+    --kp-tint-fg: #b2d64e;
+    --kp-chart-line: #9acd32;
+    --kp-error-bg: #28101f;
+    --kp-error-fg: #fca5a5;
+    --kp-warning-bg: #342d25;
+    --kp-warning-fg: #fcd34d;
+
+    --ion-text-color: #f1f5f9;
+    --ion-text-color-rgb: 241, 245, 249;
+    --ion-background-color: #020618;
+    --ion-background-color-rgb: 2, 6, 24;
+
+    --ion-background-color-step-50: #0e1223;
+    --ion-background-color-step-100: #1a1e2e;
+    --ion-background-color-step-150: #262a3a;
+    --ion-background-color-step-200: #323645;
+    --ion-background-color-step-250: #3e4250;
+    --ion-background-color-step-300: #4a4e5c;
+    --ion-background-color-step-350: #565a67;
+    --ion-background-color-step-400: #626672;
+    --ion-background-color-step-450: #6e727d;
+    --ion-background-color-step-500: #7a7e88;
+    --ion-background-color-step-550: #858994;
+    --ion-background-color-step-600: #91959f;
+    --ion-background-color-step-650: #9da1aa;
+    --ion-background-color-step-700: #a9adb6;
+    --ion-background-color-step-750: #b5b9c1;
+    --ion-background-color-step-800: #c1c5cc;
+    --ion-background-color-step-850: #cdd1d7;
+    --ion-background-color-step-900: #d9dde2;
+    --ion-background-color-step-950: #e5e9ee;
+    --ion-text-color-step-50: #e5e9ee;
+    --ion-text-color-step-100: #d9dde2;
+    --ion-text-color-step-150: #cdd1d7;
+    --ion-text-color-step-200: #c1c5cc;
+    --ion-text-color-step-250: #b5b9c1;
+    --ion-text-color-step-300: #a9adb6;
+    --ion-text-color-step-350: #9da1aa;
+    --ion-text-color-step-400: #91959f;
+    --ion-text-color-step-450: #858994;
+    --ion-text-color-step-500: #7a7e88;
+    --ion-text-color-step-550: #6e727d;
+    --ion-text-color-step-600: #626672;
+    --ion-text-color-step-650: #565a67;
+    --ion-text-color-step-700: #4a4e5c;
+    --ion-text-color-step-750: #3e4250;
+    --ion-text-color-step-800: #323645;
+    --ion-text-color-step-850: #262a3a;
+    --ion-text-color-step-900: #1a1e2e;
+    --ion-text-color-step-950: #0e1223;
+
+    --ion-color-primary: #9acd32;
+    --ion-color-primary-rgb: 154, 205, 50;
+    --ion-color-primary-contrast: #1a2306;
+    --ion-color-primary-contrast-rgb: 26, 35, 6;
+    --ion-color-primary-shade: #88b42c;
+    --ion-color-primary-tint: #a4d247;
+
+    /* Lighter red, readable as text on dark (6.5:1) */
+    --ion-color-danger: #f87171;
+    --ion-color-danger-rgb: 248, 113, 113;
+    --ion-color-danger-contrast: #450a0a;
+    --ion-color-danger-contrast-rgb: 69, 10, 10;
+    --ion-color-danger-shade: #da6363;
+    --ion-color-danger-tint: #f97f7f;
+
+    --ion-color-light: #1e293b;
+    --ion-color-light-rgb: 30, 41, 59;
+    --ion-color-light-contrast: #e2e8f0;
+    --ion-color-light-contrast-rgb: 226, 232, 240;
+    --ion-color-light-shade: #1a2434;
+    --ion-color-light-tint: #343e4f;
+
+    --ion-color-medium: #94a3b8;
+    --ion-color-medium-rgb: 148, 163, 184;
+    --ion-color-medium-contrast: #020618;
+    --ion-color-medium-contrast-rgb: 2, 6, 24;
+    --ion-color-medium-shade: #828fa2;
+    --ion-color-medium-tint: #9facbf;
+  }
+
+  /* Like iOS, modals are one step lighter than the page */
+  ion-modal {
+    --ion-background-color: var(--ion-background-color-step-100);
+    --ion-toolbar-background: var(--ion-background-color-step-150);
+    --ion-toolbar-border-color: var(--ion-background-color-step-250);
+  }
+}
+
 .ion-color-brand {
   --ion-color-base: var(--ion-color-brand);
   --ion-color-base-rgb: var(--ion-color-brand-rgb);
@@ -86,4 +213,13 @@
   --ion-color-contrast-rgb: var(--ion-color-brand-contrast-rgb);
   --ion-color-shade: var(--ion-color-brand-shade);
   --ion-color-tint: var(--ion-color-brand-tint);
+}
+
+.ion-color-destructive {
+  --ion-color-base: var(--ion-color-destructive);
+  --ion-color-base-rgb: var(--ion-color-destructive-rgb);
+  --ion-color-contrast: var(--ion-color-destructive-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-destructive-contrast-rgb);
+  --ion-color-shade: var(--ion-color-destructive-shade);
+  --ion-color-tint: var(--ion-color-destructive-tint);
 }

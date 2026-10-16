@@ -43,8 +43,8 @@ const message = computed(() => {
   margin: 12px 16px;
   padding: 14px 16px;
   border-radius: 16px;
-  background: var(--kp-slate-100);
-  color: var(--kp-slate-700);
+  background: var(--kp-fill);
+  color: var(--kp-text-muted);
 }
 
 .notice ion-icon {

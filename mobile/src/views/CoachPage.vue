@@ -167,7 +167,7 @@ async function confirmDelete(chat: Chat, event: Event) {
             @ion-swipe="confirmDelete(chat, $event)"
           >
             <ion-item-option
-              color="danger"
+              color="destructive"
               expandable
               @click="confirmDelete(chat, $event)"
             >
@@ -227,7 +227,7 @@ async function confirmDelete(chat: Chat, event: Event) {
 
 ion-note {
   font-size: 15px;
-  color: var(--kp-slate-500);
+  color: var(--kp-text-subtle);
 }
 
 .empty-state .main-action {

@@ -601,10 +601,10 @@ if (!profile.value) {
 
 .suggestion {
   padding: 12px 16px;
-  border: 1px solid var(--kp-slate-200);
+  border: 1px solid var(--kp-border);
   border-radius: 16px;
-  background: #ffffff;
-  color: var(--kp-slate-900);
+  background: var(--kp-surface);
+  color: var(--kp-text);
   font-family: inherit;
   font-size: 16px;
   line-height: 21px;
@@ -612,7 +612,7 @@ if (!profile.value) {
 }
 
 .suggestion:active {
-  background: var(--kp-slate-100);
+  background: var(--kp-fill);
 }
 
 .error {
@@ -622,8 +622,8 @@ if (!profile.value) {
   gap: 8px;
   padding: 4px 4px 4px 14px;
   border-radius: 14px;
-  background: #fef2f2;
-  color: #991b1b;
+  background: var(--kp-error-bg);
+  color: var(--kp-error-fg);
 }
 
 .error p {
@@ -661,7 +661,7 @@ if (!profile.value) {
 .message-input {
   flex: 1;
   min-height: 44px;
-  border: 1px solid var(--kp-slate-400);
+  border: 1px solid var(--kp-input-border);
   border-radius: 22px;
   --padding-start: 16px;
   --padding-end: 16px;
@@ -698,7 +698,7 @@ if (!profile.value) {
   height: 64px;
   padding: 0 14px;
   border-radius: 12px;
-  background: var(--kp-slate-100);
+  background: var(--kp-fill);
   font-size: 14px;
   overflow: hidden;
 }
@@ -713,10 +713,10 @@ if (!profile.value) {
   width: 24px;
   height: 24px;
   padding: 0;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--kp-page-bg);
   border-radius: 50%;
-  background: var(--kp-slate-700);
-  color: #ffffff;
+  background: var(--kp-text-muted);
+  color: var(--kp-page-bg);
   font-size: 14px;
 }
 </style>

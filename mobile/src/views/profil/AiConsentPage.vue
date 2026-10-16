@@ -83,6 +83,6 @@ async function onToggle(event: ToggleCustomEvent) {
   margin: 0;
   font-size: 15px;
   line-height: 21px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 </style>

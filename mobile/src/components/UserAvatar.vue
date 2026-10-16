@@ -49,8 +49,8 @@ const style = computed(() => ({
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--kp-green-100);
-  color: var(--kp-green-800);
+  background: var(--kp-tint-bg);
+  color: var(--kp-tint-fg);
   font-weight: 600;
 }
 </style>

@@ -196,7 +196,7 @@ ion-label h3 {
 
 ion-label p {
   font-size: 13px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .stepper {
@@ -204,7 +204,7 @@ ion-label p {
   align-items: center;
   gap: 2px;
   border-radius: 10px;
-  background: var(--kp-slate-100);
+  background: var(--kp-fill);
 }
 
 .stepper ion-button {

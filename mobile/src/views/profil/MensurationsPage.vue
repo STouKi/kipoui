@@ -154,6 +154,6 @@ onBeforeUnmount(() => birthDateSave.flush())
 <style scoped>
 ion-note {
   font-size: 17px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 </style>

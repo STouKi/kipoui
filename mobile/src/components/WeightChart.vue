@@ -140,30 +140,30 @@ function formatGridValue(kg: number) {
 }
 
 .grid {
-  stroke: var(--kp-slate-200);
+  stroke: var(--kp-border);
   stroke-width: 1;
 }
 
 .label {
   font-size: 12px;
-  fill: var(--kp-slate-500);
+  fill: var(--kp-text-subtle);
 }
 
 .area {
-  fill: var(--kp-green-100);
+  fill: var(--kp-tint-bg);
 }
 
 .line {
   fill: none;
-  stroke: var(--kp-green-600);
+  stroke: var(--kp-chart-line);
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .dot {
-  fill: var(--kp-green-700);
-  stroke: #ffffff;
+  fill: var(--kp-accent);
+  stroke: var(--kp-surface);
   stroke-width: 2.5;
 }
 </style>

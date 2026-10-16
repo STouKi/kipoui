@@ -10,7 +10,7 @@ export async function showErrorToast(message: string) {
     message,
     duration: 3000,
     position: 'top',
-    color: 'danger'
+    color: 'destructive'
   })
   await toast.present()
 }

@@ -84,7 +84,7 @@ async function accept() {
 .icon {
   align-self: center;
   font-size: 56px;
-  color: var(--kp-green-700);
+  color: var(--kp-accent);
 }
 
 h1 {
@@ -98,7 +98,7 @@ p {
   margin: 0;
   font-size: 17px;
   line-height: 24px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .actions {

@@ -141,7 +141,7 @@ function onClick(event: MouseEvent) {
   max-width: 80%;
   padding: 10px 14px;
   border-radius: 20px 20px 6px 20px;
-  background: var(--kp-green-500);
+  background: var(--kp-green);
   color: var(--kp-on-green);
   white-space: pre-wrap;
 }
@@ -151,8 +151,8 @@ function onClick(event: MouseEvent) {
   max-width: calc(100% - 36px);
   padding: 12px 14px;
   border-radius: 20px 20px 20px 6px;
-  background: var(--kp-slate-100);
-  color: var(--kp-slate-900);
+  background: var(--kp-fill);
+  color: var(--kp-text);
 }
 
 .status {
@@ -161,13 +161,13 @@ function onClick(event: MouseEvent) {
   gap: 8px;
   font-size: 15px;
   font-style: italic;
-  color: var(--kp-slate-600) !important;
+  color: var(--kp-text-muted) !important;
 }
 
 .status ion-spinner {
   width: 16px;
   height: 16px;
-  color: var(--kp-slate-600);
+  color: var(--kp-text-muted);
 }
 
 .typing {
@@ -180,7 +180,7 @@ function onClick(event: MouseEvent) {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--kp-slate-400);
+  background: var(--kp-text-subtle);
   animation: typing 1.2s infinite ease-in-out;
 }
 
@@ -225,7 +225,7 @@ function onClick(event: MouseEvent) {
   height: 160px;
   object-fit: cover;
   border-radius: 16px;
-  background: var(--kp-slate-100);
+  background: var(--kp-fill);
 }
 
 .document {
@@ -234,7 +234,7 @@ function onClick(event: MouseEvent) {
   gap: 6px;
   padding: 10px 14px;
   border-radius: 16px;
-  background: var(--kp-slate-100);
+  background: var(--kp-fill);
   font-size: 15px;
 }
 
@@ -276,7 +276,7 @@ function onClick(event: MouseEvent) {
 }
 
 .markdown :deep(a) {
-  color: var(--kp-green-700);
+  color: var(--kp-accent);
 }
 
 .markdown :deep(code) {
@@ -287,7 +287,7 @@ function onClick(event: MouseEvent) {
   overflow-x: auto;
   padding: 10px;
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--kp-surface);
 }
 
 .markdown :deep(table) {
@@ -300,6 +300,6 @@ function onClick(event: MouseEvent) {
 .markdown :deep(th),
 .markdown :deep(td) {
   padding: 4px 8px;
-  border: 1px solid var(--kp-slate-200);
+  border: 1px solid var(--kp-border);
 }
 </style>
