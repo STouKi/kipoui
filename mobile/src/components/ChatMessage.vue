@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { IonIcon, IonSpinner } from '@ionic/vue'
 import { documentTextOutline } from 'ionicons/icons'
 import type { FileUIPart, UIMessage } from 'ai'
-import KiwiAvatar from '@/components/KiwiAvatar.vue'
 import { renderMarkdown } from '@/lib/markdown'
 import { openExternal } from '@/lib/native'
 
@@ -86,7 +85,6 @@ function onClick(event: MouseEvent) {
     v-else-if="text || toolLabel || active"
     class="assistant"
   >
-    <KiwiAvatar :size="28" />
     <!-- eslint-disable vue/no-v-html -- markdown rendered without raw HTML (lib/markdown.ts) -->
     <div
       v-if="text"
@@ -124,8 +122,6 @@ function onClick(event: MouseEvent) {
 
 .assistant {
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
 }
 
 .bubble {
@@ -148,7 +144,6 @@ function onClick(event: MouseEvent) {
 
 .assistant .bubble {
   min-width: 0;
-  max-width: calc(100% - 36px);
   padding: 12px 14px;
   border-radius: 20px 20px 20px 6px;
   background: var(--kp-fill);
@@ -292,14 +287,23 @@ function onClick(event: MouseEvent) {
 
 .markdown :deep(table) {
   display: block;
+  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   border-collapse: collapse;
   font-size: 15px;
 }
 
 .markdown :deep(th),
 .markdown :deep(td) {
-  padding: 4px 8px;
+  /*
+   * Cells keep a readable width and the table scrolls sideways: without it, the bubble's
+   * overflow-wrap squeezes every column into the screen width, breaking words anywhere
+   */
+  min-width: 112px;
+  padding: 6px 10px;
   border: 1px solid var(--kp-border);
+  overflow-wrap: normal;
+  vertical-align: top;
 }
 </style>
