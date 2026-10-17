@@ -2,12 +2,15 @@ import { defineEventHandler, getRouterParam, readBody } from 'h3'
 import { requireAuth } from '../../repositories/supabaseRepository'
 import { updateWeightRecord, deleteWeightRecord } from '../../repositories/weightRepository'
 
+// Weigh-ins have uuid ids: parseInt() refused the ones starting with a letter
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
 
   const id = getRouterParam(event, 'id')
 
-  if (!id || isNaN(parseInt(id))) {
+  if (!id || !UUID.test(id)) {
     throw createError({
       statusCode: 400,
       message: 'Invalid weight record ID'
