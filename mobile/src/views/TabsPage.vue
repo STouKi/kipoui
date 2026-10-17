@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { IonIcon, IonLabel, IonPage, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/vue'
 import { analytics, analyticsOutline, chatbubbles, chatbubblesOutline, personCircle, personCircleOutline } from 'ionicons/icons'
+import OnboardingModal from '@/components/OnboardingModal.vue'
+import { useOnboarding } from '@/composables/useOnboarding'
 
 // Like iOS, the active tab shows a filled icon
 const activeTab = ref('coach')
@@ -9,6 +11,13 @@ const activeTab = ref('coach')
 function onTabChange({ tab }: { tab: string }) {
   activeTab.value = tab
 }
+
+// Offered once the first tab has loaded the profile, above every tab
+const { needed: onboardingNeeded } = useOnboarding()
+const onboardingOpen = ref(false)
+watch(onboardingNeeded, (needed) => {
+  if (needed) onboardingOpen.value = true
+}, { immediate: true })
 
 const tabs = [
   { tab: 'coach', label: 'Coach', icon: chatbubblesOutline, activeIcon: chatbubbles },
@@ -36,5 +45,10 @@ const tabs = [
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
+
+    <OnboardingModal
+      :is-open="onboardingOpen"
+      @close="onboardingOpen = false"
+    />
   </ion-page>
 </template>

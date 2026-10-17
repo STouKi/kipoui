@@ -23,6 +23,11 @@ export function useProfile() {
   // Each Profil screen saves its own section, as soon as a value changes
   async function saveSection<S extends Section>(section: S, data: Partial<NonNullable<FullProfile[S]>>) {
     await api('/api/profile/update', { method: 'POST', body: { [section]: data } })
+    mergeSection(section, data)
+  }
+
+  // Values the server already saved, through another route (a weigh-in updates the weight)
+  function mergeSection<S extends Section>(section: S, data: Partial<NonNullable<FullProfile[S]>>) {
     if (profile.value) {
       profile.value = {
         ...profile.value,
@@ -59,6 +64,7 @@ export function useProfile() {
     profile,
     loadProfile,
     saveSection,
+    mergeSection,
     uploadAvatar,
     subscriptionStatus,
     hasActiveSubscription,
