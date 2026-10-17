@@ -6,9 +6,15 @@ import type { FullProfileData } from '../../repositories/profileRepository'
  * @returns Le systemPrompt formaté avec les informations de l'utilisateur
  */
 export function generateSystemPrompt(fullProfile: FullProfileData | null): string {
-  let age = 0
-  if (fullProfile?.physicalData?.birth_date) {
-    const birthDate = new Date(fullProfile.physicalData.birth_date)
+  const physical = fullProfile?.physicalData
+  const habits = fullProfile?.habits
+  const medical = fullProfile?.medicalData
+  const targetWeight = fullProfile?.goals?.target_weight
+  const deadline = fullProfile?.goals?.deadline
+
+  let age: number | null = null
+  if (physical?.birth_date) {
+    const birthDate = new Date(physical.birth_date)
     const today = new Date()
     age = today.getFullYear() - birthDate.getFullYear()
     if (
@@ -18,21 +24,47 @@ export function generateSystemPrompt(fullProfile: FullProfileData | null): strin
       age--
     }
   }
-  const sex = fullProfile?.physicalData?.gender === 'male' ? 'masculin' : 'féminin'
+
+  // Only what the user filled in: a missing value used to reach the coach as "undefined", and a
+  // missing gender as "féminin"
+  const name = fullProfile?.profile?.full_name || fullProfile?.profile?.username
+  const identity = [
+    name && `Je m'appelle ${name}`,
+    physical?.gender && `je suis de sexe ${physical.gender === 'male' ? 'masculin' : 'féminin'}`,
+    age !== null && `j'ai ${age} ans`,
+    physical?.height_cm && `je mesure ${physical.height_cm}cm`,
+    physical?.weight_kg && `je pèse ${physical.weight_kg}kg`
+  ].filter(Boolean).join(', ')
+  const goal = targetWeight
+    ? `Je souhaite atteindre les ${targetWeight} kilos${deadline ? ` d'ici le ${new Date(deadline).toLocaleDateString('fr-FR', { timeZone: 'UTC' })}` : ''} de façon saine, durable et sans pression inutile.`
+    : ''
+  const missing = [
+    age === null && 'mon âge',
+    !physical?.gender && 'mon sexe',
+    !physical?.height_cm && 'ma taille',
+    !physical?.weight_kg && 'mon poids',
+    !targetWeight && 'mon objectif de poids'
+  ].filter(Boolean)
+
+  const details = [
+    habits?.sport_week_frequency !== null && habits?.sport_week_frequency !== undefined
+    && `- Activité physique : Je fais du sport ${habits.sport_week_frequency} fois par semaine`,
+    habits?.compulsive_habits && '- Habitudes compulsives : grignotages, fringales, envies de sucre',
+    habits?.diet && `- Régime : ${habits.diet}`,
+    habits?.religious_regime && `- Régime religieux : ${habits.religious_regime}`,
+    medical?.medical_regimen?.length && `- Régime médical : ${medical.medical_regimen.join(', ')}`,
+    medical?.allergies?.length && `- Allergies : ${medical.allergies.join(', ')}`,
+    medical?.eating_disorders?.length && `- troubles alimentaires : ${medical.eating_disorders.join(', ')}`,
+    fullProfile?.preferences?.dislikes?.length && `- Je n'aime pas : ${fullProfile.preferences.dislikes.join(', ')}`,
+    fullProfile?.profile?.profile_detail && `- Infos supplémentaires : ${fullProfile.profile.profile_detail}`
+  ].filter(Boolean)
 
   return `
   Contexte :
-  Je m'appelle ${fullProfile?.profile?.username}, je suis de sexe ${sex}, j'ai ${age} ans, je mesure ${fullProfile?.physicalData?.height_cm}cm pour ${fullProfile?.physicalData?.weight_kg}kg, et je souhaite atteindre les ${fullProfile?.goals?.target_weight} kilos de façon saine, durable et sans pression inutile.
+  ${identity ? `${identity}.` : ''} ${goal}
+  ${missing.length ? `Je n'ai pas encore renseigné ${missing.join(', ')} : si une de ces informations t'est utile pour me conseiller, demande-la-moi simplement, sans insister.` : ''}
   Voici mon profil santé et habitudes actuelles :
-    - Activité physique : Je fais du sport ${fullProfile?.habits?.sport_week_frequency} fois par semaine
-    ${fullProfile?.habits?.compulsive_habits ? '- Habitudes compulsives : grignotages, fringales, envies de sucre' : ''}
-    ${fullProfile?.habits?.diet ? '- Régime : ' + fullProfile?.habits?.diet : ''}
-    ${fullProfile?.habits?.religious_regime ? '- Régime religieux : ' + fullProfile?.habits?.religious_regime : ''}
-    ${fullProfile?.medicalData?.medical_regimen ? '- Régime médical : ' + fullProfile?.medicalData?.medical_regimen : ''}
-    ${fullProfile?.medicalData?.allergies ? '- Allergies : ' + fullProfile?.medicalData?.allergies.join(', ') : ''}
-    ${fullProfile?.medicalData?.eating_disorders ? '- troubles alimentaires : ' + fullProfile?.medicalData?.eating_disorders.join(', ') : ''}
-    ${fullProfile?.preferences?.dislikes ? '- Je n\'aime pas : ' + fullProfile?.preferences?.dislikes.join(', ') : ''}
-    ${fullProfile?.profile?.profile_detail ? '- Infos supplémentaires : ' + fullProfile?.profile?.profile_detail : ''}
+    ${details.length ? details.join('\n    ') : '- Rien de renseigné pour l\'instant'}
 
   Rôle :
   Tu es mon coach personnel, un nutritionniste expérimenté avec plus de 20 ans de pratique.
