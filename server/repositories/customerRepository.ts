@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { Database } from '../types/public'
-import { getPublicSupabaseClient } from './supabaseRepository'
+import { getAdminSupabaseClient, getPublicSupabaseClient } from './supabaseRepository'
 
 type Customer = Database['public']['Tables']['customers']['Row']
 type CustomerUpdate = Database['public']['Tables']['customers']['Update']
@@ -47,15 +47,17 @@ export async function getCustomerByStripeCustomerId(event: H3Event, stripeCustom
   }
 }
 
+// Users can only read their customer row (RLS): it holds their subscription status, so only
+// trusted server code writes it, after checking with Stripe
 export async function createCustomer(
-  event: H3Event,
+  _event: H3Event,
   customer: {
     profile_id: string
     stripe_customer_id: string
   }
 ): Promise<Customer | null> {
   try {
-    const supabase = await getPublicSupabaseClient(event)
+    const supabase = getAdminSupabaseClient()
     const { data, error } = await supabase
       .from('customers')
       .insert({
@@ -79,12 +81,12 @@ export async function createCustomer(
 }
 
 export async function updateCustomer(
-  event: H3Event,
+  _event: H3Event,
   id: string,
   updates: Partial<CustomerUpdate>
 ): Promise<Customer | null> {
   try {
-    const supabase = await getPublicSupabaseClient(event)
+    const supabase = getAdminSupabaseClient()
     const { data, error } = await supabase
       .from('customers')
       .update(updates)
