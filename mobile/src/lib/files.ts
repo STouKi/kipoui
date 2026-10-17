@@ -43,7 +43,7 @@ export async function resizeImage(file: File, maxSide = MAX_IMAGE_SIDE): Promise
   return new File([blob], `${file.name.replace(/\.[^.]+$/, '')}.jpg`, { type: 'image/jpeg' })
 }
 
-function readAsDataUrl(file: File) {
+export function readAsDataUrl(file: File) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(reader.result as string)

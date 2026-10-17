@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { IonIcon, IonLabel, IonPage, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/vue'
-import { analytics, analyticsOutline, chatbubbles, chatbubblesOutline, personCircle, personCircleOutline } from 'ionicons/icons'
+import { analytics, analyticsOutline, chatbubbles, chatbubblesOutline, personCircle, personCircleOutline, restaurant, restaurantOutline } from 'ionicons/icons'
 import OnboardingModal from '@/components/OnboardingModal.vue'
 import { useOnboarding } from '@/composables/useOnboarding'
 
@@ -21,6 +21,7 @@ watch(onboardingNeeded, (needed) => {
 
 const tabs = [
   { tab: 'coach', label: 'Coach', icon: chatbubblesOutline, activeIcon: chatbubbles },
+  { tab: 'repas', label: 'Repas', icon: restaurantOutline, activeIcon: restaurant },
   { tab: 'suivi', label: 'Suivi', icon: analyticsOutline, activeIcon: analytics },
   { tab: 'profil', label: 'Profil', icon: personCircleOutline, activeIcon: personCircle }
 ]

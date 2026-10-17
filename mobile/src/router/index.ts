@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { session } from '@/lib/session'
 import TabsPage from '@/views/TabsPage.vue'
 import CoachPage from '@/views/CoachPage.vue'
+import RepasPage from '@/views/RepasPage.vue'
 import SuiviPage from '@/views/SuiviPage.vue'
 import ProfilPage from '@/views/ProfilPage.vue'
 import ConversationPage from '@/views/ConversationPage.vue'
@@ -32,6 +33,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', redirect: '/tabs/coach' },
       { path: 'coach', component: CoachPage },
+      { path: 'repas', component: RepasPage },
       { path: 'suivi', component: SuiviPage },
       { path: 'profil', component: ProfilPage },
       { path: 'profil/informations', component: () => import('@/views/profil/InformationsPage.vue') },
