@@ -5,7 +5,7 @@
     </h1>
     <div class="p-6 rounded-lg shadow-md bg-default">
       <p class="mb-6 text-sm text-center text-muted">
-        Dernière mise à jour : 12 octobre 2026
+        Dernière mise à jour : 17 octobre 2026
       </p>
 
       <div class="space-y-8">
@@ -32,6 +32,7 @@
             <li><strong>Habitudes et préférences</strong> : régime alimentaire, y compris religieux, fréquence d'activité physique, habitudes alimentaires compulsives et aliments que vous n'aimez pas.</li>
             <li><strong>Données de santé</strong> : allergies, troubles du comportement alimentaire et régimes médicaux.</li>
             <li><strong>Conversations</strong> : vos messages avec le coach, les images et documents PDF que vous lui envoyez, et les informations qu'il mémorise pour personnaliser ses réponses.</li>
+            <li><strong>Journal des repas</strong> : les repas que vous enregistrez dans l'application iOS (nom, aliments, estimations de calories et de nutriments, date et heure). Les photos de repas servent uniquement à l'analyse : nous ne les conservons pas.</li>
             <li><strong>Abonnement</strong> : identifiants de client et d'abonnement chez notre prestataire de paiement, statut et dates de votre abonnement. Vos données bancaires sont traitées par Stripe et ne sont jamais stockées chez nous.</li>
             <li><strong>Mesure d'audience</strong> : statistiques de fréquentation du site, agrégées et sans cookie.</li>
           </ul>
@@ -60,7 +61,7 @@
             Pour générer les réponses du coach, vos messages et les données de votre profil, y compris vos données sensibles, sont transmis à des services d'intelligence artificielle tiers :
           </p>
           <ul class="pl-6 mb-3 list-disc space-y-2">
-            <li><strong>Groq</strong> : réponses du coach, titres des conversations et analyse des images que vous envoyez.</li>
+            <li><strong>Groq</strong> : réponses du coach, titres des conversations, analyse des images que vous envoyez et estimation des repas que vous enregistrez (photo ou description).</li>
             <li><strong>Anthropic</strong> : analyse des documents PDF que vous envoyez.</li>
             <li><strong>OpenAI</strong> : indexation des informations que le coach mémorise, pour les retrouver plus tard.</li>
             <li><strong>Exa</strong> : recherche sur le web pour les questions d'actualité. Seul le texte de la recherche lui est transmis.</li>

@@ -157,6 +157,56 @@ export type Database = {
           }
         ]
       }
+      meals: {
+        Row: {
+          carbs_g: number
+          created_at: string
+          eaten_at: string
+          fat_g: number
+          id: string
+          items: Json
+          kcal: number
+          meal_type: Database['public']['Enums']['meal_type']
+          name: string
+          profile_id: string
+          protein_g: number
+        }
+        Insert: {
+          carbs_g?: number
+          created_at?: string
+          eaten_at?: string
+          fat_g?: number
+          id?: string
+          items?: Json
+          kcal: number
+          meal_type: Database['public']['Enums']['meal_type']
+          name: string
+          profile_id: string
+          protein_g?: number
+        }
+        Update: {
+          carbs_g?: number
+          created_at?: string
+          eaten_at?: string
+          fat_g?: number
+          id?: string
+          items?: Json
+          kcal?: number
+          meal_type?: Database['public']['Enums']['meal_type']
+          name?: string
+          profile_id?: string
+          protein_g?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'meals_profile_id_fkey'
+            columns: ['profile_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       medical_data: {
         Row: {
           allergies: Database['public']['Enums']['allergy'][] | null
@@ -379,6 +429,7 @@ export type Database = {
       diet: 'vegan' | 'vegetarian' | 'pescatarian'
       eating_disorders: 'anorexia' | 'bulimia'
       gender: 'male' | 'female'
+      meal_type: 'breakfast' | 'lunch' | 'dinner' | 'snack'
       medical_regimen: 'diabetes' | 'cholesterol' | 'hypertension' | 'crohn'
       religious_regime: 'halal' | 'kasher' | 'buddhist' | 'religious_fasting'
       role: 'user' | 'assistant'
@@ -528,6 +579,7 @@ export const Constants = {
       diet: ['vegan', 'vegetarian', 'pescatarian'],
       eating_disorders: ['anorexia', 'bulimia'],
       gender: ['male', 'female'],
+      meal_type: ['breakfast', 'lunch', 'dinner', 'snack'],
       medical_regimen: ['diabetes', 'cholesterol', 'hypertension', 'crohn'],
       religious_regime: ['halal', 'kasher', 'buddhist', 'religious_fasting'],
       role: ['user', 'assistant']
