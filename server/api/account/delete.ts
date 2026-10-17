@@ -1,5 +1,6 @@
 import { getAdminSupabaseClient, requireAuth } from '../../repositories/supabaseRepository'
 import { getServerStripe } from '../../repositories/stripeRepository'
+import { getChatFilePaths } from '../../repositories/chatRepository'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -30,6 +31,18 @@ export default defineEventHandler(async (event) => {
     if (avatars.length > 0) {
       const { error: avatarsError } = await supabaseAdmin.storage.from('avatars').remove(avatars)
       if (avatarsError) console.error('Error deleting avatars:', avatarsError)
+    }
+
+    // Nor the photos and PDFs attached to messages. A file left behind doesn't keep the account
+    try {
+      const { data: chats } = await supabaseAdmin.from('chats').select('id').eq('profile_id', user.id)
+      const chatFiles = await getChatFilePaths(supabaseAdmin, (chats ?? []).map(chat => chat.id))
+      if (chatFiles.length > 0) {
+        const { error: chatFilesError } = await supabaseAdmin.storage.from('chat-files').remove(chatFiles)
+        if (chatFilesError) console.error('Error deleting chat files:', chatFilesError)
+      }
+    } catch (chatFilesError) {
+      console.error('Error deleting chat files:', chatFilesError)
     }
 
     const { error } = await supabaseAdmin.auth.admin.deleteUser(user.id)
