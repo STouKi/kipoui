@@ -25,5 +25,11 @@ export function useChats() {
     chats.value = chats.value.filter(chat => chat.id !== id)
   }
 
-  return { chats, loaded, loadChats, deleteChat }
+  // A selection of the conversation list, with the photos and documents attached to them
+  async function deleteChats(ids: number[]) {
+    await api('/api/chats', { method: 'DELETE', body: { ids } })
+    chats.value = chats.value.filter(chat => !ids.includes(chat.id))
+  }
+
+  return { chats, loaded, loadChats, deleteChat, deleteChats }
 }
