@@ -6,7 +6,8 @@ import { useProfile } from '@/composables/useProfile'
 import { useWeights } from '@/composables/useWeights'
 import { debounce } from '@/lib/debounce'
 import { showAlert, showSaveError } from '@/lib/feedback'
-import { formatWeight, parseWeight } from '@/lib/format'
+import { formatDeadline, formatWeight, parseWeight } from '@/lib/format'
+import { FAST_WEEKLY_PACE, remainingToGoal, weeklyPace } from '@/lib/goal'
 import type { FullProfile } from '@/lib/types'
 
 type Goals = NonNullable<FullProfile['goals']>
@@ -38,11 +39,14 @@ const currentWeight = computed(() => {
 const remaining = computed(() => {
   const goal = profile.value?.goals?.target_weight
   if (!goal || currentWeight.value === null) return null
-  const difference = Math.round((currentWeight.value - goal) * 10) / 10
-  if (difference === 0) return 'Objectif atteint, bravo !'
-  return difference > 0
-    ? `Encore ${formatWeight(difference)} kg à perdre.`
-    : `Encore ${formatWeight(-difference)} kg à prendre.`
+  const left = remainingToGoal(currentWeight.value, goal)
+  if (!left) return 'Objectif atteint, bravo !'
+  const savedDeadline = profile.value?.goals?.deadline
+  const pace = savedDeadline ? weeklyPace(currentWeight.value, goal, savedDeadline) : null
+  if (!savedDeadline || pace === null) return `Encore ${left}.`
+  const advice = pace > FAST_WEEKLY_PACE ? ' Au-delà d\'1 kg par semaine, un changement de poids est rarement durable.' : ''
+  // The date ends with an abbreviation's period ("31 déc."): it can't end the sentence
+  return `Encore ${left} d'ici le ${formatDeadline(savedDeadline)}, soit environ ${formatWeight(pace)} kg par semaine.${advice}`
 })
 
 async function save(data: Partial<Goals>, revert: () => void) {

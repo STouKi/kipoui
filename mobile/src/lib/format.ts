@@ -39,6 +39,12 @@ export function formatDay(value: string) {
   return capitalize(shortDay.format(date))
 }
 
+// Goal deadline (a YYYY-MM-DD date): 31 déc., or 31 déc. 2027 in another year
+export function formatDeadline(value: string) {
+  const date = new Date(`${value}T00:00:00`)
+  return date.getFullYear() === new Date().getFullYear() ? dayMonth.format(date) : dayMonthYear.format(date)
+}
+
 // Chart axis: 15 sept.
 export function formatAxisDate(date: Date) {
   return dayMonth.format(date)

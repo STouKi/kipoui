@@ -23,12 +23,13 @@ import {
   onIonViewWillEnter
 } from '@ionic/vue'
 import type { RefresherCustomEvent } from '@ionic/vue'
-import { add, removeOutline, trendingDown, trendingUp } from 'ionicons/icons'
+import { add, flagOutline, removeOutline, trendingDown, trendingUp } from 'ionicons/icons'
 import AddWeightModal from '@/components/AddWeightModal.vue'
 import WeightChart from '@/components/WeightChart.vue'
 import { useProfile } from '@/composables/useProfile'
 import { useWeights } from '@/composables/useWeights'
-import { formatDay, formatWeight, formatWeightChange } from '@/lib/format'
+import { formatDay, formatDeadline, formatWeight, formatWeightChange } from '@/lib/format'
+import { FAST_WEEKLY_PACE, remainingToGoal, weeklyPace } from '@/lib/goal'
 import { showErrorToast } from '@/lib/feedback'
 import { tapFeedback, warningFeedback } from '@/lib/native'
 import type { WeightRecord } from '@/lib/types'
@@ -74,12 +75,19 @@ const change = computed(() => {
 })
 
 // From the first weigh-in to the goal
+const start = computed(() => points.value[0]?.kg ?? null)
 const progress = computed(() => {
-  const start = points.value[0]?.kg
   const current = latest.value?.kg
-  if (start === undefined || current === undefined || target.value === null || start === target.value) return null
-  return Math.min(1, Math.max(0, (start - current) / (start - target.value)))
+  if (start.value === null || current === undefined || target.value === null || start.value === target.value) return null
+  return Math.min(1, Math.max(0, (start.value - current) / (start.value - target.value)))
 })
+const remaining = computed(() => latest.value && target.value !== null ? remainingToGoal(latest.value.kg, target.value) : null)
+
+const deadline = computed(() => profile.value?.goals?.deadline ?? null)
+const deadlinePassed = computed(() => !!deadline.value && new Date(`${deadline.value}T23:59:59`) < now.value)
+const pace = computed(() => latest.value && target.value !== null && deadline.value
+  ? weeklyPace(latest.value.kg, target.value, deadline.value, now.value)
+  : null)
 
 const selectedPeriod = computed(() => PERIODS.find(item => item.value === period.value) ?? PERIODS[1])
 const periodStart = computed(() => new Date(now.value.getTime() - selectedPeriod.value.days * DAY))
@@ -199,7 +207,10 @@ async function remove(record: WeightRecord, event: Event) {
               v-if="target !== null"
               class="goal"
             >
-              <span>Objectif : {{ formatWeight(target) }} kg</span>
+              <div class="goal-row">
+                <span>Objectif : <strong>{{ formatWeight(target) }} kg</strong></span>
+                <span :class="remaining ? 'muted' : 'reached'">{{ remaining ? `Encore ${remaining}` : 'Atteint, bravo !' }}</span>
+              </div>
               <div
                 v-if="progress !== null"
                 class="bar"
@@ -211,7 +222,38 @@ async function remove(record: WeightRecord, event: Event) {
               >
                 <div :style="{ width: `${progress * 100}%` }" />
               </div>
+              <div
+                v-if="remaining && (start !== null || deadline)"
+                class="goal-row small"
+              >
+                <span v-if="start !== null">Départ : {{ formatWeight(start) }} kg</span>
+                <span v-if="deadline">{{ deadlinePassed ? 'Échéance passée' : `D'ici le ${formatDeadline(deadline)}` }}</span>
+              </div>
+              <p
+                v-if="remaining && pace !== null"
+                class="pace"
+                :class="{ fast: pace > FAST_WEEKLY_PACE }"
+              >
+                Environ {{ formatWeight(pace) }} kg par semaine pour tenir l'échéance.
+                <template v-if="pace > FAST_WEEKLY_PACE">
+                  Au-delà d'1 kg par semaine, un changement de poids est rarement durable : parlez-en à votre coach.
+                </template>
+              </p>
             </div>
+
+            <ion-button
+              v-else
+              fill="clear"
+              class="goal-link"
+              router-link="/tabs/profil/objectifs"
+            >
+              <ion-icon
+                slot="start"
+                :icon="flagOutline"
+                aria-hidden="true"
+              />
+              Fixer un objectif de poids
+            </ion-button>
           </template>
 
           <p
@@ -245,6 +287,7 @@ async function remove(record: WeightRecord, event: Event) {
             :points="visiblePoints"
             :from="periodStart"
             :to="now"
+            :target="target"
           />
           <p
             v-else
@@ -375,6 +418,51 @@ async function remove(record: WeightRecord, event: Event) {
   flex-direction: column;
   gap: 8px;
   font-size: 15px;
+}
+
+.goal-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.goal-row strong {
+  font-weight: 600;
+}
+
+.goal-row.small {
+  font-size: 13px;
+  color: var(--kp-text-muted);
+}
+
+.muted {
+  color: var(--kp-text-muted);
+}
+
+.reached {
+  font-weight: 500;
+  color: var(--kp-accent);
+}
+
+.pace {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--kp-text-muted);
+}
+
+.pace.fast {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--kp-warning-bg);
+  color: var(--kp-warning-fg);
+}
+
+.goal-link {
+  align-self: flex-start;
+  height: auto;
+  margin: -4px 0 -6px -10px;
+  font-size: 16px;
 }
 
 .bar {

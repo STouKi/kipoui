@@ -7,6 +7,8 @@ const props = defineProps<{
   points: { date: Date, kg: number }[]
   from: Date
   to: Date
+  // Drawn as a dashed line, always in view
+  target?: number | null
 }>()
 
 const WIDTH = 340
@@ -18,6 +20,7 @@ const BOTTOM = 150
 
 const range = computed(() => {
   const values = props.points.map(point => point.kg)
+  if (props.target !== null && props.target !== undefined) values.push(props.target)
   let min = Math.floor(Math.min(...values))
   let max = Math.ceil(Math.max(...values))
   // An almost flat curve keeps some room above and below
@@ -71,7 +74,8 @@ const description = computed(() => {
   const first = props.points[0]
   const end = last.value
   if (!first || !end) return ''
-  return `Courbe du poids, de ${formatWeight(first.kg)} kg à ${formatWeight(end.kg)} kg`
+  const goal = props.target !== null && props.target !== undefined ? `, objectif ${formatWeight(props.target)} kg` : ''
+  return `Courbe du poids, de ${formatWeight(first.kg)} kg à ${formatWeight(end.kg)} kg${goal}`
 })
 
 function formatGridValue(kg: number) {
@@ -108,6 +112,21 @@ function formatGridValue(kg: number) {
       :d="area"
       class="area"
     />
+    <g v-if="target !== null && target !== undefined">
+      <line
+        :x1="LEFT"
+        :x2="WIDTH - RIGHT"
+        :y1="y(target)"
+        :y2="y(target)"
+        class="target"
+      />
+      <text
+        :x="WIDTH - RIGHT"
+        :y="y(target) - 6"
+        text-anchor="end"
+        class="target-label"
+      >Objectif {{ formatWeight(target) }} kg</text>
+    </g>
     <polyline
       v-if="points.length > 1"
       :points="line"
@@ -151,6 +170,18 @@ function formatGridValue(kg: number) {
 
 .area {
   fill: var(--kp-tint-bg);
+}
+
+.target {
+  stroke: var(--kp-accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.target-label {
+  font-size: 12px;
+  font-weight: 500;
+  fill: var(--kp-accent);
 }
 
 .line {
