@@ -406,7 +406,13 @@ function primary() {
                   class="value-end"
                   min="1900-01-01"
                   :max="today"
-                />
+                >
+                  <span
+                    v-if="!draft.birthDate"
+                    slot="end"
+                    class="input-placeholder"
+                  >Choisir</span>
+                </ion-input>
               </ion-item>
             </ion-list>
           </template>
@@ -485,7 +491,13 @@ function primary() {
                   type="date"
                   class="value-end"
                   :min="today"
-                />
+                >
+                  <span
+                    v-if="!draft.deadline"
+                    slot="end"
+                    class="input-placeholder"
+                  >Choisir</span>
+                </ion-input>
               </ion-item>
             </ion-list>
             <p class="group-hint">

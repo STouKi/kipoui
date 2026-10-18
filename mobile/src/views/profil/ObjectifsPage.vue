@@ -117,7 +117,13 @@ onBeforeUnmount(() => deadlineSave.flush())
           class="value-end"
           :min="today"
           @ion-input="deadlineSave.schedule()"
-        />
+        >
+          <span
+            v-if="!deadline"
+            slot="end"
+            class="input-placeholder"
+          >Choisir</span>
+        </ion-input>
       </ion-item>
       <ion-item
         v-if="deadline"

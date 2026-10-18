@@ -67,6 +67,27 @@ ion-input.value-end {
   text-align: end;
 }
 
+/* iOS draws date and time inputs as a native control that ignores text-align and sits higher
+   than the other values: without its native look, the value lines up with them */
+ion-input.value-end input[type="date"],
+ion-input.value-end input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+ion-input.value-end input::-webkit-date-and-time-value {
+  text-align: end;
+}
+
+/* iOS shows nothing in an empty date input: this hint, in its end slot, takes the place of a
+   placeholder (a tap on it still opens the picker, the input's label wraps it) */
+.input-placeholder {
+  color: var(--kp-text-subtle);
+}
+
 .input-unit {
   margin-left: 6px;
   color: var(--kp-text-muted);

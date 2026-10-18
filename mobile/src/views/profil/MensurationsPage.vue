@@ -114,7 +114,13 @@ onBeforeUnmount(() => birthDateSave.flush())
           min="1900-01-01"
           :max="today"
           @ion-input="birthDateSave.schedule()"
-        />
+        >
+          <span
+            v-if="!birthDate"
+            slot="end"
+            class="input-placeholder"
+          >Choisir</span>
+        </ion-input>
       </ion-item>
       <ion-item>
         <ion-input
