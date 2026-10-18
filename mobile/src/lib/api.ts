@@ -14,6 +14,16 @@ export const api = ofetch.create({
     for (const [name, value] of Object.entries(await getAuthHeaders())) {
       options.headers.set(name, value)
     }
+  },
+  // A session the server refuses (account deleted, sessions revoked) would otherwise show
+  // "Connexion impossible" forever. Supabase confirms it first: offline, nothing changes
+  async onResponseError({ response }) {
+    if (response.status !== 401) return
+    const { error } = await supabase.auth.getUser()
+    if (error?.status === 401 || error?.status === 403) {
+      // The router then shows the login screen (App.vue)
+      await supabase.auth.signOut({ scope: 'local' })
+    }
   }
 })
 

@@ -417,6 +417,10 @@ if (!profile.value) {
               {{ suggestion }}
             </button>
           </div>
+          <p class="disclaimer">
+            Le coach peut se tromper. Ses conseils ne remplacent pas l'avis d'un médecin ou d'un
+            diététicien.
+          </p>
         </div>
 
         <ChatMessage
@@ -566,6 +570,14 @@ if (!profile.value) {
 </template>
 
 <style scoped>
+.disclaimer {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+  color: var(--kp-text-subtle);
+}
+
 .title {
   display: inline-flex;
   align-items: center;
