@@ -65,7 +65,11 @@ export async function getVecsSupabaseClient(event: H3Event) {
 
 export async function getAuthUser(event: H3Event) {
   const token = getBearerToken(event)
-  const user = token ? await getBearerUser(event, token) : await serverSupabaseUser(event)
+  // Without a session cookie, serverSupabaseUser() throws ("Auth session missing!"), which made
+  // every protected route answer 500 instead of 401
+  const user = token
+    ? await getBearerUser(event, token)
+    : await serverSupabaseUser(event).catch(() => null)
 
   if (!user) {
     console.error('User not found')

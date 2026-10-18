@@ -141,23 +141,13 @@ export async function deleteWeightRecord(
   try {
     const supabase = await getPublicSupabaseClient(event)
 
-    // Vérifier que l'enregistrement appartient bien à l'utilisateur
-    const { data: existingRecord, error: checkError } = await supabase
-      .from('weight_records')
-      .select('id')
-      .eq('id', recordId)
-      .eq('profile_id', profileId)
-      .single()
-
-    if (checkError) throw checkError
-    if (!existingRecord) {
-      throw new Error('Weight record not found or access denied')
-    }
-
+    // Only the user's own weigh-ins (RLS and profile_id). One already gone is not an error: the
+    // app may still list it, deleted from another device
     const { error } = await supabase
       .from('weight_records')
       .delete()
       .eq('id', recordId)
+      .eq('profile_id', profileId)
 
     if (error) throw error
     return true
