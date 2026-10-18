@@ -31,9 +31,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Kipoui utilise l'appareil photo pour que vous puissiez photographier vos repas et les envoyer à votre coach.</string>
+	<string>Kipoui utilise l'appareil photo pour que vous puissiez photographier vos repas ou votre frigo et les envoyer à votre coach.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Kipoui accède à vos photos pour que vous puissiez les joindre à vos messages.</string>
+	<string>Kipoui accède à vos photos pour que vous puissiez les joindre à vos messages ou faire analyser vos repas par votre coach.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
