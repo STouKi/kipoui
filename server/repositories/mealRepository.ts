@@ -66,3 +66,38 @@ export async function deleteMeal(event: H3Event, profileId: string, id: string):
     return false
   }
 }
+
+export async function getMeal(event: H3Event, profileId: string, id: string): Promise<Meal | null> {
+  try {
+    const supabase = await getPublicSupabaseClient(event)
+    const { data, error } = await supabase
+      .from('meals')
+      .select('*')
+      .eq('id', id)
+      .eq('profile_id', profileId)
+      .maybeSingle()
+
+    if (error) throw error
+    return data
+  } catch (error) {
+    handleError(error, 'Error fetching meal')
+    return null
+  }
+}
+
+export async function setMealComment(event: H3Event, profileId: string, id: string, comment: string): Promise<boolean> {
+  try {
+    const supabase = await getPublicSupabaseClient(event)
+    const { error } = await supabase
+      .from('meals')
+      .update({ coach_comment: comment })
+      .eq('id', id)
+      .eq('profile_id', profileId)
+
+    if (error) throw error
+    return true
+  } catch (error) {
+    handleError(error, 'Error saving meal comment')
+    return false
+  }
+}

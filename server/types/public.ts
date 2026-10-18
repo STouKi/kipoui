@@ -160,6 +160,7 @@ export type Database = {
       meals: {
         Row: {
           carbs_g: number
+          coach_comment: string | null
           created_at: string
           eaten_at: string
           fat_g: number
@@ -173,6 +174,7 @@ export type Database = {
         }
         Insert: {
           carbs_g?: number
+          coach_comment?: string | null
           created_at?: string
           eaten_at?: string
           fat_g?: number
@@ -186,6 +188,7 @@ export type Database = {
         }
         Update: {
           carbs_g?: number
+          coach_comment?: string | null
           created_at?: string
           eaten_at?: string
           fat_g?: number

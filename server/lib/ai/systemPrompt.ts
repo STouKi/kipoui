@@ -1,11 +1,8 @@
 import type { FullProfileData } from '../../repositories/profileRepository'
 
-/**
- * Génère le systemPrompt pour l'IA à partir des données du profil utilisateur
- * @param fullProfile Les données complètes du profil utilisateur
- * @returns Le systemPrompt formaté avec les informations de l'utilisateur
- */
-export function generateSystemPrompt(fullProfile: FullProfileData | null): string {
+// The profile as the coach reads it, in the user's words. Only what the user filled in: a missing
+// value used to reach the coach as "undefined", and a missing gender as "féminin"
+export function describeProfile(fullProfile: FullProfileData | null) {
   const physical = fullProfile?.physicalData
   const habits = fullProfile?.habits
   const medical = fullProfile?.medicalData
@@ -25,8 +22,6 @@ export function generateSystemPrompt(fullProfile: FullProfileData | null): strin
     }
   }
 
-  // Only what the user filled in: a missing value used to reach the coach as "undefined", and a
-  // missing gender as "féminin"
   const name = fullProfile?.profile?.full_name || fullProfile?.profile?.username
   const identity = [
     name && `Je m'appelle ${name}`,
@@ -59,9 +54,24 @@ export function generateSystemPrompt(fullProfile: FullProfileData | null): strin
     fullProfile?.profile?.profile_detail && `- Infos supplémentaires : ${fullProfile.profile.profile_detail}`
   ].filter(Boolean)
 
+  return {
+    summary: `${identity ? `${identity}.` : ''} ${goal}`,
+    missing: missing as string[],
+    details: details as string[]
+  }
+}
+
+/**
+ * Génère le systemPrompt pour l'IA à partir des données du profil utilisateur
+ * @param fullProfile Les données complètes du profil utilisateur
+ * @returns Le systemPrompt formaté avec les informations de l'utilisateur
+ */
+export function generateSystemPrompt(fullProfile: FullProfileData | null): string {
+  const { summary, missing, details } = describeProfile(fullProfile)
+
   return `
   Contexte :
-  ${identity ? `${identity}.` : ''} ${goal}
+  ${summary}
   ${missing.length ? `Je n'ai pas encore renseigné ${missing.join(', ')} : si une de ces informations t'est utile pour me conseiller, demande-la-moi simplement, sans insister.` : ''}
   Voici mon profil santé et habitudes actuelles :
     ${details.length ? details.join('\n    ') : '- Rien de renseigné pour l\'instant'}
