@@ -35,12 +35,6 @@ const links = [[{
       open.value = false
     }
   }, {
-    label: 'Notifications',
-    to: '/tableau-de-bord/parametres/notifications',
-    onSelect: () => {
-      open.value = false
-    }
-  }, {
     label: 'Sécurité',
     to: '/tableau-de-bord/parametres/securite',
     onSelect: () => {

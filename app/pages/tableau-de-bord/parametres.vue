@@ -15,10 +15,6 @@ const links = [[{
   icon: 'i-lucide-credit-card',
   to: '/tableau-de-bord/parametres/abonnement'
 }, {
-  label: 'Notifications',
-  icon: 'i-lucide-bell',
-  to: '/tableau-de-bord/parametres/notifications'
-}, {
   label: 'Sécurité',
   icon: 'i-lucide-shield',
   to: '/tableau-de-bord/parametres/securite'
