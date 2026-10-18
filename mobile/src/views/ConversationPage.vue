@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   IonBackButton,
@@ -29,6 +29,7 @@ import { useChats } from '@/composables/useChats'
 import { useProfile } from '@/composables/useProfile'
 import { useWeights } from '@/composables/useWeights'
 import { api, getAuthHeaders, getErrorReason } from '@/lib/api'
+import { takeCoachDraft } from '@/lib/coachDraft'
 import { API_URL } from '@/lib/config'
 import { AttachmentError, prepareAttachment, toFileParts } from '@/lib/files'
 import { showAlert } from '@/lib/feedback'
@@ -254,6 +255,20 @@ async function send(text = input.value.trim()) {
   }
   revokePreviews(sending)
 }
+
+// A first message prepared by the Repas tab: sent right away, or left in the composer while the
+// AI consent is missing
+const draft = routeId === 'nouvelle' ? takeCoachDraft() : null
+onMounted(async () => {
+  if (!draft) return
+  const prepared = await Promise.all(draft.files.map(file => prepareAttachment(file))).catch(() => [])
+  attachments.value = prepared.map(file => ({ file, preview: URL.createObjectURL(file) }))
+  if (hasConsent.value && !subscriptionInactive.value) {
+    void send(draft.text)
+  } else {
+    input.value = draft.text
+  }
+})
 
 function retry() {
   handledError.value = false

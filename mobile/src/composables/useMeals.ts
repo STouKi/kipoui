@@ -57,5 +57,26 @@ export function useMeals() {
     }
   }
 
-  return { mealsByDay, loadDay, analyzeMeal, addMeal, deleteMeal }
+  // The coach's reaction to a meal just added, saved with it. The day's bounds and the time zone
+  // let the server read the other meals of the user's day
+  async function commentMeal(meal: Meal, needs: number | null) {
+    const day = startOfDay(new Date(meal.eaten_at))
+    const { comment } = await api<{ comment: string }>(`/api/meals/${meal.id}/comment`, {
+      method: 'POST',
+      body: {
+        day_start: day.toISOString(),
+        day_end: addDays(day, 1).toISOString(),
+        needs,
+        time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      }
+    })
+    const key = dayKey(day)
+    mealsByDay.value = {
+      ...mealsByDay.value,
+      [key]: (mealsByDay.value[key] ?? []).map(item => item.id === meal.id ? { ...item, coach_comment: comment } : item)
+    }
+    return comment
+  }
+
+  return { mealsByDay, loadDay, analyzeMeal, addMeal, deleteMeal, commentMeal }
 }

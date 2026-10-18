@@ -14,6 +14,7 @@ import {
   IonToolbar,
   actionSheetController
 } from '@ionic/vue'
+import CoachNote from '@/components/CoachNote.vue'
 import { useMeals } from '@/composables/useMeals'
 import { useProfile } from '@/composables/useProfile'
 import { showErrorToast } from '@/lib/feedback'
@@ -100,6 +101,11 @@ async function confirmDelete() {
           <h1>{{ meal.name }}</h1>
           <p>{{ subtitle }}</p>
         </div>
+
+        <CoachNote
+          v-if="meal.coach_comment"
+          :text="meal.coach_comment"
+        />
 
         <section
           v-if="showFigures"

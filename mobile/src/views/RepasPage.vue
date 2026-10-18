@@ -19,17 +19,20 @@ import {
   IonTitle,
   IonToolbar,
   actionSheetController,
-  onIonViewWillEnter
+  onIonViewWillEnter,
+  useIonRouter
 } from '@ionic/vue'
 import type { RefresherCustomEvent } from '@ionic/vue'
-import { add, chevronBack, chevronForward } from 'ionicons/icons'
+import { add, bulbOutline, chevronBack, chevronForward } from 'ionicons/icons'
 import AddMealModal from '@/components/AddMealModal.vue'
 import AiConsentModal from '@/components/AiConsentModal.vue'
+import CoachNote from '@/components/CoachNote.vue'
 import MealDetailModal from '@/components/MealDetailModal.vue'
 import SubscriptionNotice from '@/components/SubscriptionNotice.vue'
 import { useAiConsent } from '@/composables/useAiConsent'
 import { useMeals } from '@/composables/useMeals'
 import { useProfile } from '@/composables/useProfile'
+import { setCoachDraft } from '@/lib/coachDraft'
 import { showAlert, showErrorToast } from '@/lib/feedback'
 import { AttachmentError, resizeImage } from '@/lib/files'
 import { formatDay } from '@/lib/format'
@@ -38,19 +41,30 @@ import {
   MEAL_TYPES,
   addDays,
   dayKey,
+  defaultMealType,
   estimateDailyNeeds,
   formatGrams,
   formatKcal,
+  mealTypeLabel,
   showsNutritionFigures,
   startOfDay,
   timeOf
 } from '@/lib/nutrition'
-import type { Meal } from '@/lib/types'
+import type { Meal, MealType } from '@/lib/types'
 
 // The analysis doesn't need more: smaller photos travel faster
 const PHOTO_SIDE = 1280
 
-const { mealsByDay, loadDay, deleteMeal } = useMeals()
+// "Des idées pour le dîner"
+const MOMENTS: Record<MealType, string> = {
+  breakfast: 'le petit-déjeuner',
+  lunch: 'le déjeuner',
+  snack: 'une collation',
+  dinner: 'le dîner'
+}
+
+const { mealsByDay, loadDay, deleteMeal, commentMeal } = useMeals()
+const ionRouter = useIonRouter()
 const { profile, loadProfile, hasActiveSubscription } = useProfile()
 const { hasConsent } = useAiConsent()
 
@@ -58,6 +72,7 @@ const page = ref<{ $el: HTMLElement } | null>(null)
 const presentingElement = ref<HTMLElement>()
 const cameraInput = ref<HTMLInputElement | null>(null)
 const libraryInput = ref<HTMLInputElement | null>(null)
+const fridgeInput = ref<HTMLInputElement | null>(null)
 
 const day = ref(startOfDay(new Date()))
 const failed = ref(false)
@@ -65,6 +80,9 @@ const addOpen = ref(false)
 const photo = ref<File | null>(null)
 const selectedMeal = ref<Meal | null>(null)
 const consentOpen = ref(false)
+// The meal the coach is commenting, then the last one commented
+const commentingId = ref<string | null>(null)
+const lastCommentedId = ref<string | null>(null)
 
 const isToday = computed(() => dayKey(day.value) === dayKey(new Date()))
 const loaded = computed(() => dayKey(day.value) in mealsByDay.value)
@@ -80,6 +98,16 @@ const totals = computed(() => meals.value.reduce((sum, meal) => ({
   fat_g: sum.fat_g + meal.fat_g
 }), { kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }))
 const needs = computed(() => estimateDailyNeeds(profile.value, profile.value?.physicalData?.weight_kg ?? null))
+
+// The comment of the meal just added, or else of the day's last commented meal
+const coachNote = computed(() => {
+  if (commentingId.value && meals.value.some(meal => meal.id === commentingId.value)) {
+    return { text: null, caption: undefined }
+  }
+  const meal = meals.value.find(item => item.id === lastCommentedId.value && item.coach_comment)
+    ?? [...meals.value].reverse().find(item => item.coach_comment)
+  return meal?.coach_comment ? { text: meal.coach_comment, caption: mealTypeLabel(meal.meal_type) } : null
+})
 
 const groups = computed(() => MEAL_TYPES
   .map(type => ({ ...type, meals: meals.value.filter(meal => meal.meal_type === type.value) }))
@@ -167,6 +195,76 @@ async function onPhotoPicked(event: Event) {
 function openAddModal(file: File | null) {
   photo.value = file
   addOpen.value = true
+}
+
+// The coach reacts to a meal of today: its tips are about the rest of the day
+function onMealSaved(meal: Meal) {
+  if (dayKey(new Date(meal.eaten_at)) !== dayKey(new Date())) return
+  commentingId.value = meal.id
+  lastCommentedId.value = meal.id
+  commentMeal(meal, showFigures.value ? needs.value : null)
+    .catch(() => {})
+    .finally(() => {
+      if (commentingId.value === meal.id) commentingId.value = null
+    })
+}
+
+// The next meal of the day not logged yet, from the one the clock suggests: after a logged
+// breakfast, at 9:45, the ideas are for lunch
+function nextMealType(today: Meal[]): MealType {
+  const order = MEAL_TYPES.map(type => type.value)
+  let index = order.indexOf(defaultMealType(new Date()))
+  while (index < order.length - 1 && today.some(meal => meal.meal_type === order[index])) index++
+  const type = order[index] ?? 'snack'
+  // Once dinner is logged, only a snack is left
+  return today.some(meal => meal.meal_type === type) ? 'snack' : type
+}
+
+// A new conversation, opened with a question about today's next meal
+async function suggestMeal() {
+  const moment = MOMENTS[nextMealType(mealsByDay.value[dayKey(new Date())] ?? [])]
+  const sheet = await actionSheetController.create({
+    header: 'Que manger maintenant ?',
+    buttons: [
+      { text: `Des idées pour ${moment}`, handler: () => askCoach(null) },
+      // iOS only opens a file input clicked during the tap itself
+      { text: 'Avec une photo de mon frigo', handler: () => fridgeInput.value?.click() },
+      { text: 'Annuler', role: 'cancel' }
+    ]
+  })
+  await sheet.present()
+}
+
+function onFridgePicked(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  target.value = ''
+  if (file) askCoach(file)
+}
+
+// The question carries the day's context, so the coach answers without asking for it
+function askCoach(photo: File | null) {
+  const today = mealsByDay.value[dayKey(new Date())] ?? []
+  const moment = MOMENTS[nextMealType(today)]
+  const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1)
+  const parts = [
+    photo
+      ? `Voici ce qu'il y a dans mon frigo : qu'est-ce que je peux préparer pour ${moment} avec ça ?`
+      : `Qu'est-ce que je pourrais manger pour ${moment} ?`,
+    today.length
+      ? `Aujourd'hui, j'ai déjà mangé : ${today.map(meal => lowerFirst(meal.name)).join(', ')}.`
+      : 'Je n\'ai encore rien mangé aujourd\'hui.'
+  ]
+  if (showFigures.value && needs.value) {
+    const remaining = needs.value - today.reduce((sum, meal) => sum + meal.kcal, 0)
+    parts.push(remaining > 150
+      ? `Il me reste environ ${formatKcal(Math.round(remaining / 50) * 50)} kcal pour la journée.`
+      : 'J\'ai déjà atteint mon besoin estimé pour la journée.')
+  }
+  parts.push('Donne-moi 3 idées simples.')
+
+  setCoachDraft({ text: parts.join(' '), files: photo ? [photo] : [] })
+  ionRouter.push('/conversation/nouvelle')
 }
 
 async function remove(meal: Meal, event: Event) {
@@ -317,6 +415,12 @@ async function remove(meal: Meal, event: Event) {
             </p>
           </section>
 
+          <CoachNote
+            v-if="coachNote"
+            :text="coachNote.text"
+            :caption="coachNote.caption"
+          />
+
           <SubscriptionNotice
             v-if="subscriptionInactive"
             class="notice"
@@ -335,6 +439,29 @@ async function remove(meal: Meal, event: Event) {
             />
             Ajouter un repas
           </ion-button>
+
+          <ion-list
+            v-if="isToday && !subscriptionInactive"
+            inset
+          >
+            <ion-item
+              button
+              detail
+              @click="suggestMeal"
+            >
+              <span
+                slot="start"
+                class="row-icon"
+                aria-hidden="true"
+              >
+                <ion-icon :icon="bulbOutline" />
+              </span>
+              <ion-label>
+                <h3>Que manger maintenant ?</h3>
+                <p>Des idées selon votre journée, ou avec votre frigo</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
 
           <p
             v-if="!meals.length"
@@ -402,6 +529,14 @@ async function remove(meal: Meal, event: Event) {
         hidden
         @change="onPhotoPicked"
       >
+      <input
+        ref="fridgeInput"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        hidden
+        @change="onFridgePicked"
+      >
     </ion-content>
 
     <AddMealModal
@@ -410,6 +545,7 @@ async function remove(meal: Meal, event: Event) {
       :photo="photo"
       :day="day"
       @close="addOpen = false"
+      @saved="onMealSaved"
     />
     <MealDetailModal
       :meal="selectedMeal"
