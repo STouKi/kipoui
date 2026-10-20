@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const userStore = useUserStore()
-const { customer, subscriptionStatus } = storeToRefs(userStore)
+const { customer, subscriptionStatus, hasAppStoreSubscription } = storeToRefs(userStore)
 const { loading, openBillingPortal } = useBillingPortal()
 
 const statusLabels: Record<string, string> = {
@@ -11,9 +11,17 @@ const statusLabels: Record<string, string> = {
   expired: 'Expiré'
 }
 
-const statusLabel = computed(() =>
-  subscriptionStatus.value ? statusLabels[subscriptionStatus.value] ?? subscriptionStatus.value : 'Aucun abonnement'
-)
+const statusLabel = computed(() => {
+  if (hasAppStoreSubscription.value) {
+    return customer.value?.app_store_status === 'trialing' ? 'Période d\'essai (App Store)' : 'Actif (App Store)'
+  }
+  return subscriptionStatus.value ? statusLabels[subscriptionStatus.value] ?? subscriptionStatus.value : 'Aucun abonnement'
+})
+
+// An App Store subscription renews or ends on this date
+const appStoreDate = computed(() => customer.value?.app_store_expires_at
+  ? new Date(customer.value.app_store_expires_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+  : null)
 </script>
 
 <template>
@@ -22,7 +30,20 @@ const statusLabel = computed(() =>
     :description="`Statut : ${statusLabel}`"
     variant="subtle"
   >
-    <template v-if="customer?.stripe_customer_id">
+    <!-- Bought in the iOS app: Apple bills and manages it, Stripe can't -->
+    <template v-if="hasAppStoreSubscription">
+      <p
+        v-if="appStoreDate"
+        class="text-sm"
+      >
+        {{ customer?.app_store_will_renew ? `Renouvellement le ${appStoreDate}.` : `Accès jusqu'au ${appStoreDate}, sans renouvellement.` }}
+      </p>
+      <p class="text-sm text-muted">
+        Vous vous êtes abonné dans l'application iPhone : Apple gère le paiement. Pour modifier ou résilier votre abonnement, ouvrez sur votre iPhone Réglages, puis votre nom, puis Abonnements.
+      </p>
+    </template>
+
+    <template v-else-if="customer?.stripe_customer_id">
       <p
         v-if="subscriptionStatus === 'waiting_payment'"
         class="text-sm text-amber-600 dark:text-amber-400"

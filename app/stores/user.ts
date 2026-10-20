@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { User } from '@supabase/supabase-js'
 import type { Database } from '../../server/types/public'
+import { hasActiveSubscription } from '../../server/lib/subscription'
 
 type UserProfile = Database['public']['Tables']['profiles']['Row']
 type PhysicalData = Database['public']['Tables']['physical_data']['Row']
@@ -42,11 +43,11 @@ export const useUserStore = defineStore('user', {
     userName: state => state.profile?.full_name || state.user?.user_metadata?.full_name || null,
     userAvatar: state => state.profile?.avatar_url || state.user?.user_metadata?.avatar_url || null,
 
-    // Subscription status
-    hasActiveSubscription: (state) => {
-      if (!state.customer?.subscription_status) return false
-      return ['active', 'trialing'].includes(state.customer.subscription_status)
-    },
+    // Subscription status: bought on the website (Stripe) or in the iOS app (App Store), the same
+    // rule as the API's (server/lib/subscription.ts)
+    hasActiveSubscription: state => hasActiveSubscription(state.customer),
+    hasAppStoreSubscription: state => !!state.customer
+      && hasActiveSubscription({ ...state.customer, subscription_status: null }),
     subscriptionStatus: state => state.customer?.subscription_status || null,
     subscriptionExpiresAt: state => state.customer?.subscription_end_date || null,
 
