@@ -2,6 +2,7 @@ import { createGroq } from '@ai-sdk/groq'
 import { generateText } from 'ai'
 import type { FullProfileData } from '../../repositories/profileRepository'
 import type { Meal } from '../../repositories/mealRepository'
+import { stripModelTokens } from './modelText'
 import { describeProfile } from './systemPrompt'
 
 const MEAL_TYPES = { breakfast: 'petit-déjeuner', lunch: 'déjeuner', snack: 'collation', dinner: 'dîner' }
@@ -78,7 +79,7 @@ ${figuresRule}`
 
 // Plain text of two sentences at most, whatever the model returned
 function clean(text: string) {
-  const plain = text.replace(/[*_#`>]/g, '').replace(/\s+/g, ' ').trim()
+  const plain = stripModelTokens(text).replace(/[*_#`>]/g, '').replace(/\s+/g, ' ').trim()
   if (plain.length <= 400) return plain
   const cut = plain.slice(0, 400)
   const end = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '))

@@ -10,6 +10,7 @@ import { updateChatTitle, getChatWithMessages } from '../../repositories/chatRep
 import { addMessage } from '../../repositories/messageRepository'
 import { generateSystemPrompt } from '../../lib/ai/systemPrompt'
 import { createAITools } from '../../lib/ai/tools'
+import { generateChatTitle } from '../../lib/ai/chatTitle'
 import { hasActiveSubscription } from '../../lib/subscription'
 
 defineRouteMeta({
@@ -71,30 +72,7 @@ export default defineEventHandler(async (event) => {
   const { chat, messages: dbMessages } = chatData
 
   if (!chat.title) {
-    // The title is cosmetic: a model failure must not block the conversation
-    let cleaned = (dbMessages[0]?.content ?? '').slice(0, 30)
-    try {
-      const titleRes = await generateText({
-        model: groq('openai/gpt-oss-20b'),
-        providerOptions: { groq: { reasoningEffort: 'low' } },
-        messages: [{
-          role: 'system',
-          content: `You are a title generator for a chat:
-          - Generate a short title based on the first user's message
-          - The title should be less than 30 characters long
-          - The title should be a summary of the user's message
-          - Do not use quotes (' or ") or colons (:) or any other punctuation
-          - Do not use markdown, just plain text`
-        }, {
-          role: 'user',
-          content: dbMessages[0]?.content ?? ''
-        }]
-      })
-      cleaned = titleRes.text.replace(/:/g, '').split('\n')[0] || cleaned
-    } catch (error) {
-      console.error('Title generation error:', error)
-    }
-    await updateChatTitle(event, Number(id), cleaned)
+    await updateChatTitle(event, Number(id), await generateChatTitle(groq, dbMessages[0]?.content ?? ''))
   }
 
   const lastIndex = messages.length - 1
