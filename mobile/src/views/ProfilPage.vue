@@ -20,6 +20,7 @@ import type { RefresherCustomEvent } from '@ionic/vue'
 import {
   barbellOutline,
   chatbubbleEllipsesOutline,
+  diamondOutline,
   documentTextOutline,
   flagOutline,
   heartOutline,
@@ -40,11 +41,10 @@ import { openExternal } from '@/lib/native'
 import { user } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 
-const { profile, loadProfile, subscriptionStatus, displayName } = useProfile()
+const { profile, loadProfile, subscriptionStatus, hasActiveSubscription, displayName } = useProfile()
 const { hasConsent } = useAiConsent()
 
-// The app is a companion app: the subscription only appears as a status, without price nor link
-// to the offers (App Store guideline 3.1.3(f))
+// The subscription's status: bought on the website (Stripe) or in the app (App Store)
 const SUBSCRIPTION_LABELS: Record<string, string> = {
   active: 'Abonnement actif',
   trialing: 'Période d\'essai',
@@ -57,7 +57,7 @@ const subscription = computed(() => {
   const status = subscriptionStatus.value ?? ''
   return {
     label: SUBSCRIPTION_LABELS[status] ?? 'Aucun abonnement',
-    tone: ['active', 'trialing'].includes(status) ? 'active' : status === 'waiting_payment' ? 'pending' : 'inactive'
+    tone: hasActiveSubscription.value ? 'active' : status === 'waiting_payment' ? 'pending' : 'inactive'
   }
 })
 
@@ -165,6 +165,33 @@ async function signOut() {
               />
             </span>
             <ion-label>{{ row.label }}</ion-label>
+          </ion-item>
+        </ion-list>
+
+        <h2 class="group-title">
+          Abonnement
+        </h2>
+        <ion-list inset>
+          <ion-item
+            router-link="/tabs/profil/abonnement"
+            detail
+          >
+            <span
+              slot="start"
+              class="row-icon"
+            >
+              <ion-icon
+                :icon="diamondOutline"
+                aria-hidden="true"
+              />
+            </span>
+            <ion-label>Mon abonnement</ion-label>
+            <ion-note
+              v-if="profile"
+              slot="end"
+            >
+              {{ hasActiveSubscription ? 'Actif' : 'Inactif' }}
+            </ion-note>
           </ion-item>
         </ion-list>
 

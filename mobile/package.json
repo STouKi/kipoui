@@ -26,6 +26,7 @@
     "@fontsource/fredoka": "^5.3.0",
     "@ionic/vue": "9.0.7",
     "@ionic/vue-router": "9.0.7",
+    "@revenuecat/purchases-capacitor": "^13.7.3",
     "@supabase/supabase-js": "^2.117.3",
     "ai": "6.0.116",
     "ionicons": "^8.1.0",

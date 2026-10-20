@@ -2,7 +2,9 @@
 import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonApp, IonRouterOutlet, useIonRouter } from '@ionic/vue'
-import { session } from '@/lib/session'
+import PaywallModal from '@/components/PaywallModal.vue'
+import { identifyPurchaser } from '@/lib/purchases'
+import { session, user } from '@/lib/session'
 
 const route = useRoute()
 const ionRouter = useIonRouter()
@@ -13,10 +15,16 @@ watch(session, (value) => {
     ionRouter.navigate('/connexion', 'root', 'replace')
   }
 })
+
+// In-app purchases belong to the signed-in Kipoui account
+watch(() => user.value?.id ?? null, (id) => {
+  identifyPurchaser(id).catch(() => {})
+}, { immediate: true })
 </script>
 
 <template>
   <ion-app>
     <ion-router-outlet />
+    <PaywallModal />
   </ion-app>
 </template>

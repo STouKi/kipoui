@@ -10,8 +10,15 @@ watch(session, (value) => {
   if (!value) profile.value = null
 })
 
-// Same rule as the website (hasActiveSubscription in the user store)
+// Same rule as the API and the website (server/lib/subscription.ts): a subscription bought on the
+// website (Stripe) or in the app (App Store). The App Store one also needs its period ahead
 const SUBSCRIBED_STATUSES = ['active', 'trialing']
+
+function hasAppStoreAccess(customer: FullProfile['customer']) {
+  return !!customer
+    && SUBSCRIBED_STATUSES.includes(customer.app_store_status ?? '')
+    && (!customer.app_store_expires_at || new Date(customer.app_store_expires_at) > new Date())
+}
 
 type Section = Exclude<keyof FullProfile, 'customer'>
 
@@ -52,8 +59,13 @@ export function useProfile() {
     }
   }
 
-  const subscriptionStatus = computed(() => profile.value?.customer?.subscription_status ?? null)
-  const hasActiveSubscription = computed(() => SUBSCRIBED_STATUSES.includes(subscriptionStatus.value ?? ''))
+  const hasAppStoreSubscription = computed(() => hasAppStoreAccess(profile.value?.customer ?? null))
+  // The App Store's status when it gives access, else the website's
+  const subscriptionStatus = computed(() => hasAppStoreSubscription.value
+    ? profile.value?.customer?.app_store_status ?? null
+    : profile.value?.customer?.subscription_status ?? null)
+  const hasActiveSubscription = computed(() => hasAppStoreSubscription.value
+    || SUBSCRIBED_STATUSES.includes(profile.value?.customer?.subscription_status ?? ''))
 
   const displayName = computed(() => profile.value?.profile?.full_name
     || profile.value?.profile?.username
@@ -68,6 +80,7 @@ export function useProfile() {
     uploadAvatar,
     subscriptionStatus,
     hasActiveSubscription,
+    hasAppStoreSubscription,
     displayName
   }
 }

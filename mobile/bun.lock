@@ -18,6 +18,7 @@
         "@fontsource/fredoka": "^5.3.0",
         "@ionic/vue": "9.0.7",
         "@ionic/vue-router": "9.0.7",
+        "@revenuecat/purchases-capacitor": "^13.7.3",
         "@supabase/supabase-js": "^2.117.3",
         "ai": "6.0.116",
         "ionicons": "^8.1.0",
@@ -150,6 +151,10 @@
     "@opentelemetry/api": ["@opentelemetry/api@1.9.0", "", {}, "sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg=="],
 
     "@oxc-project/types": ["@oxc-project/types@0.153.0", "", {}, "sha512-jSNrRIyvPVLL5E1z/tS5zLAprosGz/FuI1PWwEOz59j3E4TTTzSpqKb/RDGqJhhW0QHYISGXxq582wGx6T11Tw=="],
+
+    "@revenuecat/purchases-capacitor": ["@revenuecat/purchases-capacitor@13.7.3", "", { "dependencies": { "@revenuecat/purchases-typescript-internal-esm": "19.10.0" }, "peerDependencies": { "@capacitor/core": ">=8.0.0" } }, "sha512-HqA2uxjUoaCR+a8MYfts/r+4h+WpCIaRMCknBAs1cd9+XOk6Ft/5qKe/D0SmDMGTpoSN1w0qAKvJu8FfokwLhQ=="],
+
+    "@revenuecat/purchases-typescript-internal-esm": ["@revenuecat/purchases-typescript-internal-esm@19.10.0", "", {}, "sha512-pIk9P6zztSJYZ38AUxRNmuvKGhwo6mJEfzxw2poFQR8Np5knUbWPwAHBLNg0nWDl++RBTcHxvaibnUhTvOkRbg=="],
 
     "@rolldown/binding-android-arm-eabi": ["@rolldown/binding-android-arm-eabi@1.2.13", "", { "os": "android", "cpu": "arm" }, "sha512-Vu/NICrgdRvUOeaJZIyB2FP63s6fO/4ud5l8dXmxDx9yDyn+mN0y+gsvsVviSli+T361Aqo0h46EuMoobrwawA=="],
 

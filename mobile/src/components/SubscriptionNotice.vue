@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { IonIcon } from '@ionic/vue'
+import { IonButton, IonIcon } from '@ionic/vue'
 import { lockClosedOutline } from 'ionicons/icons'
+import { usePaywall } from '@/composables/usePaywall'
 import { useProfile } from '@/composables/useProfile'
 
-// The app is a companion app: subscriptions are only sold on the website, and Apple forbids any
-// call to action to purchase outside the app (guideline 3.1.3(f)). This notice only states the status
+// Shown where the coach needs a subscription. It leads to the in-app subscription screen only:
+// Apple forbids pointing to the website's offers (guideline 3.1.1)
 const { subscriptionStatus } = useProfile()
+const { openPaywall } = usePaywall()
 
 const message = computed(() => {
   switch (subscriptionStatus.value) {
@@ -32,6 +34,14 @@ const message = computed(() => {
       aria-hidden="true"
     />
     <p>{{ message }}</p>
+    <ion-button
+      fill="clear"
+      size="small"
+      class="offers"
+      @click="openPaywall"
+    >
+      Voir les offres
+    </ion-button>
   </div>
 </template>
 
@@ -41,7 +51,7 @@ const message = computed(() => {
   align-items: center;
   gap: 12px;
   margin: 12px 16px;
-  padding: 14px 16px;
+  padding: 14px 8px 14px 16px;
   border-radius: 16px;
   background: var(--kp-fill);
   color: var(--kp-text-muted);
@@ -53,8 +63,16 @@ const message = computed(() => {
 }
 
 .notice p {
+  flex: 1;
   margin: 0;
   font-size: 15px;
   line-height: 21px;
+}
+
+.offers {
+  flex-shrink: 0;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
 }
 </style>

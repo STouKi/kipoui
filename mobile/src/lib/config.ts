@@ -21,3 +21,8 @@ export const TERMS_URL = `${WEB_URL}/app/conditions-utilisation`
 // Where the links of the auth emails sent from the app lead (Supabase must allow these URLs)
 export const ACCOUNT_CONFIRMED_URL = `${WEB_URL}/app/compte-confirme`
 export const NEW_PASSWORD_URL = `${WEB_URL}/nouveau-mot-de-passe`
+
+// RevenueCat's public key for the iOS app (in-app subscriptions): RevenueCat dashboard, Project
+// settings, API keys, App Store. Public like Supabase's anon key: it only lists offers and starts
+// purchases, which the server checks with RevenueCat's secret key
+export const REVENUECAT_API_KEY = import.meta.env.VITE_REVENUECAT_API_KEY || 'appl_uvDcHLMFRkPvTCDFPcBuBrngSxA'
