@@ -1,5 +1,6 @@
 import { z } from 'zod/v3'
 import { commentMeal } from '../../../lib/ai/mealComment'
+import { hasActiveSubscription } from '../../../lib/subscription'
 import { requireAuth } from '../../../repositories/supabaseRepository'
 import { getFullProfileData } from '../../../repositories/profileRepository'
 import { getMeal, getMeals, setMealComment } from '../../../repositories/mealRepository'
@@ -35,7 +36,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, statusMessage: 'AI consent required' })
   }
   const profile = await getFullProfileData(event, user.id)
-  if (!['active', 'trialing'].includes(profile.customer?.subscription_status ?? '')) {
+  if (!hasActiveSubscription(profile.customer)) {
     throw createError({ statusCode: 403, statusMessage: 'Active subscription required' })
   }
 

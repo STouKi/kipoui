@@ -1,5 +1,8 @@
 import type Stripe from 'stripe'
 import { getServerStripe, handleError, getOrCreateStripeCustomer } from '../../repositories/stripeRepository'
+import { getAuthUser } from '../../repositories/supabaseRepository'
+import { getCustomerByProfileId } from '../../repositories/customerRepository'
+import { hasActiveSubscription } from '../../lib/subscription'
 
 export default defineEventHandler(async (event) => {
   const { priceId, trial } = getQuery(event)
@@ -12,6 +15,15 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
+    // A second subscription would be charged on top of the first one, Stripe or App Store
+    const user = await getAuthUser(event)
+    if (user && hasActiveSubscription(await getCustomerByProfileId(event, user.id))) {
+      return {
+        sessionId: null,
+        error: 'Vous avez déjà un abonnement actif.'
+      }
+    }
+
     const stripe = await getServerStripe(event)
     const config = useRuntimeConfig()
 

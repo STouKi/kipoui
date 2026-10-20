@@ -2,7 +2,7 @@ import type { H3Event } from 'h3'
 import type Stripe from 'stripe'
 import { getAuthUser } from './supabaseRepository'
 import { getProfileById } from './profileRepository'
-import { getCustomerByProfileId, createCustomer } from './customerRepository'
+import { getCustomerByProfileId, createCustomer, updateCustomer } from './customerRepository'
 import { useServerStripe } from '#stripe/server'
 
 export async function getServerStripe(event: H3Event) {
@@ -71,10 +71,15 @@ export async function getOrCreateStripeCustomer(event: H3Event): Promise<string 
       }
     })
 
-    await createCustomer(event, {
-      profile_id: user.id,
-      stripe_customer_id: customer.id
-    })
+    // One customers row per user: an App Store subscriber already has one, without Stripe ids
+    if (customerData) {
+      await updateCustomer(event, customerData.id, { stripe_customer_id: customer.id })
+    } else {
+      await createCustomer(event, {
+        profile_id: user.id,
+        stripe_customer_id: customer.id
+      })
+    }
 
     return customer.id
   } catch (error) {

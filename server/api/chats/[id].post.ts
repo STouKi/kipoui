@@ -10,6 +10,7 @@ import { updateChatTitle, getChatWithMessages } from '../../repositories/chatRep
 import { addMessage } from '../../repositories/messageRepository'
 import { generateSystemPrompt } from '../../lib/ai/systemPrompt'
 import { createAITools } from '../../lib/ai/tools'
+import { hasActiveSubscription } from '../../lib/subscription'
 
 defineRouteMeta({
   openAPI: {
@@ -52,7 +53,7 @@ export default defineEventHandler(async (event) => {
   }
   const fullProfile = await getFullProfileData(event, user.id)
   // The website's overlay alone doesn't stop direct API calls
-  if (!['active', 'trialing'].includes(fullProfile.customer?.subscription_status ?? '')) {
+  if (!hasActiveSubscription(fullProfile.customer)) {
     throw createError({ statusCode: 403, statusMessage: 'Active subscription required' })
   }
   const systemPrompt = generateSystemPrompt(fullProfile)

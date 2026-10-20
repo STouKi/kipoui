@@ -1,6 +1,7 @@
 import { z } from 'zod/v3'
 import { analyzeMeal } from '../../lib/ai/mealAnalysis'
 import { mealTotals } from '../../lib/meals'
+import { hasActiveSubscription } from '../../lib/subscription'
 import { requireAuth } from '../../repositories/supabaseRepository'
 import { getCustomerByProfileId } from '../../repositories/customerRepository'
 
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, statusMessage: 'AI consent required' })
   }
   const customer = await getCustomerByProfileId(event, user.id)
-  if (!['active', 'trialing'].includes(customer?.subscription_status ?? '')) {
+  if (!hasActiveSubscription(customer)) {
     throw createError({ statusCode: 403, statusMessage: 'Active subscription required' })
   }
 

@@ -57,6 +57,11 @@ export default defineNuxtConfig({
     },
     groq: {
       apiKey: process.env.GROQ_API_KEY
+    },
+    // Subscriptions bought in the iOS app (server/lib/revenuecat.ts)
+    revenuecat: {
+      secretKey: process.env.REVENUECAT_SECRET_KEY,
+      webhookSecret: process.env.REVENUECAT_WEBHOOK_SECRET
     }
   },
 

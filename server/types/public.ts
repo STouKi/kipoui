@@ -45,6 +45,10 @@ export type Database = {
       }
       customers: {
         Row: {
+          app_store_expires_at: string | null
+          app_store_product_id: string | null
+          app_store_status: string | null
+          app_store_will_renew: boolean | null
           created_at: string
           id: string
           last_payment_date: string | null
@@ -56,6 +60,10 @@ export type Database = {
           subscription_status: string | null
         }
         Insert: {
+          app_store_expires_at?: string | null
+          app_store_product_id?: string | null
+          app_store_status?: string | null
+          app_store_will_renew?: boolean | null
           created_at?: string
           id?: string
           last_payment_date?: string | null
@@ -67,6 +75,10 @@ export type Database = {
           subscription_status?: string | null
         }
         Update: {
+          app_store_expires_at?: string | null
+          app_store_product_id?: string | null
+          app_store_status?: string | null
+          app_store_will_renew?: boolean | null
           created_at?: string
           id?: string
           last_payment_date?: string | null

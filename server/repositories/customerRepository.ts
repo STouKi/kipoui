@@ -105,3 +105,20 @@ export async function updateCustomer(
     return null
   }
 }
+
+// The subscription bought in the iOS app, copied from RevenueCat (lib/revenuecat.ts). The user
+// may have no customers row yet (no Stripe checkout): one row per user, upserted on profile_id
+export async function saveAppStoreSubscription(
+  profileId: string,
+  subscription: Pick<CustomerUpdate, 'app_store_status' | 'app_store_expires_at' | 'app_store_will_renew' | 'app_store_product_id'>
+) {
+  const supabase = getAdminSupabaseClient()
+  const { error } = await supabase
+    .from('customers')
+    .upsert({ profile_id: profileId, ...subscription }, { onConflict: 'profile_id' })
+
+  if (error) {
+    console.error('Erreur lors de l\'enregistrement de l\'abonnement App Store:', error)
+    throw createError({ statusCode: 500, statusMessage: 'App Store subscription not saved' })
+  }
+}
