@@ -11,7 +11,7 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
     </h1>
     <div class="p-6 rounded-lg shadow-md bg-default">
       <p class="mb-6 text-sm text-center text-muted">
-        Dernière mise à jour : 25 mai 2025
+        Dernière mise à jour : 19 octobre 2026
       </p>
 
       <div class="space-y-8">
@@ -57,7 +57,25 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            4. Règles d'utilisation
+            4. Abonnement et paiement
+          </h2>
+          <p class="mb-3">
+            Le coach (conversations, analyse des repas, idées de repas) est accessible avec un abonnement payant. Les formules, leurs prix et la durée de l'éventuel essai gratuit sont présentés avant tout paiement. Un abonnement souscrit sur le site ou dans l'application iOS donne accès au coach sur les deux, avec le même compte.
+          </p>
+          <p class="mb-3">
+            <strong>Sur le site</strong>, l'abonnement est payé auprès de notre prestataire de paiement Stripe. Moyen de paiement, factures et résiliation se gèrent dans votre espace, rubrique Paramètres, Abonnement.
+          </p>
+          <p class="mb-3">
+            <strong>Dans l'application iOS</strong>, l'abonnement est souscrit par achat intégré et débité de votre compte Apple à la confirmation de l'achat, ou à la fin de l'essai gratuit s'il y en a un. Il se renouvelle automatiquement pour la même durée et au même prix, sauf résiliation au moins 24 heures avant la fin de la période en cours. Vous le gérez et le résiliez dans les réglages de votre compte Apple. Les demandes de remboursement des achats intégrés relèvent d'Apple. L'utilisation de l'application iOS est également régie par le contrat de licence standard des applications d'Apple.
+          </p>
+          <p>
+            Une résiliation prend effet à la fin de la période déjà payée : l'accès au coach reste ouvert jusque-là.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-xl font-semibold">
+            5. Règles d'utilisation
           </h2>
           <p class="mb-3">
             En utilisant l'Application, vous vous engagez à respecter les règles suivantes :
@@ -76,7 +94,7 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            5. Politique de confidentialité
+            6. Politique de confidentialité
           </h2>
           <p class="mb-3">
             Notre <ULink
@@ -91,10 +109,10 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            6. Propriété intellectuelle
+            7. Propriété intellectuelle
           </h2>
           <p class="mb-3">
-            L'Application et son contenu original, fonctionnalités et fonctionnalités sont et resteront la propriété exclusive de [Votre Société] et sont protégés par les lois sur le droit d'auteur, les marques et autres lois de propriété intellectuelle.
+            L'Application et son contenu original, fonctionnalités et fonctionnalités sont et resteront la propriété exclusive de ses éditeurs et sont protégés par les lois sur le droit d'auteur, les marques et autres lois de propriété intellectuelle.
           </p>
           <p class="mb-3">
             En soumettant du contenu à l'Application, vous nous accordez une licence mondiale, non exclusive, libre de redevances, transférable et pouvant faire l'objet d'une sous-licence pour utiliser, reproduire, modifier, adapter, publier, traduire, créer des œuvres dérivées, distribuer et afficher ce contenu dans le cadre de l'Application.
@@ -106,7 +124,7 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            7. Limitation de responsabilité
+            8. Limitation de responsabilité
           </h2>
           <p class="mb-3">
             L'Application est fournie "telle quelle" et "selon disponibilité", sans garantie d'aucune sorte, expresse ou implicite. Nous ne garantissons pas que l'Application sera ininterrompue, opportune, sécurisée ou sans erreur.
@@ -121,7 +139,7 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            8. Résiliation
+            9. Résiliation
           </h2>
           <p class="mb-3">
             Nous pouvons résilier ou suspendre votre compte et votre accès à l'Application immédiatement, sans préavis ni responsabilité, pour quelque raison que ce soit, y compris, sans limitation, si vous violez les présentes CGU.
@@ -133,7 +151,7 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            9. Modifications des conditions
+            10. Modifications des conditions
           </h2>
           <p class="mb-3">
             Nous nous réservons le droit, à notre seule discrétion, de modifier ou de remplacer ces CGU à tout moment. Si une révision est importante, nous essaierons de fournir un préavis d'au moins 30 jours avant que les nouvelles conditions n'entrent en vigueur.
@@ -145,7 +163,7 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            10. Loi applicable et juridiction
+            11. Loi applicable et juridiction
           </h2>
           <p>
             Les présentes CGU sont régies et interprétées conformément aux lois françaises. Tout litige découlant de ou lié aux présentes CGU sera soumis à la compétence exclusive des tribunaux français.
@@ -154,7 +172,7 @@ const privacyPath = computed(() => route.path.startsWith('/app/') ? '/app/confid
 
         <section>
           <h2 class="mb-4 text-xl font-semibold">
-            11. Contact
+            12. Contact
           </h2>
           <p>
             Si vous avez des questions concernant ces CGU, veuillez nous contacter à l'adresse suivante :

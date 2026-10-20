@@ -5,7 +5,7 @@
     </h1>
     <div class="p-6 rounded-lg shadow-md bg-default">
       <p class="mb-6 text-sm text-center text-muted">
-        Dernière mise à jour : 17 octobre 2026
+        Dernière mise à jour : 19 octobre 2026
       </p>
 
       <div class="space-y-8">
@@ -34,6 +34,7 @@
             <li><strong>Conversations</strong> : vos messages avec le coach, les images et documents PDF que vous lui envoyez, et les informations qu'il mémorise pour personnaliser ses réponses.</li>
             <li><strong>Journal des repas</strong> : les repas que vous enregistrez dans l'application iOS (nom, aliments, estimations de calories et de nutriments, date et heure). Les photos de repas servent uniquement à l'analyse : nous ne les conservons pas.</li>
             <li><strong>Abonnement</strong> : identifiants de client et d'abonnement chez notre prestataire de paiement, statut et dates de votre abonnement. Vos données bancaires sont traitées par Stripe et ne sont jamais stockées chez nous.</li>
+            <li><strong>Abonnement souscrit dans l'application iOS</strong> : l'identifiant de votre compte Kipoui, transmis à RevenueCat, et l'historique de vos achats sur l'App Store (formule, dates, renouvellement). Apple traite le paiement : nous ne recevons jamais vos coordonnées bancaires.</li>
             <li><strong>Mesure d'audience</strong> : statistiques de fréquentation du site, agrégées et sans cookie.</li>
           </ul>
           <p>
@@ -85,7 +86,8 @@
             <li><strong>Supabase</strong> : base de données, authentification et stockage des fichiers.</li>
             <li><strong>Vercel</strong> : hébergement de l'application et mesure d'audience.</li>
             <li><strong>Groq, Anthropic, OpenAI et Exa</strong> : services d'intelligence artificielle décrits ci-dessus.</li>
-            <li><strong>Stripe</strong> : paiements et gestion des abonnements.</li>
+            <li><strong>Stripe</strong> : paiements et gestion des abonnements souscrits sur le site.</li>
+            <li><strong>Apple et RevenueCat</strong> : paiement (Apple) et suivi (RevenueCat) des abonnements souscrits dans l'application iOS.</li>
           </ul>
         </section>
 
