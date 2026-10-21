@@ -250,7 +250,7 @@ function choose(plan: Plan) {
       <ion-toolbar>
         <div class="actions">
           <ion-button
-            v-if="purchasesAvailable"
+            v-if="purchasesAvailable && plans.length"
             expand="block"
             color="brand"
             class="main-action"

@@ -678,6 +678,11 @@ async function remove(meal: Meal, event: Event) {
   color: var(--kp-text-muted);
 }
 
+/* The page body already has its side margins */
+.notice {
+  margin: 0;
+}
+
 .no-meal {
   margin: 4px 0 0;
   padding: 0 16px;
