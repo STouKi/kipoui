@@ -39,6 +39,12 @@ export function useMeals() {
     })
   }
 
+  // The values of a food the user corrected or added, for the given quantity
+  async function estimateItem(food: { name: string, quantity: string }) {
+    const { item } = await api<{ item: MealItem }>('/api/meals/estimate', { method: 'POST', body: food })
+    return item
+  }
+
   async function addMeal(meal: NewMeal) {
     const saved = await api<Meal>('/api/meals', { method: 'POST', body: meal })
     const key = dayKey(new Date(saved.eaten_at))
@@ -78,5 +84,5 @@ export function useMeals() {
     return comment
   }
 
-  return { mealsByDay, loadDay, analyzeMeal, addMeal, deleteMeal, commentMeal }
+  return { mealsByDay, loadDay, analyzeMeal, estimateItem, addMeal, deleteMeal, commentMeal }
 }

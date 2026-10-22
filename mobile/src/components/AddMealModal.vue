@@ -20,13 +20,14 @@ import {
   IonSpinner,
   IonTextarea,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  alertController
 } from '@ionic/vue'
-import { cloudOfflineOutline, helpCircleOutline } from 'ionicons/icons'
+import { add, cloudOfflineOutline, helpCircleOutline } from 'ionicons/icons'
 import { useMeals } from '@/composables/useMeals'
 import { useProfile } from '@/composables/useProfile'
 import { getErrorReason } from '@/lib/api'
-import { showAlert } from '@/lib/feedback'
+import { showAlert, showErrorToast } from '@/lib/feedback'
 import { successFeedback, tapFeedback, warningFeedback } from '@/lib/native'
 import {
   DEFAULT_TIMES,
@@ -53,7 +54,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ close: [], saved: [meal: Meal] }>()
 
-const { analyzeMeal, addMeal } = useMeals()
+const { analyzeMeal, estimateItem, addMeal } = useMeals()
 const { profile } = useProfile()
 
 type Step = 'describe' | 'analyzing' | 'result' | 'not-food' | 'failed'
@@ -65,7 +66,14 @@ const description = ref('')
 const name = ref('')
 const mealType = ref<MealType>('lunch')
 const time = ref('12:30')
-const items = ref<MealItem[]>([])
+// A key per food for the list, and whether its values are being recalculated
+interface EditableItem extends MealItem {
+  key: number
+  busy?: boolean
+}
+
+let nextKey = 0
+const items = ref<EditableItem[]>([])
 const saving = ref(false)
 const textarea = ref<{ $el: HTMLIonTextareaElement } | null>(null)
 
@@ -114,7 +122,7 @@ async function analyze() {
       return
     }
     name.value = result.name
-    items.value = result.items
+    items.value = result.items.map(item => ({ ...item, key: nextKey++ }))
     tapFeedback()
     step.value = 'result'
   } catch (error) {
@@ -122,6 +130,15 @@ async function analyze() {
     if (getErrorReason(error) === 'Active subscription required') {
       emit('close')
       await showAlert('Abonnement requis', 'L\'analyse des repas nécessite un abonnement actif.')
+      return
+    }
+    if (getErrorReason(error) === 'Daily photo limit reached') {
+      // The description alone goes through
+      if (preview.value) URL.revokeObjectURL(preview.value)
+      photoFile.value = null
+      preview.value = null
+      step.value = 'describe'
+      await showAlert('Limite atteinte', 'Vous avez analysé 15 photos en 24 heures. Décrivez votre repas par écrit, ou réessayez plus tard.')
       return
     }
     step.value = 'failed'
@@ -135,6 +152,64 @@ function describeInstead() {
   preview.value = null
   step.value = 'describe'
   setTimeout(() => void textarea.value?.$el.setFocus(), 300)
+}
+
+const recalculating = computed(() => items.value.some(item => item.busy))
+
+// The name and quantity of a food, typed in an alert like iOS's rename dialogs
+async function askFood(item?: MealItem) {
+  const alert = await alertController.create({
+    header: item ? 'Modifier l\'aliment' : 'Ajouter un aliment',
+    message: 'Les calories sont recalculées pour la quantité indiquée.',
+    inputs: [
+      { name: 'name', type: 'text', value: item?.name ?? '', placeholder: 'Aliment, par exemple saumon', attributes: { maxlength: 80, autocapitalize: 'sentences' } },
+      { name: 'quantity', type: 'text', value: item?.quantity ?? '', placeholder: 'Quantité, par exemple 150 g', attributes: { maxlength: 40 } }
+    ],
+    buttons: [
+      { text: 'Annuler', role: 'cancel' },
+      { text: item ? 'Recalculer' : 'Ajouter', role: 'confirm' }
+    ]
+  })
+  await alert.present()
+  const { role, data } = await alert.onDidDismiss()
+  const name = String(data?.values?.name ?? '').trim()
+  const quantity = String(data?.values?.quantity ?? '').trim()
+  return role === 'confirm' && name ? { name, quantity } : null
+}
+
+// The server recalculates the food's values; the list keeps the previous ones meanwhile
+async function updateItem(target: EditableItem, food: { name: string, quantity: string }, added: boolean) {
+  target.busy = true
+  try {
+    const values = await estimateItem(food)
+    items.value = items.value.map(item => item.key === target.key ? { ...values, key: target.key } : item)
+    tapFeedback()
+  } catch {
+    warningFeedback()
+    items.value = added
+      ? items.value.filter(item => item.key !== target.key)
+      : items.value.map(item => item.key === target.key ? { ...item, busy: false } : item)
+    await showErrorToast('Le calcul n\'a pas abouti. Vérifiez votre connexion internet.')
+  }
+}
+
+async function editItem(item: EditableItem) {
+  if (item.busy) return
+  const food = await askFood(item)
+  if (!food || (food.name === item.name && food.quantity === item.quantity)) return
+  const target = items.value.find(entry => entry.key === item.key)
+  if (target) {
+    Object.assign(target, food)
+    await updateItem(target, food, false)
+  }
+}
+
+async function addItem() {
+  const food = await askFood()
+  if (!food) return
+  items.value = [...items.value, { ...food, kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0, key: nextKey++, busy: true }]
+  const target = items.value[items.value.length - 1]
+  if (target) await updateItem(target, food, true)
 }
 
 function removeItem(index: number) {
@@ -151,7 +226,14 @@ async function save() {
       eaten_at: eatenAt.toISOString(),
       meal_type: mealType.value,
       name: name.value.trim() || mealTypeLabel(mealType.value),
-      items: items.value
+      items: items.value.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        kcal: item.kcal,
+        protein_g: item.protein_g,
+        carbs_g: item.carbs_g,
+        fat_g: item.fat_g
+      }))
     })
     successFeedback()
     emit('saved', meal)
@@ -194,7 +276,7 @@ async function save() {
           <ion-button
             v-else-if="step === 'result'"
             :strong="true"
-            :disabled="saving || !items.length"
+            :disabled="saving || recalculating || !items.length"
             @click="save"
           >
             Ajouter
@@ -321,17 +403,27 @@ async function save() {
           <ion-list inset>
             <ion-item-sliding
               v-for="(item, index) in items"
-              :key="`${index}-${item.name}`"
+              :key="item.key"
+              :disabled="item.busy"
             >
-              <ion-item>
+              <ion-item
+                button
+                :detail="false"
+                @click="editItem(item)"
+              >
                 <ion-label>
                   <h3>{{ item.name }}</h3>
                   <p v-if="item.quantity">
                     {{ item.quantity }}
                   </p>
                 </ion-label>
+                <ion-spinner
+                  v-if="item.busy"
+                  slot="end"
+                  name="crescent"
+                />
                 <ion-note
-                  v-if="showFigures"
+                  v-else-if="showFigures"
                   slot="end"
                 >
                   {{ formatKcal(item.kcal) }} kcal
@@ -346,9 +438,24 @@ async function save() {
                 </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
+            <ion-item
+              button
+              :detail="false"
+              @click="addItem"
+            >
+              <ion-icon
+                slot="start"
+                :icon="add"
+                class="add-icon"
+                aria-hidden="true"
+              />
+              <ion-label color="primary">
+                Ajouter un aliment
+              </ion-label>
+            </ion-item>
           </ion-list>
           <p class="group-hint">
-            {{ items.length ? 'Ce sont des estimations : balayez un aliment vers la gauche pour le retirer.' : 'Tous les aliments ont été retirés.' }}
+            {{ items.length ? 'Ce sont des estimations : touchez un aliment pour le corriger, balayez-le vers la gauche pour le retirer.' : 'Tous les aliments ont été retirés.' }}
           </p>
 
           <section
@@ -425,6 +532,11 @@ ion-label h3 {
 ion-label p {
   font-size: 13px;
   color: var(--kp-text-muted);
+}
+
+.add-icon {
+  margin-inline-end: 12px;
+  color: var(--kp-accent);
 }
 
 ion-note {
