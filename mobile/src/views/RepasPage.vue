@@ -53,7 +53,7 @@ import {
 import type { Meal, MealType } from '@/lib/types'
 
 // The analysis doesn't need more: smaller photos travel faster
-const PHOTO_SIDE = 1280
+const PHOTO_SIDE = 1024
 
 // "Des idées pour le dîner"
 const MOMENTS: Record<MealType, string> = {

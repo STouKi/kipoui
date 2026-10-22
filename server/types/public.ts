@@ -169,6 +169,32 @@ export type Database = {
           }
         ]
       }
+      meal_photo_analyses: {
+        Row: {
+          created_at: string
+          id: number
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'meal_photo_analyses_profile_id_fkey'
+            columns: ['profile_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       meals: {
         Row: {
           carbs_g: number

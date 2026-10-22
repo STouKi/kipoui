@@ -4,8 +4,12 @@ import { mealTotals } from '../../lib/meals'
 import { hasActiveSubscription } from '../../lib/subscription'
 import { requireAuth } from '../../repositories/supabaseRepository'
 import { getCustomerByProfileId } from '../../repositories/customerRepository'
+import { countPhotoAnalysesSince, recordPhotoAnalysis } from '../../repositories/mealRepository'
 
 export const maxDuration = 60
+
+// Each photo costs a Claude call: enough for every meal of a day, with retries
+const DAILY_PHOTO_LIMIT = 15
 
 const bodySchema = z.object({
   // The photo as a data URL, resized by the app (Vercel refuses request bodies over 4.5 MB)
@@ -29,6 +33,14 @@ export default defineEventHandler(async (event) => {
   const image = body.image
     ? { mediaType: body.image.slice(5, body.image.indexOf(';')), data: body.image.slice(body.image.indexOf(',') + 1) }
     : undefined
+
+  if (image) {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    if (await countPhotoAnalysesSince(user.id, since) >= DAILY_PHOTO_LIMIT) {
+      throw createError({ statusCode: 429, statusMessage: 'Daily photo limit reached' })
+    }
+    await recordPhotoAnalysis(user.id)
+  }
 
   try {
     const config = useRuntimeConfig()

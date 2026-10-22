@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { Database } from '../types/public'
-import { getPublicSupabaseClient, handleError } from './supabaseRepository'
+import { getAdminSupabaseClient, getPublicSupabaseClient, handleError } from './supabaseRepository'
 
 export type Meal = Database['public']['Tables']['meals']['Row']
 type MealInsert = Database['public']['Tables']['meals']['Insert']
@@ -100,4 +100,23 @@ export async function setMealComment(event: H3Event, profileId: string, id: stri
     handleError(error, 'Error saving meal comment')
     return false
   }
+}
+
+// Meal photo analyses, counted to cap them per user. Users have no access to these rows (they
+// could delete them to reset their count): the admin client reads and writes them
+export async function countPhotoAnalysesSince(profileId: string, since: Date): Promise<number> {
+  const { count, error } = await getAdminSupabaseClient()
+    .from('meal_photo_analyses')
+    .select('id', { count: 'exact', head: true })
+    .eq('profile_id', profileId)
+    .gte('created_at', since.toISOString())
+  if (error) handleError(error, 'Error counting meal photo analyses')
+  return count ?? 0
+}
+
+export async function recordPhotoAnalysis(profileId: string) {
+  const { error } = await getAdminSupabaseClient()
+    .from('meal_photo_analyses')
+    .insert({ profile_id: profileId })
+  if (error) handleError(error, 'Error recording a meal photo analysis')
 }
