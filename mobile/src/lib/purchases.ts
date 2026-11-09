@@ -93,11 +93,20 @@ export async function loadPlans(): Promise<Plan[]> {
       title: kind.title,
       price: product.priceString,
       period: kind.period,
-      perMonth: kind.months > 1 && product.pricePerMonthString ? `${product.pricePerMonthString} par mois` : null,
+      // RevenueCat formats it in English ("12.49 $"), next to Apple's French price ("149,99 $US")
+      perMonth: kind.months > 1 ? `${perMonth(product.price / kind.months, product.currencyCode)} par mois` : null,
       trialDays: trial && intro ? intro.periodNumberOfUnits * (DAYS_BY_UNIT[intro.periodUnit] ?? 1) : null,
       saving: kind.months > 1 && monthly ? Math.round((1 - product.price / kind.months / monthly) * 100) : null
     }
   })
+}
+
+function perMonth(amount: number, currency: string) {
+  try {
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency }).format(amount)
+  } catch {
+    return `${amount.toFixed(2)} ${currency}`
+  }
 }
 
 // False when the user cancelled Apple's payment sheet
