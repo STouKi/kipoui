@@ -117,7 +117,10 @@ export async function purchase(plan: Plan) {
   }
   if (!plan.package) return false
   try {
-    await Purchases.purchasePackage({ aPackage: plan.package })
+    // A plain copy: the paywall keeps its plans in a ref, and the native bridge drops Vue's
+    // reactive proxies ("Must provide aPackage parameter")
+    const aPackage = JSON.parse(JSON.stringify(plan.package)) as PurchasesPackage
+    await Purchases.purchasePackage({ aPackage })
     return true
   } catch (error) {
     const purchasesError = error as Partial<PurchasesError>
