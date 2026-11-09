@@ -19,7 +19,7 @@ import { api } from '@/lib/api'
 import { PRIVACY_URL, TERMS_URL } from '@/lib/config'
 import { showAlert } from '@/lib/feedback'
 import { openExternal, successFeedback, tapFeedback, warningFeedback } from '@/lib/native'
-import { loadPlans, purchase, purchasesAvailable, restorePurchases } from '@/lib/purchases'
+import { loadPlans, purchase, purchaseErrorReference, purchasesAvailable, restorePurchases } from '@/lib/purchases'
 import type { Plan } from '@/lib/purchases'
 
 // The in-app subscription screen (App Store, through RevenueCat). Apple asks to show the billed
@@ -95,9 +95,12 @@ async function buy() {
         ? 'Votre coach est à vous. Posez-lui votre première question !'
         : 'Votre accès s\'active dans quelques instants.'
     )
-  } catch {
+  } catch (error) {
     warningFeedback()
-    await showAlert('Achat impossible', 'L\'App Store n\'a pas pu finaliser l\'achat. Vérifiez votre connexion internet et réessayez.')
+    await showAlert(
+      'Achat impossible',
+      `L'App Store n'a pas pu finaliser l'achat. Vérifiez votre connexion internet et réessayez. (${purchaseErrorReference(error)})`
+    )
   } finally {
     busy.value = false
   }

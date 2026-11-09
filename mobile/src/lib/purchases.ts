@@ -128,6 +128,15 @@ export async function purchase(plan: Plan) {
   }
 }
 
+// A short reference of a failed purchase, shown to the user so support can tell the cause
+export function purchaseErrorReference(error: unknown) {
+  const { code, readableErrorCode, userInfo, underlyingErrorMessage, message } = (error ?? {}) as Partial<PurchasesError>
+  const reference = [userInfo?.readableErrorCode ?? readableErrorCode ?? code, underlyingErrorMessage || message]
+    .filter(Boolean)
+    .join(' : ')
+  return reference || String(error)
+}
+
 // After reinstalling the app or changing phone. True when a subscription was found
 export async function restorePurchases() {
   if (mock) return false
