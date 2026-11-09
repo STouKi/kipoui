@@ -109,35 +109,46 @@ function perMonth(amount: number, currency: string) {
   }
 }
 
-// False when the user cancelled Apple's payment sheet
-export async function purchase(plan: Plan) {
+// 'pending' when Apple holds the purchase for an approval (a parent's « Demander à acheter ») or an
+// extra step: the access comes later, with RevenueCat's notification
+export type PurchaseResult = 'purchased' | 'cancelled' | 'pending'
+
+export async function purchase(plan: Plan): Promise<PurchaseResult> {
   if (mock) {
     await new Promise(resolve => setTimeout(resolve, 1200))
-    return true
+    return 'purchased'
   }
-  if (!plan.package) return false
+  if (!plan.package) return 'cancelled'
   try {
     // A plain copy: the paywall keeps its plans in a ref, and the native bridge drops Vue's
     // reactive proxies ("Must provide aPackage parameter")
     const aPackage = JSON.parse(JSON.stringify(plan.package)) as PurchasesPackage
     await Purchases.purchasePackage({ aPackage })
-    return true
+    return 'purchased'
   } catch (error) {
-    const purchasesError = error as Partial<PurchasesError>
-    if (purchasesError.userCancelled || purchasesError.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) {
-      return false
-    }
+    const { code } = error as Partial<PurchasesError>
+    if (code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) return 'cancelled'
+    if (code === PURCHASES_ERROR_CODE.PAYMENT_PENDING_ERROR) return 'pending'
+    console.error('Purchase failed', error)
     throw error
   }
 }
 
-// A short reference of a failed purchase, shown to the user so support can tell the cause
-export function purchaseErrorReference(error: unknown) {
-  const { code, readableErrorCode, userInfo, underlyingErrorMessage, message } = (error ?? {}) as Partial<PurchasesError>
-  const reference = [userInfo?.readableErrorCode ?? readableErrorCode ?? code, underlyingErrorMessage || message]
-    .filter(Boolean)
-    .join(' : ')
-  return reference || String(error)
+// What to tell the user when a purchase fails. The unexpected cases end with RevenueCat's error
+// code, short enough for a user to send to support
+export function purchaseErrorMessage(error: unknown) {
+  const { code } = (error ?? {}) as Partial<PurchasesError>
+  switch (code) {
+    case PURCHASES_ERROR_CODE.PURCHASE_NOT_ALLOWED_ERROR:
+      return 'Les achats intégrés sont désactivés sur cet iPhone. Vous pouvez les autoriser dans Réglages > Temps d\'écran.'
+    case PURCHASES_ERROR_CODE.NETWORK_ERROR:
+    case PURCHASES_ERROR_CODE.OFFLINE_CONNECTION_ERROR:
+      return 'Vérifiez votre connexion internet et réessayez.'
+    case PURCHASES_ERROR_CODE.PRODUCT_ALREADY_PURCHASED_ERROR:
+      return 'Ce compte Apple a déjà cet abonnement. Touchez « Restaurer mes achats » pour le retrouver.'
+    default:
+      return `L'App Store n'a pas pu finaliser l'achat. Réessayez dans quelques instants.${code ? ` (code ${code})` : ''}`
+  }
 }
 
 // After reinstalling the app or changing phone. True when a subscription was found
