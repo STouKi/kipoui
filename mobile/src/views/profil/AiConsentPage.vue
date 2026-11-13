@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { IonItem, IonList, IonToggle, alertController } from '@ionic/vue'
 import type { ToggleCustomEvent } from '@ionic/vue'
+import AiDataDisclosure from '@/components/AiDataDisclosure.vue'
 import ProfileSubPage from '@/components/ProfileSubPage.vue'
 import { useAiConsent } from '@/composables/useAiConsent'
 import { showAlert } from '@/lib/feedback'
@@ -62,10 +63,10 @@ async function onToggle(event: ToggleCustomEvent) {
 
     <div class="explanation">
       <p>
-        Pour personnaliser ses conseils, le coach transmet vos données de profil, y compris
-        sensibles (santé, régime alimentaire), et vos messages à des services d'intelligence
-        artificielle tiers.
+        Pour vous répondre et personnaliser ses conseils, le coach envoie certaines de vos
+        données à des services d'intelligence artificielle tiers.
       </p>
+      <AiDataDisclosure />
       <p>Sans votre accord, le coach ne peut pas vous répondre. Vous pouvez le retirer ou le redonner à tout moment.</p>
     </div>
   </ProfileSubPage>

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { IonButton, IonContent, IonIcon, IonModal, IonSpinner } from '@ionic/vue'
 import { shieldCheckmarkOutline } from 'ionicons/icons'
+import AiDataDisclosure from '@/components/AiDataDisclosure.vue'
 import { useAiConsent } from '@/composables/useAiConsent'
 import { showAlert } from '@/lib/feedback'
 import { successFeedback } from '@/lib/native'
@@ -37,10 +38,10 @@ async function accept() {
         />
         <h1>Votre accord avant de commencer</h1>
         <p>
-          Pour personnaliser ses conseils, le coach transmet vos données de profil, y compris
-          sensibles (santé, régime alimentaire), et vos messages à des services d'intelligence
-          artificielle tiers.
+          Pour vous répondre et personnaliser ses conseils, le coach envoie certaines de vos
+          données à des services d'intelligence artificielle tiers. Acceptez-vous ce partage ?
         </p>
+        <AiDataDisclosure />
         <p>Vous pourrez retirer votre accord à tout moment dans Profil, Traitement par l'IA.</p>
 
         <div class="actions">

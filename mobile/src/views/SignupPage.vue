@@ -15,8 +15,9 @@ import {
 } from '@ionic/vue'
 import { mailOpenOutline } from 'ionicons/icons'
 import type { AuthError } from '@supabase/supabase-js'
+import AiDataDisclosure from '@/components/AiDataDisclosure.vue'
 import KiwiAvatar from '@/components/KiwiAvatar.vue'
-import { ACCOUNT_CONFIRMED_URL, PRIVACY_URL, TERMS_URL } from '@/lib/config'
+import { ACCOUNT_CONFIRMED_URL, TERMS_URL } from '@/lib/config'
 import { showAlert } from '@/lib/feedback'
 import { openExternal, successFeedback, warningFeedback } from '@/lib/native'
 import { session } from '@/lib/session'
@@ -174,17 +175,10 @@ async function signUp() {
                 justify="start"
                 alignment="start"
               >
-                J'accepte que mes données de profil, y compris sensibles (santé, régime alimentaire),
-                et mes messages soient traités par des services d'intelligence artificielle tiers pour
-                personnaliser mon accompagnement.
+                J'accepte que les données ci-dessous soient envoyées aux services d'intelligence
+                artificielle tiers Groq, Anthropic, OpenAI et Exa pour que le coach me réponde.
               </ion-checkbox>
-              <button
-                type="button"
-                class="text-link more"
-                @click="openExternal(PRIVACY_URL)"
-              >
-                En savoir plus
-              </button>
+              <AiDataDisclosure />
             </div>
 
             <ion-button
@@ -301,9 +295,10 @@ async function signUp() {
   white-space: normal;
 }
 
-.more {
-  margin-left: 34px;
-  font-size: 15px;
+.consent :deep(.disclosure) {
+  padding-left: 34px;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .switch {
