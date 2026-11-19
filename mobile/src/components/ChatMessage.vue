@@ -285,25 +285,75 @@ function onClick(event: MouseEvent) {
   background: var(--kp-surface);
 }
 
-.markdown :deep(table) {
-  display: block;
-  max-width: 100%;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  border-collapse: collapse;
-  font-size: 15px;
+/* The browser's default 40px margins looked like a stray indent: quotes stay aligned with the text */
+.markdown :deep(blockquote) {
+  margin: 0 0 10px;
+  padding: 0;
 }
 
+.markdown :deep(blockquote > :last-child) {
+  margin-bottom: 0;
+}
+
+.markdown :deep(hr) {
+  margin: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--kp-fill-strong);
+}
+
+/*
+ * Tables scroll sideways in the box lib/markdown.ts wraps them in, instead of every column being
+ * squeezed into the screen: each cell's text wraps at 220px (.cell), so a cell reads at once
+ */
+.markdown :deep(.table-scroll) {
+  margin: 0 0 10px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.markdown :deep(table) {
+  width: max-content;
+  /* Separate borders: collapsed ones belong to the table and wouldn't follow the frozen column */
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+/* --kp-border is the bubble's own color in dark mode */
 .markdown :deep(th),
 .markdown :deep(td) {
-  /*
-   * Cells keep a readable width and the table scrolls sideways: without it, the bubble's
-   * overflow-wrap squeezes every column into the screen width, breaking words anywhere
-   */
-  min-width: 112px;
   padding: 6px 10px;
-  border: 1px solid var(--kp-border);
-  overflow-wrap: normal;
+  border-right: 1px solid var(--kp-fill-strong);
+  border-bottom: 1px solid var(--kp-fill-strong);
+  background: var(--kp-fill);
+  text-align: left;
   vertical-align: top;
+}
+
+.markdown :deep(th) {
+  border-top: 1px solid var(--kp-fill-strong);
+  background: var(--kp-surface);
+  font-weight: 600;
+}
+
+/* The first column (the row's label) stays in view while the table scrolls, the rest slides under it */
+.markdown :deep(th:first-child),
+.markdown :deep(td:first-child) {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  border-left: 1px solid var(--kp-fill-strong);
+}
+
+.markdown :deep(.cell) {
+  max-width: 220px;
+  overflow-wrap: break-word;
+}
+
+/* Narrower, so the frozen column leaves room for the others */
+.markdown :deep(th:first-child > .cell),
+.markdown :deep(td:first-child > .cell) {
+  max-width: 140px;
 }
 </style>
