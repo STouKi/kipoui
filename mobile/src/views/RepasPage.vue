@@ -37,6 +37,7 @@ import { showAlert, showErrorToast } from '@/lib/feedback'
 import { AttachmentError, resizeImage } from '@/lib/files'
 import { formatDay } from '@/lib/format'
 import { tapFeedback, warningFeedback } from '@/lib/native'
+import { countSavedMeal, requestReviewSoon } from '@/lib/review'
 import {
   MEAL_TYPES,
   addDays,
@@ -197,12 +198,20 @@ function openAddModal(file: File | null) {
   addOpen.value = true
 }
 
-// The coach reacts to a meal of today: its tips are about the rest of the day
+// The coach reacts to a meal of today: its tips are about the rest of the day. On some meals, the
+// rating prompt follows the comment (lib/review.ts)
 function onMealSaved(meal: Meal) {
-  if (dayKey(new Date(meal.eaten_at)) !== dayKey(new Date())) return
+  const reviewDue = countSavedMeal().catch(() => false)
+  if (dayKey(new Date(meal.eaten_at)) !== dayKey(new Date())) {
+    void reviewDue.then(due => due && requestReviewSoon())
+    return
+  }
   commentingId.value = meal.id
   lastCommentedId.value = meal.id
   commentMeal(meal, showFigures.value ? needs.value : null)
+    .then(async () => {
+      if (await reviewDue) requestReviewSoon()
+    })
     .catch(() => {})
     .finally(() => {
       if (commentingId.value === meal.id) commentingId.value = null
