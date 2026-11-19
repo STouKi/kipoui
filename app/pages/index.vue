@@ -24,6 +24,19 @@ useSeoMeta({
       :description="page.description"
       :links="page.hero.links"
     >
+      <template #links>
+        <UButton
+          v-for="(link, index) in page.hero.links"
+          :key="index"
+          size="xl"
+          v-bind="link"
+        />
+        <!-- On its own line, under the buttons -->
+        <div class="basis-full flex justify-center mt-3">
+          <AppStoreBadge />
+        </div>
+      </template>
+
       <template #top>
         <div class="absolute rounded-full dark:bg-primary blur-[300px] size-60 sm:size-80 transform -translate-x-1/2 left-1/2 -translate-y-80" />
 

@@ -20,6 +20,13 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // Base of the share images' absolute URLs (nuxt-og-image). Without it they point to the
+  // deployment's own Vercel URL, which Vercel's protection hides from social networks
+  site: {
+    url: 'https://kipoui.com',
+    name: 'Kipoui'
+  },
+
   mdc: {
     highlight: {
       shikiEngine: 'javascript'

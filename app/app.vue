@@ -4,6 +4,7 @@ import { fr } from '@nuxt/ui/locale'
 const colorMode = useColorMode()
 
 const color = computed(() => colorMode.value === 'dark' ? '#020618' : 'white')
+const route = useRoute()
 
 useHead({
   titleTemplate: (titleChunk) => {
@@ -22,9 +23,20 @@ useHead({
   }
 })
 
+// Safari on iPhone offers the app in a banner above the site's pages, except those opened inside
+// the app (/app/...)
+useHead({
+  meta: computed(() => route.path.startsWith('/app/')
+    ? []
+    : [{ key: 'apple-itunes-app', name: 'apple-itunes-app', content: `app-id=${APP_STORE_ID}` }])
+})
+
+// Share previews of the pages without their own image: the launch film's poster
+const shareImage = 'https://kipoui.com/images/og-kipoui.jpg'
+
 useSeoMeta({
-  ogImage: 'https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL3NhYXMtdGVtcGxhdGUubnV4dC5kZXYiLCJpYXQiOjE3Mzk0NjM0NDh9.tgzUQaw6XswUPPVbOXazuWwoTHJODg155CYt1xfzIdM.jpg?theme=light',
-  twitterImage: 'https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL3NhYXMtdGVtcGxhdGUubnV4dC5kZXYiLCJpYXQiOjE3Mzk0NjM0NDh9.tgzUQaw6XswUPPVbOXazuWwoTHJODg155CYt1xfzIdM.jpg?theme=light',
+  ogImage: shareImage,
+  twitterImage: shareImage,
   twitterCard: 'summary_large_image'
 })
 </script>

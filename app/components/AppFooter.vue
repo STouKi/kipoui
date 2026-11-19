@@ -44,14 +44,17 @@ const columns = [{
       <UContainer>
         <UFooterColumns :columns="columns">
           <template #right>
-            <NuxtImg
-              src="/images/logo/logo.png"
-              alt="Kipoui"
-              width="200"
-              height="173"
-              format="auto"
-              format-quality="80"
-            />
+            <div class="flex flex-col items-start gap-6">
+              <NuxtImg
+                src="/images/logo/logo.png"
+                alt="Kipoui"
+                width="200"
+                height="173"
+                format="auto"
+                format-quality="80"
+              />
+              <AppStoreBadge />
+            </div>
           </template>
         </UFooterColumns>
       </UContainer>
