@@ -333,7 +333,8 @@ function onClick(event: MouseEvent) {
 
 .markdown :deep(th) {
   border-top: 1px solid var(--kp-fill-strong);
-  background: var(--kp-surface);
+  /* A shade darker than the bubble in light mode, lighter in dark mode */
+  background: var(--kp-fill-strong);
   font-weight: 600;
 }
 
