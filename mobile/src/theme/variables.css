@@ -19,6 +19,8 @@
   --kp-surface: #ffffff;
   --kp-fill: #f1f5f9;
   --kp-fill-strong: #e2e8f0;
+  /* Table lines in the coach's bubble: --kp-fill-strong is too pale on --kp-fill in light mode */
+  --kp-table-line: #cbd5e1;
   --kp-border: #e2e8f0;
   --kp-input-border: #94a3b8;
   /* Green text and icons (4.9:1 on white) */
@@ -112,6 +114,7 @@
     --kp-surface: #0f172a;
     --kp-fill: #1e293b;
     --kp-fill-strong: #334155;
+    --kp-table-line: #334155;
     --kp-border: #1e293b;
     --kp-input-border: #64748b;
     /* On dark, the brand green is readable as text (10.7:1) */

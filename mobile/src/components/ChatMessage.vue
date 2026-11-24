@@ -324,15 +324,15 @@ function onClick(event: MouseEvent) {
 .markdown :deep(th),
 .markdown :deep(td) {
   padding: 6px 10px;
-  border-right: 1px solid var(--kp-fill-strong);
-  border-bottom: 1px solid var(--kp-fill-strong);
+  border-right: 1px solid var(--kp-table-line);
+  border-bottom: 1px solid var(--kp-table-line);
   background: var(--kp-fill);
   text-align: left;
   vertical-align: top;
 }
 
 .markdown :deep(th) {
-  border-top: 1px solid var(--kp-fill-strong);
+  border-top: 1px solid var(--kp-table-line);
   /* A shade darker than the bubble in light mode, lighter in dark mode */
   background: var(--kp-fill-strong);
   font-weight: 600;
@@ -344,7 +344,7 @@ function onClick(event: MouseEvent) {
   position: sticky;
   left: 0;
   z-index: 1;
-  border-left: 1px solid var(--kp-fill-strong);
+  border-left: 1px solid var(--kp-table-line);
 }
 
 .markdown :deep(.cell) {
