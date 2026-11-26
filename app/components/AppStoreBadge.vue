@@ -3,7 +3,8 @@
 // redrawing or altering it
 const props = withDefaults(defineProps<{ height?: number }>(), { height: 44 })
 
-const href = APP_STORE_URL
+// Counted as the `site` campaign in App Store Connect
+const href = appStoreCampaignUrl('site')
 // The badge's own proportions (126.5 x 40)
 const width = computed(() => Math.round(props.height * 126.5 / 40))
 </script>
